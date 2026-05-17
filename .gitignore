@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# Environment / Secrets
+.env
+*.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# ChromaDB
+chroma_db/
+
+# Build artifacts
+build/
+dist/
+*.spec
+
+# Node
+node_modules/
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+.pytest_cache/
+auto_test.log
+NEEDS_FIX.txt
+*.png
+*.output
+
+# Knowledge base data (user-specific)
+knowledge-base/backend/chroma_db/
