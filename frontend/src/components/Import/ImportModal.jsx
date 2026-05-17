@@ -42,6 +42,9 @@ export default function ImportModal({ onDone }) {
       }
       setResults(result)
       toast.success('导入完成！')
+      setFiles([])
+      setTextInput('')
+      setTextTitle('')
       onDone()
     } catch (e) {
       toast.error('导入失败: ' + e.message)

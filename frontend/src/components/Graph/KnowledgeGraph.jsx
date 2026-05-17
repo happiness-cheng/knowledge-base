@@ -487,6 +487,7 @@ export default function KnowledgeGraph({ onTopicClick }) {
             <div
               key={n.id}
               data-node-id={n.id}
+              title={n.title}
               onMouseDown={e => { e.stopPropagation(); onDown(e, n.id); }}
               onClick={() => {
                 if (n.isMain) {

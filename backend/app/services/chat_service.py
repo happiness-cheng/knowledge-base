@@ -40,7 +40,8 @@ def generate_chat_response(db: SessionLocal, conversation: Conversation, user_me
     try:
         retrieved_nodes = retrieve_relevant_nodes(user_message_content, top_k=5)
     except Exception as e:
-        print(f"RAG retrieval failed: {e}")
+        import logging
+        logging.getLogger(__name__).warning("RAG retrieval failed: %s", e)
         retrieved_nodes = []
 
     # 2. Build system prompt with context

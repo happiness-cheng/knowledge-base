@@ -50,7 +50,8 @@ def remove_node_from_index(node_id: int):
     try:
         collection.delete(ids=[str(node_id)])
     except Exception as e:
-        print(f"Error deleting from chroma: {e}")
+        import logging
+        logging.getLogger(__name__).warning("Error deleting from chroma: %s", e)
 
 def retrieve_relevant_nodes(query: str, top_k: int = 3) -> list[dict]:
     """Retrieve top-k most relevant nodes for a given query."""
