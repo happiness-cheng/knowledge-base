@@ -7,7 +7,7 @@ from app.models.node import KnowledgeNode
 from app.services.chat_service import generate_chat_response
 from app.services.rag_service import add_node_to_index
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 import hashlib
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -101,7 +101,7 @@ def send_message(conversation_id: int, msg_in: MessageCreate, background: Backgr
     db.commit()
 
     # Update conversation updated_at
-    conv.updated_at = datetime.utcnow()
+    conv.updated_at = datetime.now(timezone.utc)
     db.refresh(conv)
     # Auto-title if it's the first message
     if conv.title == "New Conversation" and len(conv.messages) == 1:

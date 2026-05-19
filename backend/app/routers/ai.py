@@ -208,7 +208,10 @@ def extract_subtopics(node_id: int, db: Session = Depends(get_db)):
     # Find relations between sub-topics using keyword overlap
     relations = []
     if len(sub_topics) >= 2:
-        import jieba
+        try:
+            import jieba
+        except ImportError:
+            return {"node_id": node_id, "sub_topics": sub_topics, "relations": []}
         # Extract keywords from each sub-topic
         def extract_keywords(text):
             # Remove numbering prefix like "8. " or "3. "

@@ -53,7 +53,7 @@ export default function App() {
         background: '#0f172a', color: '#ef4444', gap: 16,
       }}>
         <div style={{ fontSize: 18 }}>无法连接后端服务</div>
-        <div style={{ color: '#94a3b8', fontSize: 14 }}>请确保后端已启动（端口 8766）</div>
+        <div style={{ color: '#94a3b8', fontSize: 14 }}>请确保后端已启动（端口 8765）</div>
         <button
           onClick={() => { retriesRef.current = 0; setLoadError(false); setLoading(true); refresh() }}
           style={{ padding: '8px 24px', borderRadius: 8, border: '1px solid #6366f1', background: '#6366f1', color: '#fff', cursor: 'pointer', fontSize: 14 }}
