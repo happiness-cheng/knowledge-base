@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 from app.models.node import KnowledgeNode
@@ -38,7 +38,7 @@ def get_graph(db: Session = Depends(get_db)):
 
 
 @router.get("/node/{node_id}", response_model=GraphData)
-def get_subgraph(node_id: int, hops: int = 1, db: Session = Depends(get_db)):
+def get_subgraph(node_id: int, hops: int = Query(1, ge=1, le=3), db: Session = Depends(get_db)):
     node_ids = {node_id}
     for _ in range(hops):
         rels = db.query(Relationship).filter(
