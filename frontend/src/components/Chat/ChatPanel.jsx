@@ -192,6 +192,71 @@ function SimpleMarkdown({ text }) {
   return <>{elements}</>;
 }
 
+// Agent 推理步骤展示（可折叠）
+function AgentSteps({ steps }) {
+  const [expanded, setExpanded] = React.useState(false);
+
+  if (!steps || steps.length === 0) return null;
+
+  const toolCallCount = steps.filter(s => s.type === 'tool_call').length;
+
+  return (
+    <div style={{
+      marginBottom: 8, fontSize: 12, color: '#64748b',
+      background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0',
+      overflow: 'hidden',
+    }}>
+      {/* 收起状态：摘要栏 */}
+      <div onClick={() => setExpanded(!expanded)} style={{
+        padding: '6px 12px', cursor: 'pointer', display: 'flex',
+        alignItems: 'center', gap: 6, fontWeight: 500,
+      }}>
+        <span style={{ fontSize: 10 }}>{expanded ? '▼' : '▶'}</span>
+        <span>Agent 调用了 {toolCallCount} 个工具</span>
+      </div>
+
+      {/* 展开状态：步骤详情 */}
+      {expanded && (
+        <div style={{ padding: '0 12px 8px', borderTop: '1px solid #e2e8f0' }}>
+          {steps.map((step, i) => (
+            <div key={i} style={{ marginTop: 6 }}>
+              {step.type === 'tool_call' && (
+                <div>
+                  <span style={{ color: '#7c3aed', fontWeight: 600, fontSize: 12 }}>
+                    ⚙ {step.tool_name}
+                  </span>
+                  <code style={{
+                    display: 'block', marginTop: 2, padding: '4px 8px',
+                    background: '#f1f5f9', borderRadius: 4, fontSize: 11,
+                    whiteSpace: 'pre-wrap', wordBreak: 'break-all',
+                    maxHeight: 80, overflow: 'auto',
+                  }}>
+                    {JSON.stringify(step.tool_input, null, 2)}
+                  </code>
+                </div>
+              )}
+              {step.type === 'tool_result' && (
+                <div style={{
+                  paddingLeft: 12, borderLeft: '2px solid #e2e8f0',
+                  color: '#475569', fontSize: 11, maxHeight: 60, overflow: 'auto',
+                }}>
+                  → {step.content?.slice(0, 300)}
+                  {step.content?.length > 300 ? '...' : ''}
+                </div>
+              )}
+              {step.type === 'final_answer' && (
+                <div style={{ color: '#16a34a', fontWeight: 600, fontSize: 11 }}>
+                  ✓ 生成最终回答
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MessageItem({ message, onSaveToKB }) {
   const isUser = message.role === 'user';
   const isAssistant = message.role === 'assistant';
@@ -206,6 +271,10 @@ function MessageItem({ message, onSaveToKB }) {
       justifyContent: isUser ? 'flex-end' : 'flex-start',
     }}>
       <div style={{ maxWidth: '85%' }}>
+        {/* Agent 推理步骤 */}
+        {isAssistant && message.agent_steps && message.agent_steps.length > 0 && (
+          <AgentSteps steps={message.agent_steps} />
+        )}
         {/* Source indicator for assistant messages */}
         {isAssistant && (
           <div style={{
@@ -613,7 +682,7 @@ export default function ChatPanel() {
               background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16,
               borderBottomLeftRadius: 4, padding: '10px 16px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
             }}>
-              <span style={{ color: '#94a3b8', fontSize: 13 }}>thinking...</span>
+              <span style={{ color: '#94a3b8', fontSize: 13 }}>Agent is working...</span>
             </div>
           </div>
         )}

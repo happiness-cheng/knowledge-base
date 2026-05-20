@@ -74,5 +74,18 @@ class AIClient:
         result = "\n".join(texts) if texts else "\n".join(thinkings)
         return result if result else "[No response]"
 
+    def chat_with_tools(self, system: str, messages: list[dict],
+                         tools: list[dict], max_tokens: int = 4096) -> object:
+        """带工具调用的对话，返回完整 response 对象（用于 Agent 循环）"""
+        if not self.client:
+            raise RuntimeError("AI not configured. Check cc-switch or .env settings.")
+        return self.client.messages.create(
+            model=self.model,
+            max_tokens=max_tokens,
+            system=system,
+            messages=messages,
+            tools=tools,
+        )
+
 
 claude_client = AIClient()

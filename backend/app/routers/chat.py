@@ -4,7 +4,7 @@ from typing import List, Optional
 from app.database import get_db
 from app.models.chat import Conversation, Message
 from app.models.node import KnowledgeNode
-from app.services.chat_service import generate_chat_response
+from app.services.agent_service import run_agent
 from app.services.rag_service import add_node_to_index
 from pydantic import BaseModel
 from datetime import datetime, timezone
@@ -17,6 +17,13 @@ class MessageCreate(BaseModel):
     content: str
     ai_search: bool = False
 
+class AgentStep(BaseModel):
+    type: str  # "tool_call", "tool_result", "final_answer"
+    content: str = ""
+    tool_name: str = ""
+    tool_input: dict = {}
+    tool_use_id: str = ""
+
 class MessageResponse(BaseModel):
     id: int
     conversation_id: int
@@ -26,6 +33,7 @@ class MessageResponse(BaseModel):
     source_node_ids: List[int] = []
     is_from_kb: bool = True
     found_in_kb: bool = True
+    agent_steps: List[AgentStep] = []
 
     class Config:
         from_attributes = True
@@ -109,12 +117,13 @@ def send_message(conversation_id: int, msg_in: MessageCreate, background: Backgr
 
     db.commit()
 
-    # 2. Generate AI response
-    result = generate_chat_response(db, conv, msg_in.content, ai_search=msg_in.ai_search)
+    # 2. Generate AI response via Agent
+    result = run_agent(db, conv, msg_in.content, ai_search=msg_in.ai_search)
     ai_content = result["content"]
     source_ids = result["source_ids"]
     is_from_kb = result.get("is_from_kb", True)
     found_in_kb = result.get("found_in_kb", True)
+    agent_steps = result.get("steps", [])
 
     # 3. Save AI message
     ai_msg = Message(
@@ -138,6 +147,7 @@ def send_message(conversation_id: int, msg_in: MessageCreate, background: Backgr
     resp.source_node_ids = source_ids
     resp.is_from_kb = is_from_kb
     resp.found_in_kb = found_in_kb
+    resp.agent_steps = [AgentStep(**step) for step in agent_steps]
 
     return resp
 
