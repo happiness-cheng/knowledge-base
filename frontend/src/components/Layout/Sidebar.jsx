@@ -83,7 +83,7 @@ export default function Sidebar({ onRefresh }) {
     <div
       key={n.id}
       className={`node-item ${selectedNodeId === n.id ? 'selected' : ''} ${isRelated ? 'node-item-related' : ''}`}
-      onClick={() => selectNode(n.id)}
+      onClick={() => selectNode(n.id, searchResults ? search.trim() : null)}
     >
       <div className="node-item-title">{n.title}</div>
       <div className="node-item-meta">

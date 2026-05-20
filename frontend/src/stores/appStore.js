@@ -5,7 +5,8 @@ const useAppStore = create((set) => ({
   setGraphData: (data) => set({ graphData: data }),
 
   selectedNodeId: null,
-  selectNode: (id) => set({ selectedNodeId: id }),
+  searchHighlight: null,  // 搜索高亮关键词
+  selectNode: (id, highlight) => set({ selectedNodeId: id, searchHighlight: highlight || null }),
 
   relationships: [],
   setRelationships: (rels) => set({ relationships: rels }),

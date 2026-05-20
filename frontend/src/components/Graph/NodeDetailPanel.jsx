@@ -5,8 +5,8 @@ import useAppStore from '../../stores/appStore'
 import { api } from '../../api/client'
 import toast from 'react-hot-toast'
 
-export default function NodeDetailPanel({ onRefresh, highlightTopic }) {
-  const { selectedNodeId, selectNode, openEditor, nodes } = useAppStore()
+export default function NodeDetailPanel({ onRefresh }) {
+  const { selectedNodeId, selectNode, openEditor, nodes, searchHighlight } = useAppStore()
   const [node, setNode] = useState(null)
   const [relationships, setRelationships] = useState([])
   const [analyzing, setAnalyzing] = useState(false)
@@ -42,25 +42,39 @@ export default function NodeDetailPanel({ onRefresh, highlightTopic }) {
 
   useEffect(() => { loadData() }, [selectedNodeId])
 
-  // Scroll to and highlight topic when highlightTopic changes
+  // Scroll to and highlight search term when searchHighlight changes
   useEffect(() => {
-    if (!highlightTopic || !contentRef.current) return
+    if (!searchHighlight || !contentRef.current) return
     const container = contentRef.current
-    const text = highlightTopic
-    // Find the heading in the rendered content
+    const text = searchHighlight.toLowerCase()
+
+    // 先找标题
     const headings = container.querySelectorAll('h1, h2, h3')
     for (const h of headings) {
-      if (h.textContent.includes(text)) {
+      if (h.textContent.toLowerCase().includes(text)) {
         h.scrollIntoView({ behavior: 'smooth', block: 'center' })
         h.style.background = 'rgba(99, 102, 241, 0.3)'
         h.style.borderRadius = '4px'
         h.style.padding = '2px 8px'
         h.style.transition = 'background 0.3s'
         setTimeout(() => { h.style.background = 'transparent' }, 3000)
-        break
+        return
       }
     }
-  }, [highlightTopic])
+
+    // 标题没找到，在所有文本节点中找
+    const allElements = container.querySelectorAll('p, li, td, span, div')
+    for (const el of allElements) {
+      if (el.textContent.toLowerCase().includes(text)) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        el.style.background = 'rgba(99, 102, 241, 0.2)'
+        el.style.borderRadius = '4px'
+        el.style.transition = 'background 0.3s'
+        setTimeout(() => { el.style.background = 'transparent' }, 3000)
+        return
+      }
+    }
+  }, [searchHighlight])
 
   // Load target node subtopics when target node is selected
   useEffect(() => {

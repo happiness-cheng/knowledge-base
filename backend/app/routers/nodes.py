@@ -1,6 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import or_
+from sqlalchemy import or_, case, func
 import logging
 from app.database import get_db
 from app.models.node import KnowledgeNode
@@ -129,15 +129,32 @@ def list_nodes(
         tag_subq = db.query(KnowledgeNode.id).join(KnowledgeNode.tags).filter(
             Tag.name.collate("NOCASE").contains(search)
         ).subquery()
-        q = q.filter(
-            or_(
-                KnowledgeNode.title.collate("NOCASE").contains(search),
-                KnowledgeNode.content.collate("NOCASE").contains(search),
-                KnowledgeNode.summary.collate("NOCASE").contains(search),
-                KnowledgeNode.id.in_(tag_subq),
-            )
+        title_match = KnowledgeNode.title.collate("NOCASE").contains(search)
+        content_match = KnowledgeNode.content.collate("NOCASE").contains(search)
+        summary_match = KnowledgeNode.summary.collate("NOCASE").contains(search)
+        tag_match = KnowledgeNode.id.in_(tag_subq)
+
+        q = q.filter(or_(title_match, content_match, summary_match, tag_match))
+
+        # 按相关度排序：标题匹配 > 标签匹配 > 摘要匹配 > 内容匹配，再按出现次数
+        search_lower = search.lower()
+        content_count = func.length(KnowledgeNode.content) - func.length(
+            func.replace(func.lower(KnowledgeNode.content), search_lower, '')
         )
-    nodes = q.order_by(KnowledgeNode.updated_at.desc()).offset(offset).limit(limit).all()
+        relevance = case(
+            (title_match, 100),
+            else_=0,
+        ) + case(
+            (tag_match, 50),
+            else_=0,
+        ) + case(
+            (summary_match, 30),
+            else_=0,
+        ) + content_count
+
+        nodes = q.order_by(relevance.desc()).offset(offset).limit(limit).all()
+    else:
+        nodes = q.order_by(KnowledgeNode.updated_at.desc()).offset(offset).limit(limit).all()
     result = []
     for n in nodes:
         result.append(NodeSummary(

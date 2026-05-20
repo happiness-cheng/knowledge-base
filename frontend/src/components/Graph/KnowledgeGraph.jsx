@@ -7,7 +7,7 @@ const COLORS = {
   Philosophy: '#a855f7', Business: '#ef4444', Personal: '#ec4899', Other: '#6366f1',
 }
 
-export default function KnowledgeGraph({ onTopicClick }) {
+export default function KnowledgeGraph() {
   const { graphData, selectNode, selectedNodeId } = useAppStore()
   const containerRef = useRef()
   const [dims, setDims] = useState({ w: 1000, h: 700 })
@@ -493,8 +493,7 @@ export default function KnowledgeGraph({ onTopicClick }) {
                 if (n.isMain) {
                   handleNodeClick(n)
                 } else {
-                  selectNode(n.parentId)
-                  if (onTopicClick) onTopicClick(n.title)
+                  selectNode(n.parentId, n.title)
                 }
               }}
               style={{
