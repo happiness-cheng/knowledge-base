@@ -3,12 +3,15 @@ import re
 from pathlib import Path
 from app.services.rag_service import retrieve_relevant_nodes
 
-def generate_chat_response(user_message_content: str, conversation_messages: list = None, ai_search: bool = False) -> tuple[str, list]:
-    """Generate a chat response using the configured AI provider."""
+def generate_chat_response(user_message_content: str, conversation_messages: list = None, ai_search: bool = False) -> dict:
+    """Generate a chat response using the configured AI provider.
+
+    返回 dict：{"content": str, "source_ids": list, "is_from_kb": bool, "found_in_kb": bool}
+    """
     from app.config import settings
     from app.services.claude_client import claude_client
     if not claude_client.client:
-        return "请先在设置中配置 API Key", []
+        return {"content": "请先在设置中配置 API Key", "source_ids": [], "is_from_kb": True, "found_in_kb": False}
     try:
         retrieved_nodes = retrieve_relevant_nodes(user_message_content, top_k=5)
     except Exception as e:
@@ -42,6 +45,6 @@ Rules:
             system=system_prompt,
             messages=messages,
         )
-        return response.content[0].text, source_ids
+        return {"content": response.content[0].text, "source_ids": source_ids, "is_from_kb": not ai_search, "found_in_kb": bool(source_ids)}
     except Exception as e:
-        return f"Error: {str(e)}", []
+        return {"content": f"Error: {str(e)}", "source_ids": [], "is_from_kb": not ai_search, "found_in_kb": False}

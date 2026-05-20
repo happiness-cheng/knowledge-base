@@ -19,7 +19,7 @@ class TestConversation:
     def test_get_conversation_with_messages(self, client):
         conv = client.post("/api/chat/conversations", json={"title": "T"}).json()
         # Send a message (AI response is mocked in conftest)
-        with patch("app.services.chat_service.generate_chat_response", return_value=("AI 回复", [])):
+        with patch("app.services.chat_service.generate_chat_response", return_value={"content": "AI 回复", "source_ids": [], "is_from_kb": True, "found_in_kb": False}):
             msg = client.post(
                 f"/api/chat/conversations/{conv['id']}/messages",
                 json={"content": "你好"},
@@ -42,7 +42,7 @@ class TestSendMessage:
     def test_auto_title_on_first_message(self, client):
         conv = client.post("/api/chat/conversations", json={}).json()  # default title
         assert "id" in conv, f"Expected id in response, got: {conv}"
-        with patch("app.services.chat_service.generate_chat_response", return_value=("ok", [])):
+        with patch("app.services.chat_service.generate_chat_response", return_value={"content": "ok", "source_ids": [], "is_from_kb": True, "found_in_kb": False}):
             resp = client.post(
                 f"/api/chat/conversations/{conv['id']}/messages",
                 json={"content": "我的第一个问题是什么呢"},

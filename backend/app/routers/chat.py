@@ -109,8 +109,8 @@ def send_message(conversation_id: int, msg_in: MessageCreate, background: Backgr
 
     db.commit()
 
-    # 2. Generate AI response
-    result = generate_chat_response(db, conv, msg_in.content, ai_search=msg_in.ai_search)
+    # 2. Generate AI response（对齐 chat_service 签名：str, list|None, bool）
+    result = generate_chat_response(msg_in.content, conversation_messages=None, ai_search=msg_in.ai_search)
     ai_content = result["content"]
     source_ids = result["source_ids"]
     is_from_kb = result.get("is_from_kb", True)

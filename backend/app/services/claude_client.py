@@ -25,18 +25,21 @@ def _load_cc_switch_config():
 
 class AIClient:
     def __init__(self):
-        # Try cc-switch config first
-        cc = _load_cc_switch_config()
-        if cc:
-            self.client = anthropic.Anthropic(
-                api_key=cc["api_key"],
-                base_url=cc["base_url"],
-            )
-            self.model = cc["model"]
-            self.source = "cc-switch"
-            return
+        # 优先使用 .env 配置；仅当 CC_SWITCH_ENABLED=true 时才读取 cc-switch
+        cc_switch_enabled = os.environ.get("CC_SWITCH_ENABLED", "").lower() in ("true", "1")
 
-        # Fallback to .env config
+        if cc_switch_enabled:
+            cc = _load_cc_switch_config()
+            if cc:
+                self.client = anthropic.Anthropic(
+                    api_key=cc["api_key"],
+                    base_url=cc["base_url"],
+                )
+                self.model = cc["model"]
+                self.source = "cc-switch"
+                return
+
+        # 优先使用 .env 配置
         from app.config import settings
         if settings.ai_api_key and settings.ai_api_key != "your_api_key_here":
             self.client = anthropic.Anthropic(

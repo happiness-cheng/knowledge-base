@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.node import KnowledgeNode
@@ -14,6 +14,15 @@ import os
 router = APIRouter(prefix="/ai", tags=["ai"])
 
 
+def verify_admin_key(x_api_key: str = Header(default=None)):
+    """写操作的 API Key 校验：必须设置 ADMIN_API_KEY 环境变量且请求头匹配"""
+    expected = os.environ.get("ADMIN_API_KEY", "")
+    if not expected:
+        raise HTTPException(503, "ADMIN_API_KEY not configured; write operations disabled")
+    if x_api_key != expected:
+        raise HTTPException(403, "Invalid API Key")
+
+
 @router.get("/settings")
 def get_settings():
     from app.services.claude_client import claude_client
@@ -26,7 +35,7 @@ def get_settings():
     }
 
 
-@router.post("/settings")
+@router.post("/settings", dependencies=[Depends(verify_admin_key)])
 def save_settings(data: dict):
     api_key = data.get("ai_api_key", "").strip()
     base_url = data.get("ai_base_url", "").strip()

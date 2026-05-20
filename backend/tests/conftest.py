@@ -75,7 +75,7 @@ def client():
     patchers = [
         patch("app.services.rag_service.add_node_to_index"),
         patch("app.services.rag_service.remove_node_from_index"),
-        patch("app.services.chat_service.generate_chat_response", return_value=("mock response", [])),
+        patch("app.services.chat_service.generate_chat_response", return_value={"content": "mock response", "source_ids": [], "is_from_kb": True, "found_in_kb": False}),
         patch("app.routers.nodes._safe_auto_analyze"),
     ]
     for p in patchers:

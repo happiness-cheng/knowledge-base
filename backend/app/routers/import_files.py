@@ -84,6 +84,11 @@ async def import_batch_files(files: list[UploadFile] = File(...), background: Ba
 async def import_text(body: dict, background: BackgroundTasks = None, db: Session = Depends(get_db)):
     content = body.get("content", "")
     title = body.get("title", "Pasted Note")
+    # 输入长度限制，防止过大请求耗尽内存
+    if len(title) > 500:
+        raise HTTPException(400, "Title too long (max 500 characters)")
+    if len(content) > 1_000_000:  # 1MB
+        raise HTTPException(413, "Content too large (max 1MB)")
     if not content.strip():
         raise HTTPException(400, "Content cannot be empty")
     if title != "Pasted Note":
