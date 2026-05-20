@@ -42,39 +42,54 @@ export default function NodeDetailPanel({ onRefresh }) {
 
   useEffect(() => { loadData() }, [selectedNodeId])
 
-  // Scroll to and highlight search term when searchHighlight changes
+  // Scroll to and highlight search term (waits for content to render)
   useEffect(() => {
-    if (!searchHighlight || !contentRef.current) return
-    const container = contentRef.current
-    const text = searchHighlight.toLowerCase()
+    if (!searchHighlight || !node?.content) return
 
-    // 先找标题
-    const headings = container.querySelectorAll('h1, h2, h3')
-    for (const h of headings) {
-      if (h.textContent.toLowerCase().includes(text)) {
-        h.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        h.style.background = 'rgba(99, 102, 241, 0.3)'
-        h.style.borderRadius = '4px'
-        h.style.padding = '2px 8px'
-        h.style.transition = 'background 0.3s'
-        setTimeout(() => { h.style.background = 'transparent' }, 3000)
-        return
+    const tryHighlight = () => {
+      const container = contentRef.current
+      if (!container) return false
+      const text = searchHighlight.toLowerCase()
+
+      // 先找标题
+      const headings = container.querySelectorAll('h1, h2, h3')
+      for (const h of headings) {
+        if (h.textContent.toLowerCase().includes(text)) {
+          h.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          h.style.background = 'rgba(99, 102, 241, 0.3)'
+          h.style.borderRadius = '4px'
+          h.style.padding = '2px 8px'
+          h.style.transition = 'background 0.3s'
+          setTimeout(() => { h.style.background = 'transparent' }, 3000)
+          return true
+        }
       }
+
+      // 标题没找到，在所有文本节点中找
+      const allElements = container.querySelectorAll('p, li, td')
+      for (const el of allElements) {
+        if (el.textContent.toLowerCase().includes(text)) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          el.style.background = 'rgba(99, 102, 241, 0.2)'
+          el.style.borderRadius = '4px'
+          el.style.transition = 'background 0.3s'
+          setTimeout(() => { el.style.background = 'transparent' }, 3000)
+          return true
+        }
+      }
+      return false
     }
 
-    // 标题没找到，在所有文本节点中找
-    const allElements = container.querySelectorAll('p, li, td, span, div')
-    for (const el of allElements) {
-      if (el.textContent.toLowerCase().includes(text)) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        el.style.background = 'rgba(99, 102, 241, 0.2)'
-        el.style.borderRadius = '4px'
-        el.style.transition = 'background 0.3s'
-        setTimeout(() => { el.style.background = 'transparent' }, 3000)
-        return
-      }
+    // ReactMarkdown 需要一帧来渲染，重试几次
+    if (!tryHighlight()) {
+      const timer1 = setTimeout(() => {
+        if (!tryHighlight()) {
+          setTimeout(tryHighlight, 500)
+        }
+      }, 200)
+      return () => clearTimeout(timer1)
     }
-  }, [searchHighlight])
+  }, [searchHighlight, node?.id])
 
   // Load target node subtopics when target node is selected
   useEffect(() => {
