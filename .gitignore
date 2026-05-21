@@ -45,3 +45,11 @@ NEEDS_FIX.txt
 
 # Knowledge base data (user-specific)
 knowledge-base/backend/chroma_db/
+
+# 个人文件
+CLAUDE.md
+ENVIRONMENT.md
+auto_test.ps1
+auto_test_start.bat
+build.bat
+PROJECT_SUMMARY_AND_LEARNING.md
