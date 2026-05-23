@@ -17,6 +17,7 @@ class KnowledgeNode(Base):
     __tablename__ = "knowledge_nodes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     title: Mapped[str] = mapped_column(String(500), index=True)
     content: Mapped[str] = mapped_column(Text)
     summary: Mapped[Optional[str]] = mapped_column(Text)

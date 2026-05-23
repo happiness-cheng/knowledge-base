@@ -10,15 +10,23 @@ logger = logging.getLogger(__name__)
 
 MAX_ITERATIONS = 10
 
-AGENT_SYSTEM_PROMPT = """You are a knowledge base assistant with access to tools. You can search the knowledge base, look up node details, explore the knowledge graph, and analyze relationships between concepts.
+AGENT_SYSTEM_PROMPT = """You are a knowledge base assistant with access to tools. You can search the knowledge base, look up node details, explore the knowledge graph, analyze relationships, and search the web.
 
-Guidelines:
-1. Always search the knowledge base first when the user asks a question.
-2. If search results seem relevant but incomplete, get full node details for the most promising nodes.
-3. If the user asks about connections or relationships between topics, use analyze_relationships or query_graph.
-4. If the knowledge base doesn't have the answer, say so clearly and provide your best general knowledge answer.
-5. Cite sources as [doc:ID] when referencing knowledge base nodes.
-6. Be concise. Use markdown formatting including tables where appropriate."""
+SEARCH PRIORITY (strict order):
+1. ALWAYS search_knowledge_base first when the user asks a question.
+2. If search results are relevant, get_node_details for the most promising nodes to get full context.
+3. If knowledge base search returns NO relevant results or the topic is NOT covered in the KB, use web_search to find information on the web.
+4. You may combine KB results and web results if the KB has partial coverage.
+5. If user asks about connections between topics, use analyze_relationships or query_graph.
+
+CITATION RULES:
+- KB sources: cite as [doc:ID] (e.g., [doc:3])
+- Web sources: cite as [web:title](url)
+- Always clearly indicate which parts come from KB vs web vs your general knowledge
+
+RESPONSE FORMAT:
+- Be concise. Use markdown formatting including tables where appropriate.
+- If you found nothing in KB AND nothing on the web, say so honestly and give your best general knowledge answer."""
 
 GENERAL_SYSTEM_PROMPT = """You are a knowledgeable assistant. Answer the user's question thoroughly using your general knowledge. Provide a clear, well-structured answer. Use markdown formatting for readability, including tables where appropriate."""
 
@@ -50,7 +58,7 @@ def _build_messages(conversation) -> list[dict]:
     return messages
 
 
-def run_agent(db, conversation, user_message_content: str, ai_search: bool = False) -> dict:
+def run_agent(db, conversation, user_message_content: str, ai_search: bool = False, user_id: int = 1) -> dict:
     """
     运行 Agent 循环。
 
@@ -88,6 +96,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
 
     steps = []
     used_node_ids = set()
+    web_sources = []  # 追踪联网搜索来源 [{title, url}]
 
     for iteration in range(MAX_ITERATIONS):
         try:
@@ -154,6 +163,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
                 "is_from_kb": found_in_kb,
                 "found_in_kb": found_in_kb,
                 "steps": steps,
+                "web_sources": web_sources,
             }
 
         # 有工具调用 → 执行工具
@@ -174,7 +184,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
             })
 
             # 执行工具
-            result = execute_tool(tool_name, tool_input, db)
+            result = execute_tool(tool_name, tool_input, db, user_id=user_id)
 
             # 追踪搜索到的节点 ID
             if tool_name in ("search_knowledge_base", "get_node_details"):
@@ -186,6 +196,20 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
                                 used_node_ids.add(item["node_id"])
                     elif isinstance(result_data, dict) and "id" in result_data:
                         used_node_ids.add(result_data["id"])
+                except (json.JSONDecodeError, TypeError):
+                    pass
+
+            # 追踪联网搜索来源
+            if tool_name == "web_search":
+                try:
+                    result_data = json.loads(result)
+                    if isinstance(result_data, list):
+                        for item in result_data:
+                            if "url" in item:
+                                web_sources.append({
+                                    "title": item.get("title", ""),
+                                    "url": item.get("url", ""),
+                                })
                 except (json.JSONDecodeError, TypeError):
                     pass
 
@@ -228,6 +252,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
                 "is_from_kb": len(used_node_ids) > 0,
                 "found_in_kb": len(used_node_ids) > 0,
                 "steps": steps,
+                "web_sources": web_sources,
             }
 
     # 达到最大迭代次数 → 强制输出最终回答
@@ -252,4 +277,5 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
         "is_from_kb": len(used_node_ids) > 0,
         "found_in_kb": len(used_node_ids) > 0,
         "steps": steps,
+        "web_sources": web_sources,
     }

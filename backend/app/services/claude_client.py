@@ -89,3 +89,17 @@ class AIClient:
 
 
 claude_client = AIClient()
+
+
+def get_client_for_user(user) -> AIClient:
+    """返回用户专属的 AI 客户端。没配 Key 则用管理员的默认 Key。"""
+    if user and getattr(user, 'ai_api_key', None):
+        client = AIClient.__new__(AIClient)
+        client.client = anthropic.Anthropic(
+            api_key=user.ai_api_key,
+            base_url=user.ai_base_url or "https://api.deepseek.com/v1",
+        )
+        client.model = user.ai_model_name or "deepseek-chat"
+        client.source = "user"
+        return client
+    return claude_client

@@ -28,11 +28,12 @@ export default function NoteEditor({ onSaved }) {
     try {
       const tagList = tags.split(',').map(t => t.trim()).filter(Boolean)
       if (editingNode?.id) {
-        await api.updateNode(editingNode.id, { title, content, tags: tagList })
+        const result = await api.updateNode(editingNode.id, { title, content, tags: tagList })
+        toast.success(`已更新！(${result.content?.length || content.length} 字符)`)
       } else {
         await api.createNode({ title, content, tags: tagList })
+        toast.success('已创建！')
       }
-      toast.success(editingNode?.id ? '已更新！' : '已创建！')
       onSaved()
       closeEditor()
     } catch (e) {

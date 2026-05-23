@@ -10,6 +10,7 @@ class Relationship(Base):
     __tablename__ = "relationships"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     source_id: Mapped[int] = mapped_column(ForeignKey("knowledge_nodes.id"), index=True)
     target_id: Mapped[int] = mapped_column(ForeignKey("knowledge_nodes.id"), index=True)
     source_topic: Mapped[Optional[str]] = mapped_column(String(200))

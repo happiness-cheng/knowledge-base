@@ -1,12 +1,16 @@
-"""Agent 工具注册表 — 5 个工具定义 + 处理函数，供 Agent 循环调用"""
+"""Agent 工具注册表 — 6 个工具定义 + 处理函数，供 Agent 循环调用"""
 
 import json
+import logging
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
+from app.database import nocase
 from app.services.rag_service import retrieve_relevant_nodes
 from app.models.node import KnowledgeNode
 from app.models.tag import Tag
 from app.models.relationship import Relationship
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================
@@ -77,6 +81,18 @@ TOOL_DEFINITIONS = [
             "required": ["node_ids"],
         },
     },
+    {
+        "name": "web_search",
+        "description": "Search the web for information not found in the knowledge base. Use this ONLY when the knowledge base search returns no relevant results or the topic is not covered.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query"},
+                "max_results": {"type": "integer", "description": "Max results (1-10, default 5)"},
+            },
+            "required": ["query"],
+        },
+    },
 ]
 
 
@@ -84,14 +100,15 @@ TOOL_DEFINITIONS = [
 # 工具处理函数
 # ============================================================
 
-def _handle_search(input_dict: dict, db: Session) -> str:
+def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
     """语义向量搜索知识库"""
     query = input_dict.get("query", "")
     top_k = min(input_dict.get("top_k", 5), 10)
     if not query:
         return json.dumps({"error": "query is required"})
 
-    results = retrieve_relevant_nodes(query, top_k=top_k)
+    user_id = kwargs.get("user_id", 1)
+    results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
     # 截断内容避免撑爆上下文
     trimmed = []
     for r in results:
@@ -107,13 +124,14 @@ def _handle_search(input_dict: dict, db: Session) -> str:
     return json.dumps(trimmed, ensure_ascii=False)
 
 
-def _handle_node_details(input_dict: dict, db: Session) -> str:
+def _handle_node_details(input_dict: dict, db: Session, **kwargs) -> str:
     """获取节点详情"""
     node_id = input_dict.get("node_id")
     if not node_id:
         return json.dumps({"error": "node_id is required"})
 
-    node = db.query(KnowledgeNode).filter(KnowledgeNode.id == node_id).first()
+    user_id = kwargs.get("user_id", 1)
+    node = db.query(KnowledgeNode).filter(KnowledgeNode.id == node_id, KnowledgeNode.user_id == user_id).first()
     if not node:
         return json.dumps({"error": f"Node {node_id} not found"})
 
@@ -147,18 +165,19 @@ def _handle_node_details(input_dict: dict, db: Session) -> str:
     }, ensure_ascii=False)
 
 
-def _handle_query_graph(input_dict: dict, db: Session) -> str:
+def _handle_query_graph(input_dict: dict, db: Session, **kwargs) -> str:
     """BFS 探索子图"""
     node_id = input_dict.get("node_id")
     hops = min(input_dict.get("hops", 1), 3)
+    user_id = kwargs.get("user_id", 1)
     if not node_id:
         return json.dumps({"error": "node_id is required"})
 
-    # BFS（复用 graph.py 的逻辑）
     node_ids = {node_id}
     all_rels = []
     for _ in range(hops):
         rels = db.query(Relationship).filter(
+            Relationship.user_id == user_id,
             (Relationship.source_id.in_(node_ids)) | (Relationship.target_id.in_(node_ids))
         ).all()
         for r in rels:
@@ -166,7 +185,8 @@ def _handle_query_graph(input_dict: dict, db: Session) -> str:
             node_ids.add(r.target_id)
             all_rels.append(r)
 
-    nodes = db.query(KnowledgeNode).filter(KnowledgeNode.id.in_(node_ids)).all()
+    nodes = db.query(KnowledgeNode).filter(
+        KnowledgeNode.id.in_(node_ids), KnowledgeNode.user_id == user_id).all()
     return json.dumps({
         "nodes": [{"id": n.id, "title": n.title, "category": n.category} for n in nodes],
         "links": [
@@ -176,9 +196,11 @@ def _handle_query_graph(input_dict: dict, db: Session) -> str:
     }, ensure_ascii=False)
 
 
-def _handle_list_nodes(input_dict: dict, db: Session) -> str:
+def _handle_list_nodes(input_dict: dict, db: Session, **kwargs) -> str:
     """筛选节点列表"""
+    user_id = kwargs.get("user_id", 1)
     q = db.query(KnowledgeNode).options(joinedload(KnowledgeNode.tags))
+    q = q.filter(KnowledgeNode.user_id == user_id)
 
     tag = input_dict.get("tag")
     category = input_dict.get("category")
@@ -186,18 +208,18 @@ def _handle_list_nodes(input_dict: dict, db: Session) -> str:
     limit = min(input_dict.get("limit", 20), 20)
 
     if tag:
-        q = q.join(KnowledgeNode.tags).filter(Tag.name == tag)
+        q = q.join(KnowledgeNode.tags).filter(Tag.name == tag, Tag.user_id == user_id)
     if category:
         q = q.filter(KnowledgeNode.category == category)
     if search:
         tag_subq = db.query(KnowledgeNode.id).join(KnowledgeNode.tags).filter(
-            Tag.name.collate("NOCASE").contains(search)
+            nocase(Tag.name).contains(search)
         ).subquery()
         q = q.filter(
             or_(
-                KnowledgeNode.title.collate("NOCASE").contains(search),
-                KnowledgeNode.content.collate("NOCASE").contains(search),
-                KnowledgeNode.summary.collate("NOCASE").contains(search),
+                nocase(KnowledgeNode.title).contains(search),
+                nocase(KnowledgeNode.content).contains(search),
+                nocase(KnowledgeNode.summary).contains(search),
                 KnowledgeNode.id.in_(tag_subq),
             )
         )
@@ -210,19 +232,43 @@ def _handle_list_nodes(input_dict: dict, db: Session) -> str:
     ], ensure_ascii=False)
 
 
-def _handle_analyze_relationships(input_dict: dict, db: Session) -> str:
+def _handle_analyze_relationships(input_dict: dict, db: Session, **kwargs) -> str:
     """AI 分析节点间关系"""
     node_ids = input_dict.get("node_ids", [])
     if len(node_ids) < 2:
         return json.dumps({"error": "Need at least 2 node IDs"})
 
-    nodes = db.query(KnowledgeNode).filter(KnowledgeNode.id.in_(node_ids)).all()
+    user_id = kwargs.get("user_id", 1)
+    nodes = db.query(KnowledgeNode).filter(KnowledgeNode.id.in_(node_ids), KnowledgeNode.user_id == user_id).all()
     if len(nodes) < 2:
         return json.dumps({"error": "Not enough valid nodes found"})
 
     from app.services.relationship_finder import find_relationships_batch
     suggestions = find_relationships_batch(nodes)
     return json.dumps(suggestions[:20], ensure_ascii=False)
+
+
+def _handle_web_search(input_dict: dict, db: Session, **kwargs) -> str:
+    """DuckDuckGo 联网搜索"""
+    query = input_dict.get("query", "")
+    max_results = min(input_dict.get("max_results", 5), 10)
+    if not query:
+        return json.dumps({"error": "query is required"})
+
+    try:
+        from ddgs import DDGS
+        results = DDGS().text(query, max_results=max_results)
+        formatted = []
+        for r in results:
+            formatted.append({
+                "title": r.get("title", ""),
+                "url": r.get("href", ""),
+                "snippet": r.get("body", ""),
+            })
+        return json.dumps(formatted, ensure_ascii=False)
+    except Exception as e:
+        logger.warning("Web search failed: %s", e)
+        return json.dumps({"error": f"Search failed: {str(e)}"})
 
 
 # ============================================================
@@ -235,15 +281,16 @@ TOOL_HANDLERS = {
     "query_graph": _handle_query_graph,
     "list_nodes": _handle_list_nodes,
     "analyze_relationships": _handle_analyze_relationships,
+    "web_search": _handle_web_search,
 }
 
 
-def execute_tool(name: str, input_dict: dict, db: Session) -> str:
+def execute_tool(name: str, input_dict: dict, db: Session, user_id: int = 1) -> str:
     """执行工具，返回 JSON 字符串结果"""
     handler = TOOL_HANDLERS.get(name)
     if not handler:
         return json.dumps({"error": f"Unknown tool: {name}"})
     try:
-        return handler(input_dict, db)
+        return handler(input_dict, db, user_id=user_id)
     except Exception as e:
         return json.dumps({"error": str(e)})

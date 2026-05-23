@@ -25,6 +25,34 @@ function SourceBadge({ nodeId }) {
   );
 }
 
+function WebSourceBadge({ title, url }) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'inline-block',
+        padding: '2px 8px',
+        margin: '2px 2px',
+        fontSize: 11,
+        fontWeight: 600,
+        color: '#92400e',
+        background: '#fef3c7',
+        borderRadius: 12,
+        textDecoration: 'none',
+        maxWidth: 200,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}
+      title={url}
+    >
+      {title || 'Web'}
+    </a>
+  );
+}
+
 // Markdown table renderer
 function MarkdownTable({ lines }) {
   if (lines.length < 2) return null;
@@ -222,8 +250,8 @@ function AgentSteps({ steps }) {
             <div key={i} style={{ marginTop: 6 }}>
               {step.type === 'tool_call' && (
                 <div>
-                  <span style={{ color: '#7c3aed', fontWeight: 600, fontSize: 12 }}>
-                    ⚙ {step.tool_name}
+                  <span style={{ color: step.tool_name === 'web_search' ? '#d97706' : '#7c3aed', fontWeight: 600, fontSize: 12 }}>
+                    {step.tool_name === 'web_search' ? ' ' : '⚙'} {step.tool_name}
                   </span>
                   <code style={{
                     display: 'block', marginTop: 2, padding: '4px 8px',
@@ -261,7 +289,8 @@ function MessageItem({ message, onSaveToKB }) {
   const isUser = message.role === 'user';
   const isAssistant = message.role === 'assistant';
   const isFromKB = message.is_from_kb !== false;
-  const isAISearch = isAssistant && !isFromKB;
+  const hasWebSources = message.web_sources && message.web_sources.length > 0;
+  const canSaveToKB = isAssistant && (!isFromKB || hasWebSources);
 
   return (
     <div style={{
@@ -278,7 +307,7 @@ function MessageItem({ message, onSaveToKB }) {
         {/* Source indicator for assistant messages */}
         {isAssistant && (
           <div style={{
-            fontSize: 11, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6,
+            fontSize: 11, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
           }}>
             {isFromKB ? (
               <span style={{ color: '#16a34a', fontWeight: 600 }}>
@@ -292,6 +321,13 @@ function MessageItem({ message, onSaveToKB }) {
             {message.source_node_ids && message.source_node_ids.length > 0 && (
               <span style={{ color: '#94a3b8' }}>
                 {message.source_node_ids.map(id => <SourceBadge key={id} nodeId={id} />)}
+              </span>
+            )}
+            {message.web_sources && message.web_sources.length > 0 && (
+              <span>
+                {message.web_sources.map((ws, i) => (
+                  <WebSourceBadge key={i} title={ws.title} url={ws.url} />
+                ))}
               </span>
             )}
           </div>
@@ -310,8 +346,8 @@ function MessageItem({ message, onSaveToKB }) {
         }}>
           <SimpleMarkdown text={message.content} />
         </div>
-        {/* "添加到知识库" button for AI search responses */}
-        {isAISearch && (
+        {/* "添加到知识库" button for AI search / web search responses */}
+        {canSaveToKB && (
           <div style={{ marginTop: 6 }}>
             <button
               onClick={() => onSaveToKB && onSaveToKB(message)}
@@ -529,7 +565,7 @@ export default function ChatPanel() {
             <span style={{ fontSize: 11, color: '#16a34a', fontWeight: 500 }}>{modelDisplay}</span>
           )}
           {!hasApiKey && (
-            <span style={{ fontSize: 11, color: '#ef4444', fontWeight: 500 }}>未配置</span>
+            <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 500 }}>公共 Key</span>
           )}
         </div>
         <div style={{ display: 'flex', gap: 4 }}>
@@ -563,14 +599,11 @@ export default function ChatPanel() {
           </div>
           <div style={{ marginBottom: 12 }}>
             <label style={labelStyle}>Model</label>
-            <select value={modelName} onChange={e => setModelName(e.target.value)} style={{ ...inputStyle, cursor: 'pointer' }}>
-              <option value="deepseek-chat">deepseek-chat (DeepSeek V3)</option>
-              <option value="deepseek-reasoner">deepseek-reasoner (DeepSeek R1)</option>
-              <option value="moonshot-v1-8k">moonshot-v1-8k (Kimi)</option>
-              <option value="moonshot-v1-32k">moonshot-v1-32k (Kimi)</option>
-              <option value="glm-4">glm-4 (智谱)</option>
-              <option value="qwen-turbo">qwen-turbo (通义千问)</option>
-            </select>
+            <input type="text" value={modelName} onChange={e => setModelName(e.target.value)}
+              placeholder="deepseek-chat" style={inputStyle} />
+            <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
+              常用: deepseek-chat, moonshot-v1-8k, glm-4, qwen-turbo
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={handleSaveKey} disabled={savingKey || (!apiKey.trim() && !hasApiKey)} style={{
@@ -584,7 +617,10 @@ export default function ChatPanel() {
             }}>Cancel</button>
           </div>
           {hasApiKey && (
-            <div style={{ marginTop: 8, fontSize: 12, color: '#16a34a' }}>API Key is configured</div>
+            <div style={{ marginTop: 8, fontSize: 12, color: '#16a34a' }}>已配置个人 API Key</div>
+          )}
+          {!hasApiKey && (
+            <div style={{ marginTop: 8, fontSize: 12, color: '#94a3b8' }}>未配置时自动使用管理员的 Key</div>
           )}
         </div>
       )}
