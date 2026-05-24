@@ -1,5 +1,7 @@
 # Knowledge Base
 
+[![CI](https://github.com/happiness-cheng/knowledge-base/actions/workflows/ci.yml/badge.svg)](https://github.com/happiness-cheng/knowledge-base/actions/workflows/ci.yml)
+
 [简体中文](./README_zh.md) &nbsp;&nbsp;|&nbsp;&nbsp; **English**
 
 ---
