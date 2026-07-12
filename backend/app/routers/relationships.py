@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.models.node import KnowledgeNode
 from app.models.relationship import Relationship
 from app.models.user import User
 from app.auth import get_current_user
@@ -16,6 +17,17 @@ def list_relationships(db: Session = Depends(get_db), current_user: User = Depen
 
 @router.post("", response_model=RelationshipOut)
 def create_relationship(body: RelationshipCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    node_ids = {body.source_id, body.target_id}
+    owned_node_ids = {
+        node_id
+        for (node_id,) in db.query(KnowledgeNode.id).filter(
+            KnowledgeNode.id.in_(node_ids),
+            KnowledgeNode.user_id == current_user.id,
+        )
+    }
+    if owned_node_ids != node_ids:
+        raise HTTPException(404, "Node not found")
+
     rel = Relationship(
         user_id=current_user.id,
         source_id=body.source_id,

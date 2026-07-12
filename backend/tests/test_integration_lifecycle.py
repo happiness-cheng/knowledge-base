@@ -112,21 +112,20 @@ class TestRelationshipBoundaries:
         assert client.get(f"/api/nodes/{n2['id']}").status_code == 200
 
     def test_relationship_with_nonexistent_source(self, client):
-        """Creating relationship with nonexistent source — SQLite may not enforce FK."""
+        """Creating relationship with a nonexistent source is rejected by the API."""
         n2 = create_node(client)
         resp = client.post("/api/relationships", json={
             "source_id": 99999, "target_id": n2["id"],
         })
-        # SQLite doesn't enforce FK by default, so this may succeed or fail
-        assert resp.status_code in (200, 400, 500)
+        assert resp.status_code == 404
 
     def test_relationship_with_nonexistent_target(self, client):
-        """Creating relationship with nonexistent target — SQLite may not enforce FK."""
+        """Creating relationship with a nonexistent target is rejected by the API."""
         n1 = create_node(client)
         resp = client.post("/api/relationships", json={
             "source_id": n1["id"], "target_id": 99999,
         })
-        assert resp.status_code in (200, 400, 500)
+        assert resp.status_code == 404
 
 
 class TestGraphNodeConsistency:

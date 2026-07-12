@@ -152,17 +152,23 @@ def _handle_node_details(input_dict: dict, db: Session, **kwargs) -> str:
 
     # 查关系
     rels = db.query(Relationship).filter(
+        Relationship.user_id == user_id,
         (Relationship.source_id == node_id) | (Relationship.target_id == node_id)
     ).all()
     relationships = []
     for r in rels:
         other_id = r.target_id if r.source_id == node_id else r.source_id
-        other = db.query(KnowledgeNode).filter(KnowledgeNode.id == other_id).first()
+        other = db.query(KnowledgeNode).filter(
+            KnowledgeNode.id == other_id,
+            KnowledgeNode.user_id == user_id,
+        ).first()
+        if not other:
+            continue
         relationships.append({
             "rel_id": r.id,
             "direction": "outgoing" if r.source_id == node_id else "incoming",
             "other_node_id": other_id,
-            "other_title": other.title if other else "?",
+            "other_title": other.title,
             "rel_type": r.rel_type,
             "label": r.label,
         })
