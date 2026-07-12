@@ -58,7 +58,14 @@ def _build_messages(conversation) -> list[dict]:
     return messages
 
 
-def run_agent(db, conversation, user_message_content: str, ai_search: bool = False, user_id: int = 1) -> dict:
+def run_agent(
+    db,
+    conversation,
+    user_message_content: str,
+    ai_search: bool = False,
+    user_id: int = 1,
+    ai_client=None,
+) -> dict:
     """
     运行 Agent 循环。
 
@@ -71,12 +78,14 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
             "steps": list[dict],      # Agent 推理步骤（供前端展示）
         }
     """
+    client = ai_client or claude_client
+
     # AI 搜索模式：不走 Agent，直接通用知识回答
     if ai_search:
         messages = _build_messages(conversation)
         messages.append({"role": "user", "content": user_message_content})
         try:
-            content = claude_client.chat(
+            content = client.chat(
                 system=GENERAL_SYSTEM_PROMPT,
                 messages=messages,
             )
@@ -100,7 +109,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
 
     for iteration in range(MAX_ITERATIONS):
         try:
-            resp = claude_client.chat_with_tools(
+            resp = client.chat_with_tools(
                 system=AGENT_SYSTEM_PROMPT,
                 messages=messages,
                 tools=TOOL_DEFINITIONS,
@@ -111,7 +120,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
             if iteration == 0:
                 # 第一次就失败 → 退化为普通聊天
                 try:
-                    content = claude_client.chat(
+                    content = client.chat(
                         system=AGENT_SYSTEM_PROMPT,
                         messages=messages,
                     )
@@ -236,7 +245,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
                 "content": "You've made repeated tool calls. Please provide your best answer now based on what you've gathered.",
             })
             try:
-                final_text = claude_client.chat(
+                final_text = client.chat(
                     system=AGENT_SYSTEM_PROMPT,
                     messages=messages,
                 )
@@ -261,7 +270,7 @@ def run_agent(db, conversation, user_message_content: str, ai_search: bool = Fal
         "content": "Maximum tool calls reached. Please provide your best answer now.",
     })
     try:
-        final_text = claude_client.chat(
+        final_text = client.chat(
             system=AGENT_SYSTEM_PROMPT,
             messages=messages,
         )

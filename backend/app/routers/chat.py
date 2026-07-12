@@ -7,6 +7,7 @@ from app.models.node import KnowledgeNode
 from app.models.user import User
 from app.auth import get_current_user
 from app.services.agent_service import run_agent
+from app.services.claude_client import get_client_for_user
 from app.services.rag_service import add_node_to_index
 from pydantic import BaseModel
 from datetime import datetime, timezone
@@ -119,7 +120,14 @@ def send_message(conversation_id: int, msg_in: MessageCreate, background: Backgr
         conv.title = msg_in.content[:50] + "..." if len(msg_in.content) > 50 else msg_in.content
     db.commit()
 
-    result = run_agent(db, conv, msg_in.content, ai_search=msg_in.ai_search, user_id=current_user.id)
+    result = run_agent(
+        db,
+        conv,
+        msg_in.content,
+        ai_search=msg_in.ai_search,
+        user_id=current_user.id,
+        ai_client=get_client_for_user(current_user),
+    )
     ai_content = result["content"]
     source_ids = result["source_ids"]
     is_from_kb = result.get("is_from_kb", True)

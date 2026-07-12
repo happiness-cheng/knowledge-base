@@ -1,5 +1,5 @@
 """Tests for /api/chat endpoints."""
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 
 class TestConversation:
@@ -51,3 +51,28 @@ class TestSendMessage:
         updated = client.get("/api/chat/conversations").json()
         my_conv = next(c for c in updated if c["id"] == conv["id"])
         assert my_conv["title"] != "New Conversation"
+
+
+def test_send_message_passes_selected_user_client_to_agent(client):
+    conversation = client.post("/api/chat/conversations", json={"title": "T"}).json()
+    selected_client = Mock()
+    result = {
+        "content": "answer",
+        "source_ids": [],
+        "is_from_kb": False,
+        "found_in_kb": False,
+        "steps": [],
+        "web_sources": [],
+    }
+
+    with patch(
+        "app.routers.chat.get_client_for_user",
+        return_value=selected_client,
+    ), patch("app.routers.chat.run_agent", return_value=result) as run_agent:
+        response = client.post(
+            f"/api/chat/conversations/{conversation['id']}/messages",
+            json={"content": "hello"},
+        )
+
+    assert response.status_code == 200
+    assert run_agent.call_args.kwargs["ai_client"] is selected_client
