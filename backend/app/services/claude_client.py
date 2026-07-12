@@ -2,6 +2,8 @@ import json
 import os
 import anthropic
 
+from app.services.secret_store import decrypt_user_api_key
+
 
 def _load_cc_switch_config():
     """Read API config from cc-switch settings (~/.claude/settings.json)."""
@@ -93,10 +95,11 @@ claude_client = AIClient()
 
 def get_client_for_user(user) -> AIClient:
     """返回用户专属的 AI 客户端。没配 Key 则用管理员的默认 Key。"""
-    if user and getattr(user, 'ai_api_key', None):
+    api_key = decrypt_user_api_key(getattr(user, "ai_api_key", None)) if user else None
+    if api_key:
         client = AIClient.__new__(AIClient)
         client.client = anthropic.Anthropic(
-            api_key=user.ai_api_key,
+            api_key=api_key,
             base_url=user.ai_base_url or "https://api.deepseek.com/v1",
         )
         client.model = user.ai_model_name or "deepseek-chat"

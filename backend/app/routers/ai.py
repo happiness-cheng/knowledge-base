@@ -6,7 +6,7 @@ from app.models.tag import Tag
 from app.models.relationship import Relationship
 from app.models.user import User
 from app.auth import get_current_user
-from app.services.claude_client import get_client_for_user
+from app.services.secret_store import SecretConfigurationError, encrypt_user_api_key
 from app.services.knowledge_extractor import extract_knowledge
 from app.services.relationship_finder import find_relationships_batch
 from app.config import settings
@@ -32,7 +32,13 @@ def save_settings(data: dict, db: Session = Depends(get_db), current_user: User 
     base_url = data.get("ai_base_url", "").strip()
     model_name = data.get("ai_model_name", "").strip()
     if api_key:
-        current_user.ai_api_key = api_key
+        try:
+            current_user.ai_api_key = encrypt_user_api_key(api_key)
+        except SecretConfigurationError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="User API-key encryption is not configured",
+            ) from exc
     if base_url:
         current_user.ai_base_url = base_url
     if model_name:
