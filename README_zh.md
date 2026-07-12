@@ -59,6 +59,13 @@ graph TB
 | **标签系统** | 彩色标签管理，按标签过滤，标签云展示 |
 | **知识点关联** | 可以将不同笔记的具体知识点进行关联（不只是笔记级别） |
 
+## Agent 可靠性
+
+- 每次 Agent 工具调用都只访问当前认证用户的知识库。
+- 工具参数有边界限制，知识库与网页内容均作为不可信数据处理。
+- 只有 Agent 工具实际返回的节点才可作为知识库引用输出。
+- 用户自定义模型密钥加密保存；生产环境启动必须显式配置签名密钥与加密密钥。
+
 ## 技术栈
 
 | 层级 | 技术 |
@@ -143,10 +150,17 @@ knowledge-base/
 
 ```bash
 cd backend
-venv/Scripts/python.exe -m pytest tests/ -v
+venv/Scripts/python.exe -m pytest tests -q --tb=short
 ```
 
-114 个后端测试，覆盖 CRUD、关系、标签、图谱、子知识点提取、导入、对话。
+前端生产构建命令：
+
+```bash
+cd frontend
+npm run build
+```
+
+后端测试覆盖 CRUD、关系、标签、图谱、子知识点提取、导入、对话与 Agent 可靠性场景。
 
 ## 贡献
 

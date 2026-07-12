@@ -21,6 +21,13 @@ AI-powered personal knowledge management system with graph visualization, RAG ch
 | **Tag System** | Colorful tags, tag filtering, tag cloud |
 | **Topic-level Linking** | Link specific sub-topics across different notes (not just note-to-note) |
 
+## Agent reliability
+
+- Every Agent tool call is scoped to the authenticated user's knowledge base.
+- Tool parameters are bounded, and knowledge-base/web content is treated as untrusted data.
+- Only nodes actually returned by Agent tools can be emitted as knowledge citations.
+- User-supplied provider keys are encrypted at rest; production startup requires explicit signing and encryption keys.
+
 ## Quick Start
 
 ```bash
@@ -38,7 +45,14 @@ See [README_zh.md](./README_zh.md) for detailed documentation.
 - **Backend**: FastAPI, SQLAlchemy, SQLite
 - **Frontend**: React, Vite, Zustand
 - **AI**: DeepSeek/OpenAI-compatible API, ChromaDB vector search
-- **Tests**: 114 pytest tests
+- **Verification**: pytest backend suite and Vite production build
+
+## Verification
+
+```bash
+cd backend && python -m pytest tests -q --tb=short
+cd ../frontend && npm run build
+```
 
 ## License
 
