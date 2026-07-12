@@ -13,6 +13,21 @@ from app.models.relationship import Relationship
 logger = logging.getLogger(__name__)
 
 
+def _bounded_int(value, *, default: int, minimum: int, maximum: int) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return default
+    return min(max(parsed, minimum), maximum)
+
+
+def _bounded_query(value) -> str | None:
+    if not isinstance(value, str):
+        return None
+    query = value.strip()
+    return query if 1 <= len(query) <= 1000 else None
+
+
 # ============================================================
 # 工具 schema（Anthropic API 格式）
 # ============================================================
@@ -102,10 +117,10 @@ TOOL_DEFINITIONS = [
 
 def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
     """语义向量搜索知识库"""
-    query = input_dict.get("query", "")
-    top_k = min(input_dict.get("top_k", 5), 10)
-    if not query:
-        return json.dumps({"error": "query is required"})
+    query = _bounded_query(input_dict.get("query"))
+    if query is None:
+        return json.dumps({"error": "query must contain 1 to 1000 characters"})
+    top_k = _bounded_int(input_dict.get("top_k"), default=5, minimum=1, maximum=10)
 
     user_id = kwargs.get("user_id", 1)
     results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
@@ -168,7 +183,7 @@ def _handle_node_details(input_dict: dict, db: Session, **kwargs) -> str:
 def _handle_query_graph(input_dict: dict, db: Session, **kwargs) -> str:
     """BFS 探索子图"""
     node_id = input_dict.get("node_id")
-    hops = min(input_dict.get("hops", 1), 3)
+    hops = _bounded_int(input_dict.get("hops"), default=1, minimum=1, maximum=3)
     user_id = kwargs.get("user_id", 1)
     if not node_id:
         return json.dumps({"error": "node_id is required"})
@@ -205,7 +220,7 @@ def _handle_list_nodes(input_dict: dict, db: Session, **kwargs) -> str:
     tag = input_dict.get("tag")
     category = input_dict.get("category")
     search = input_dict.get("search")
-    limit = min(input_dict.get("limit", 20), 20)
+    limit = _bounded_int(input_dict.get("limit"), default=20, minimum=1, maximum=20)
 
     if tag:
         q = q.join(KnowledgeNode.tags).filter(Tag.name == tag, Tag.user_id == user_id)
@@ -235,6 +250,9 @@ def _handle_list_nodes(input_dict: dict, db: Session, **kwargs) -> str:
 def _handle_analyze_relationships(input_dict: dict, db: Session, **kwargs) -> str:
     """AI 分析节点间关系"""
     node_ids = input_dict.get("node_ids", [])
+    if not isinstance(node_ids, list):
+        return json.dumps({"error": "node_ids must be a list"})
+    node_ids = [node_id for node_id in node_ids[:20] if isinstance(node_id, int) and node_id > 0]
     if len(node_ids) < 2:
         return json.dumps({"error": "Need at least 2 node IDs"})
 
@@ -250,10 +268,12 @@ def _handle_analyze_relationships(input_dict: dict, db: Session, **kwargs) -> st
 
 def _handle_web_search(input_dict: dict, db: Session, **kwargs) -> str:
     """DuckDuckGo 联网搜索"""
-    query = input_dict.get("query", "")
-    max_results = min(input_dict.get("max_results", 5), 10)
-    if not query:
-        return json.dumps({"error": "query is required"})
+    query = _bounded_query(input_dict.get("query"))
+    if query is None:
+        return json.dumps({"error": "query must contain 1 to 1000 characters"})
+    max_results = _bounded_int(
+        input_dict.get("max_results"), default=5, minimum=1, maximum=10
+    )
 
     try:
         from ddgs import DDGS
@@ -292,5 +312,6 @@ def execute_tool(name: str, input_dict: dict, db: Session, user_id: int = 1) -> 
         return json.dumps({"error": f"Unknown tool: {name}"})
     try:
         return handler(input_dict, db, user_id=user_id)
-    except Exception as e:
-        return json.dumps({"error": str(e)})
+    except Exception:
+        logger.exception("Agent tool execution failed: %s", name)
+        return json.dumps({"error": "tool execution failed"})
