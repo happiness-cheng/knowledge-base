@@ -29,6 +29,7 @@ def _set_sqlite_nocase(dbapi_conn, connection_record):
     )
 
 TestSession = sessionmaker(bind=TEST_ENGINE)
+TEST_USER_PASSWORD = "correct-horse-battery-staple"
 
 
 @pytest.fixture(autouse=True)
@@ -60,7 +61,7 @@ def db():
 
 @pytest.fixture
 def client():
-    """FastAPI test client with overridden DB and mocked external services."""
+    """FastAPI test client with a real authenticated user and mocked indexing."""
 
     def override_get_db():
         session = TestSession()
@@ -71,36 +72,40 @@ def client():
 
     app.dependency_overrides[get_db] = override_get_db
 
-    # Mock external services
     patchers = [
-        patch("app.services.rag_service.add_node_to_index"),
-        patch("app.services.rag_service.remove_node_from_index"),
-        patch("app.services.chat_service.generate_chat_response", return_value={"content": "mock response", "source_ids": [], "is_from_kb": False, "found_in_kb": False}),
-        patch("app.routers.nodes._safe_auto_analyze"),
+        patch("app.routers.nodes._safe_add_to_index"),
+        patch("app.routers.nodes._safe_remove_from_index"),
+        patch("app.routers.import_files._safe_add_to_index"),
+        patch("app.routers.chat._safe_add_to_index"),
+        patch("app.services.agent_service.claude_client"),
     ]
     for p in patchers:
         p.start()
 
-    claude_p = patch("app.services.claude_client.claude_client")
-    mock_cc = claude_p.start()
-    mock_cc.client = None
-
-    # Replace lifespan with no-op
     @asynccontextmanager
     async def _noop_lifespan(app):
         yield
     app.router.lifespan_context = _noop_lifespan
 
     with TestClient(app) as c:
+        token = register_user(c)
+        c.headers.update({"Authorization": f"Bearer {token}"})
         yield c
 
     for p in patchers:
         p.stop()
-    claude_p.stop()
     app.dependency_overrides.clear()
 
 
 # ---------- helper shortcuts ----------
+
+def register_user(client, username="test-user", password=TEST_USER_PASSWORD):
+    response = client.post("/api/auth/register", json={
+        "username": username,
+        "password": password,
+    })
+    assert response.status_code == 200, response.text
+    return response.json()["access_token"]
 
 def create_node(client, title="Test Node", content="Some content", tags=None, category=None):
     payload = {"title": title, "content": content, "tags": tags or [], "category": category}
