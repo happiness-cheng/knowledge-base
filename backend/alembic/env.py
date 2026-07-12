@@ -16,8 +16,9 @@ from app.models import node, tag, relationship, source, chat  # noqa: F401
 
 config = context.config
 
-# 用项目实际的数据库 URL 覆盖 alembic.ini 中的
-config.set_main_option("sqlalchemy.url", settings.database_url)
+# 默认使用项目配置；测试和部署编排可显式传入隔离的连接串。
+database_url = config.attributes.get("database_url", settings.database_url)
+config.set_main_option("sqlalchemy.url", database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
