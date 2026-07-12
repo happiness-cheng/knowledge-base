@@ -11,6 +11,7 @@ sentence-transformers>=2.2
 alembic>=1.13
 passlib[bcrypt]>=1.7
 python-jose[cryptography]>=3.3
+cryptography>=42
 slowapi>=0.1.9
 jieba>=0.42
 ddgs>=8.0

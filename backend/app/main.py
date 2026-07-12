@@ -27,6 +27,7 @@ from app.routers import nodes, tags, relationships, import_files, graph, ai, cha
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    settings.validate_runtime()
     Base.metadata.create_all(bind=engine)
     yield
 

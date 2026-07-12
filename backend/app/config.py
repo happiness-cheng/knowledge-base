@@ -1,7 +1,11 @@
 import os
 import sys
 import json
-from pydantic_settings import BaseSettings
+from typing import Annotated, Literal
+
+from cryptography.fernet import Fernet
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 def _get_env_file():
@@ -19,6 +23,7 @@ def _resolve_paths():
 
 
 _db_url, _data_dir = _resolve_paths()
+DEFAULT_DEVELOPMENT_SECRET_KEY = "dev-secret-change-in-production"
 
 
 def _parse_cors(origins_raw: str | None) -> list[str]:
@@ -32,16 +37,40 @@ def _parse_cors(origins_raw: str | None) -> list[str]:
 
 
 class Settings(BaseSettings):
-    database_url: str = os.environ.get("DATABASE_URL", _db_url)
+    model_config = SettingsConfigDict(env_file=_get_env_file(), extra="ignore")
+
+    app_env: Literal["development", "production"] = "development"
+    database_url: str = _db_url
     ai_api_key: str = ""
     ai_base_url: str = "https://api.deepseek.com/v1"
     ai_model_name: str = "deepseek-chat"
+    ai_key_encryption_key: str = ""
     upload_dir: str = os.path.join(_data_dir, "uploads")
-    cors_origins: list[str] = _parse_cors(os.environ.get("CORS_ORIGINS"))
-    secret_key: str = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
+    cors_origins: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: _parse_cors(None)
+    )
+    secret_key: str = DEFAULT_DEVELOPMENT_SECRET_KEY
 
-    class Config:
-        env_file = _get_env_file()
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, value):
+        if isinstance(value, list):
+            return value
+        return _parse_cors(value)
+
+    def validate_runtime(self):
+        if self.app_env != "production":
+            return
+        if self.secret_key == DEFAULT_DEVELOPMENT_SECRET_KEY or len(self.secret_key) < 32:
+            raise RuntimeError(
+                "SECRET_KEY must be a non-default value with at least 32 characters in production"
+            )
+        try:
+            Fernet(self.ai_key_encryption_key.encode())
+        except (AttributeError, TypeError, ValueError) as exc:
+            raise RuntimeError(
+                "AI_KEY_ENCRYPTION_KEY must be a valid Fernet key in production"
+            ) from exc
 
 
 settings = Settings()
