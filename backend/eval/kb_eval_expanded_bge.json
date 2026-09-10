@@ -1,0 +1,224 @@
+{
+  "model": "BAAI/bge-large-zh-v1.5 + prefix (扩充库)",
+  "query_prefix": true,
+  "n_docs": 299,
+  "n_cases": 28,
+  "recall@3": 0.857,
+  "mrr": 0.77,
+  "layers": {
+    "短笔记": {
+      "recall@3": "4/6",
+      "mrr": 0.61,
+      "details": [
+        {
+          "id": "S01",
+          "expected": 1,
+          "rank": 21,
+          "recall3": false,
+          "top1": "计算机操作系统 - 内存管理.md(external)"
+        },
+        {
+          "id": "S02",
+          "expected": 2,
+          "rank": 1,
+          "recall3": true,
+          "top1": "2(short)"
+        },
+        {
+          "id": "S03",
+          "expected": 7,
+          "rank": 9,
+          "recall3": false,
+          "top1": "计算机网络 - 网络层.md(external)"
+        },
+        {
+          "id": "S04",
+          "expected": 12,
+          "rank": 2,
+          "recall3": true,
+          "top1": "18(short)"
+        },
+        {
+          "id": "S05",
+          "expected": 14,
+          "rank": 1,
+          "recall3": true,
+          "top1": "14(short)"
+        },
+        {
+          "id": "S06",
+          "expected": 17,
+          "rank": 1,
+          "recall3": true,
+          "top1": "17(short)"
+        }
+      ]
+    },
+    "长文档": {
+      "recall@3": "6/6",
+      "mrr": 0.917,
+      "details": [
+        {
+          "id": "L01",
+          "expected": "ai-trader架构.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "ai-trader架构.md(long)"
+        },
+        {
+          "id": "L02",
+          "expected": "ai-trader使用说明.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "L03",
+          "expected": "knowledge-base项目总结.md",
+          "rank": 2,
+          "recall3": true,
+          "top1": "Agent学习追踪文档.md(external)"
+        },
+        {
+          "id": "L04",
+          "expected": "knowledge-base项目总结.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "knowledge-base项目总结.md(long)"
+        },
+        {
+          "id": "L05",
+          "expected": "Agent学习追踪文档.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "Agent学习追踪文档.md(external)"
+        },
+        {
+          "id": "L06",
+          "expected": "操作系统概述(长文).md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "操作系统概述(长文).md(external)"
+        }
+      ]
+    },
+    "外部语料": {
+      "recall@3": "14/16",
+      "mrr": 0.775,
+      "details": [
+        {
+          "id": "X01",
+          "expected": "负载均衡.md",
+          "rank": 3,
+          "recall3": true,
+          "top1": "集群.md(external)"
+        },
+        {
+          "id": "X02",
+          "expected": "SQL优化.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "SQL优化.md(external)"
+        },
+        {
+          "id": "X03",
+          "expected": "面向切面编程AOP.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "面向切面编程AOP.md(external)"
+        },
+        {
+          "id": "X04",
+          "expected": "Git多用户配置.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "Git多用户配置.md(external)"
+        },
+        {
+          "id": "X05",
+          "expected": "Redis.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "Redis.md(external)"
+        },
+        {
+          "id": "X06",
+          "expected": "分布式.md",
+          "rank": 3,
+          "recall3": true,
+          "top1": "数据库系统原理.md(external)"
+        },
+        {
+          "id": "X07",
+          "expected": "消息队列.md",
+          "rank": 7,
+          "recall3": false,
+          "top1": "面向切面编程AOP.md(external)"
+        },
+        {
+          "id": "X08",
+          "expected": "缓存.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "缓存.md(external)"
+        },
+        {
+          "id": "X09",
+          "expected": "计算机操作系统 - 进程管理.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "计算机操作系统 - 进程管理.md(external)"
+        },
+        {
+          "id": "X10",
+          "expected": "计算机操作系统 - 死锁.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "计算机操作系统 - 死锁.md(external)"
+        },
+        {
+          "id": "X11",
+          "expected": "计算机网络 - 传输层.md",
+          "rank": 3,
+          "recall3": true,
+          "top1": "计算机网络 - 应用层.md(external)"
+        },
+        {
+          "id": "X12",
+          "expected": "计算机网络 - 网络层.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "计算机网络 - 网络层.md(external)"
+        },
+        {
+          "id": "X13",
+          "expected": "MySQL.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "MySQL.md(external)"
+        },
+        {
+          "id": "X14",
+          "expected": "Docker.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "Docker.md(external)"
+        },
+        {
+          "id": "X15",
+          "expected": "Socket.md",
+          "rank": 4,
+          "recall3": false,
+          "top1": "计算机操作系统 - 进程管理.md(external)"
+        },
+        {
+          "id": "X16",
+          "expected": "系统设计基础.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "系统设计基础.md(external)"
+        }
+      ]
+    }
+  }
+}

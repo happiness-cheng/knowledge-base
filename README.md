@@ -8,6 +8,24 @@
 
 AI-powered personal knowledge management system with graph visualization, RAG chat, and intelligent note linking.
 
+## RAG Retrieval Quality (Data-Driven Optimization)
+
+The retrieval pipeline is systematically benchmarked. All numbers are reproducible (see `backend/eval/`):
+
+| Metric | Before (MiniLM) | After (bge-large-zh-v1.5 + query instruction) |
+|--------|----------------|-----------------------------------------------|
+| **Recall@3** | 10.7% | **92.9%** |
+| **MRR** | 0.136 | **0.818** |
+
+**Optimization process** (single-variable controlled, per-case failure attribution):
+
+1. **Evaluation first**: 28 queries × 3-tier corpus (short notes / long docs / external), layered reports
+2. **Root cause**: self-retrieval control experiments ruled out pipeline faults → English-only MiniLM fails on Chinese corpus
+3. **Model switch**: bge-large-zh-v1.5 (+ full re-embedding, vector DB backup, 135 pytest green)
+4. **Chunking**: semantic split by headings + size fallback + title-prefixed encoding
+5. **Component testing**: hybrid search (BM25+RRF) and cross-encoder rerank show no gain at this recall level — components are adopted based on failure modes, not by default
+6. **Failure attribution**: remaining 2 failures traced to ambiguous queries (legitimate multi-topic competition); Query Rewrite experiment moved target doc rank 6→1
+
 ## Features
 
 | Feature | Description |

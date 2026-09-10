@@ -20,7 +20,9 @@ def _get_model():
         import os
         os.environ["HF_HUB_OFFLINE"] = "1"
         from sentence_transformers import SentenceTransformer
-        _embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+        # bge-large-zh-v1.5：中文语义（M5-03），1024 维；
+        # 换模型必须全量重嵌入（新旧向量不在同一空间）
+        _embedding_model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
     return _embedding_model
 
 
@@ -39,7 +41,8 @@ def add_node_to_index(node_id: int, content: str, title: str = "", user_id: int 
     if not content:
         return
     collection = _get_user_collection(user_id)
-    embedding = get_embedding(content)
+    # contextual chunk headers（M5-02）：标题拼进正文再编码，语义锚点进向量
+    embedding = get_embedding(f"{title}\n{content}" if title else content)
     collection.upsert(
         ids=[str(node_id)],
         embeddings=[embedding],

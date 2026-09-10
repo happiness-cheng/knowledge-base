@@ -1,0 +1,126 @@
+{
+  "model": "BAAI/bge-large-zh-v1.5 + query前缀",
+  "query_prefix": true,
+  "n_docs": 67,
+  "n_cases": 14,
+  "recall@3": 1.0,
+  "mrr": 0.917,
+  "layers": {
+    "短笔记": {
+      "recall@3": "6/6",
+      "mrr": 0.806,
+      "details": [
+        {
+          "id": "S01",
+          "expected": 1,
+          "rank": 3,
+          "recall3": true,
+          "top1": "算法复杂度计算.md(external)"
+        },
+        {
+          "id": "S02",
+          "expected": 2,
+          "rank": 1,
+          "recall3": true,
+          "top1": "2(short)"
+        },
+        {
+          "id": "S03",
+          "expected": 7,
+          "rank": 1,
+          "recall3": true,
+          "top1": "7(short)"
+        },
+        {
+          "id": "S04",
+          "expected": 12,
+          "rank": 2,
+          "recall3": true,
+          "top1": "18(short)"
+        },
+        {
+          "id": "S05",
+          "expected": 14,
+          "rank": 1,
+          "recall3": true,
+          "top1": "14(short)"
+        },
+        {
+          "id": "S06",
+          "expected": 17,
+          "rank": 1,
+          "recall3": true,
+          "top1": "17(short)"
+        }
+      ]
+    },
+    "长文档": {
+      "recall@3": "4/4",
+      "mrr": 1.0,
+      "details": [
+        {
+          "id": "L01",
+          "expected": "ai-trader架构.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "ai-trader架构.md(long)"
+        },
+        {
+          "id": "L02",
+          "expected": "ai-trader使用说明.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "L03",
+          "expected": "knowledge-base项目总结.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "knowledge-base项目总结.md(long)"
+        },
+        {
+          "id": "L04",
+          "expected": "knowledge-base项目总结.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "knowledge-base项目总结.md(long)"
+        }
+      ]
+    },
+    "外部语料": {
+      "recall@3": "4/4",
+      "mrr": 1.0,
+      "details": [
+        {
+          "id": "X01",
+          "expected": "负载均衡.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "负载均衡.md(external)"
+        },
+        {
+          "id": "X02",
+          "expected": "SQL优化.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "SQL优化.md(external)"
+        },
+        {
+          "id": "X03",
+          "expected": "面向切面编程AOP.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "面向切面编程AOP.md(external)"
+        },
+        {
+          "id": "X04",
+          "expected": "Git多用户配置.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "Git多用户配置.md(external)"
+        }
+      ]
+    }
+  }
+}

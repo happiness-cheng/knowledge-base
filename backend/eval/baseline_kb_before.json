@@ -1,0 +1,126 @@
+{
+  "model": "all-MiniLM-L6-v2",
+  "query_prefix": false,
+  "n_docs": 67,
+  "n_cases": 14,
+  "recall@3": 0.357,
+  "mrr": 0.241,
+  "layers": {
+    "短笔记": {
+      "recall@3": "1/6",
+      "mrr": 0.145,
+      "details": [
+        {
+          "id": "S01",
+          "expected": 1,
+          "rank": 6,
+          "recall3": false,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "S02",
+          "expected": 2,
+          "rank": 11,
+          "recall3": false,
+          "top1": "3(short)"
+        },
+        {
+          "id": "S03",
+          "expected": 7,
+          "rank": 29,
+          "recall3": false,
+          "top1": "knowledge-base项目总结.md(long)"
+        },
+        {
+          "id": "S04",
+          "expected": 12,
+          "rank": 17,
+          "recall3": false,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "S05",
+          "expected": 14,
+          "rank": 2,
+          "recall3": true,
+          "top1": "3(short)"
+        },
+        {
+          "id": "S06",
+          "expected": 17,
+          "rank": 47,
+          "recall3": false,
+          "top1": "ai-trader使用说明.md(long)"
+        }
+      ]
+    },
+    "长文档": {
+      "recall@3": "3/4",
+      "mrr": 0.467,
+      "details": [
+        {
+          "id": "L01",
+          "expected": "ai-trader架构.md",
+          "rank": 5,
+          "recall3": false,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "L02",
+          "expected": "ai-trader使用说明.md",
+          "rank": 1,
+          "recall3": true,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "L03",
+          "expected": "knowledge-base项目总结.md",
+          "rank": 3,
+          "recall3": true,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "L04",
+          "expected": "knowledge-base项目总结.md",
+          "rank": 3,
+          "recall3": true,
+          "top1": "ai-trader使用说明.md(long)"
+        }
+      ]
+    },
+    "外部语料": {
+      "recall@3": "1/4",
+      "mrr": 0.159,
+      "details": [
+        {
+          "id": "X01",
+          "expected": "负载均衡.md",
+          "rank": 3,
+          "recall3": true,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "X02",
+          "expected": "SQL优化.md",
+          "rank": 36,
+          "recall3": false,
+          "top1": "ai-trader使用说明.md(long)"
+        },
+        {
+          "id": "X03",
+          "expected": "面向切面编程AOP.md",
+          "rank": 4,
+          "recall3": false,
+          "top1": "knowledge-base项目总结.md(long)"
+        },
+        {
+          "id": "X04",
+          "expected": "Git多用户配置.md",
+          "rank": 38,
+          "recall3": false,
+          "top1": "knowledge-base项目总结.md(long)"
+        }
+      ]
+    }
+  }
+}

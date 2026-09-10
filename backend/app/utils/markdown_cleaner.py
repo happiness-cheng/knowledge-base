@@ -17,6 +17,27 @@ def clean_markdown(text: str) -> str:
     return '\n'.join(cleaned).strip()
 
 
+# 切片 size 兜底上限（字符）：超过则按句子二次切（M5-02：超长小节单向量会语义平均化）
+MAX_SECTION_CHARS = 1200
+
+
+def _split_long_section(text: str, max_chars: int = MAX_SECTION_CHARS) -> list[str]:
+    """超长小节按句号二次切分，保证单 chunk 语义聚焦"""
+    if len(text) <= max_chars:
+        return [text]
+    sentences = text.replace('。', '。|').replace('！', '！|').replace('？', '？|').split('|')
+    chunks, buf = [], ''
+    for s in sentences:
+        if len(buf) + len(s) > max_chars and buf:
+            chunks.append(buf)
+            buf = s
+        else:
+            buf += s
+    if buf:
+        chunks.append(buf)
+    return chunks
+
+
 def split_by_headings(text: str) -> list[tuple[str, str]]:
     sections = []
     current_title = "Untitled"
@@ -44,4 +65,10 @@ def split_by_headings(text: str) -> list[tuple[str, str]]:
             title = first_line[:100]
         sections = [(title, text)]
 
-    return sections
+    # size 兜底：超长小节二次切分，标题带序号区分（M5-02 长文档优化）
+    bounded = []
+    for title, content in sections:
+        for i, chunk in enumerate(_split_long_section(content)):
+            sub = f"{title}({i+1})" if i > 0 else title
+            bounded.append((sub, chunk))
+    return bounded
