@@ -30,4 +30,5 @@ RUN python -c "import jieba; jieba.initialize()" 2>/dev/null || true
 
 EXPOSE 8766
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8766", "--workers", "2"]
+# 启动前由部署入口统一执行迁移，避免多个 worker 并发抢占 DDL
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8766 --workers 2"]

@@ -14,8 +14,12 @@ venv/
 *.sqlite
 *.sqlite3
 
-# ChromaDB
+# ChromaDB（含用户私人笔记向量，禁止入库）
 chroma_db/
+chroma_db_backup_*/
+
+# 工具产物
+.codegraph/
 
 # Build artifacts
 build/

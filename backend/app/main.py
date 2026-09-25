@@ -9,7 +9,6 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from app.config import settings
-from app.database import engine, Base
 
 # 日志配置
 logging.basicConfig(
@@ -27,8 +26,8 @@ from app.routers import nodes, tags, relationships, import_files, graph, ai, cha
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # 仅验证运行时配置；schema DDL 由部署入口的 `alembic upgrade head` 负责
     settings.validate_runtime()
-    Base.metadata.create_all(bind=engine)
     yield
 
 

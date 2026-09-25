@@ -83,6 +83,33 @@ def _detect_loop(steps: list, window: int = 4) -> bool:
     return len(set(signatures)) == 1
 
 
+RETRY_MAX = 1
+
+
+def _execute_tool_with_retry(
+    tool_name: str,
+    tool_input: dict,
+    db,
+    user_id: int,
+) -> str:
+    """执行工具，失败时自动重试（仅重试超时等暂时性错误）"""
+    for attempt in range(RETRY_MAX + 1):
+        result = execute_tool(tool_name, tool_input, db, user_id=user_id)
+        if attempt == RETRY_MAX:
+            return result
+        try:
+            parsed = json.loads(result)
+            if isinstance(parsed, dict) and "timed out" in parsed.get("error", ""):
+                logger.warning(
+                    "Retrying tool %s (attempt %d/%d)", tool_name, attempt + 1, RETRY_MAX
+                )
+                continue
+            return result
+        except json.JSONDecodeError:
+            return result
+    return result
+
+
 def _build_messages(conversation) -> list[dict]:
     """从数据库 conversation 构建 API 消息列表"""
     messages = []
@@ -192,7 +219,7 @@ def run_agent(
             })
 
             # 执行工具
-            result = execute_tool(tool_name, tool_input, db, user_id=user_id)
+            result = _execute_tool_with_retry(tool_name, tool_input, db, user_id=user_id)
 
             # 追踪搜索到的节点 ID
             if tool_name in ("search_knowledge_base", "get_node_details"):

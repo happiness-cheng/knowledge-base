@@ -2,6 +2,7 @@
 
 import json
 import logging
+import concurrent.futures
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from app.database import nocase
@@ -11,6 +12,8 @@ from app.models.tag import Tag
 from app.models.relationship import Relationship
 
 logger = logging.getLogger(__name__)
+
+TOOL_TIMEOUT_SECONDS = 30
 
 
 def _bounded_int(value, *, default: int, minimum: int, maximum: int) -> int:
@@ -128,8 +131,10 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
     trimmed = []
     for r in results:
         content = r.get("content", "")
-        if len(content) > 500:
-            content = content[:500] + "..."
+        # 完整返回不截断：此处硬截 500 字符会砍掉尾部内容，是"检索命中但 LLM 只看到开头
+        # （抄而不答）"的直接元凶。注意：当前切分层无 token 上限——短笔记不切分（一条一个
+        # 向量），导入文件按标题切但无封顶，超 max_seq_length(512) 会被 embedding 静默截断。
+        # 这只是止血，根治需切分层把每个检索单元压到 max_seq_length 以内（LAB-A5 T1）。
         trimmed.append({
             "node_id": r["node_id"],
             "title": r.get("title", ""),
@@ -312,12 +317,17 @@ TOOL_HANDLERS = {
 
 
 def execute_tool(name: str, input_dict: dict, db: Session, user_id: int = 1) -> str:
-    """执行工具，返回 JSON 字符串结果"""
+    """执行工具（带超时保护），返回 JSON 字符串结果"""
     handler = TOOL_HANDLERS.get(name)
     if not handler:
         return json.dumps({"error": f"Unknown tool: {name}"})
-    try:
-        return handler(input_dict, db, user_id=user_id)
-    except Exception:
-        logger.exception("Agent tool execution failed: %s", name)
-        return json.dumps({"error": "tool execution failed"})
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(handler, input_dict, db, user_id=user_id)
+        try:
+            return future.result(timeout=TOOL_TIMEOUT_SECONDS)
+        except concurrent.futures.TimeoutError:
+            logger.warning("Tool timed out: %s", name)
+            return json.dumps({"error": f"tool {name} timed out after {TOOL_TIMEOUT_SECONDS}s"})
+        except Exception:
+            logger.exception("Agent tool execution failed: %s", name)
+            return json.dumps({"error": "tool execution failed"})
