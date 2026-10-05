@@ -69,6 +69,8 @@
 5. **向量上限未处理干净的历史债**：`bge-large-zh-v1.5` 的 `max_seq_length` 是 512 token，早期未封顶的切片会被静默截断（零告警）。切片层已加 token 封顶 + 回归测试，但**已入库的旧向量需要重嵌入才生效**。
 6. **`nodes.py:56` 有一处 SQLAlchemy 告警**：`SAWarning: Coercing Subquery object into a select() for use in IN()`。功能正常，但未来 SQLAlchemy 版本可能收紧为错误。
 7. **本地测试对宿主代理环境敏感。** httpx 默认 `trust_env=True`；若环境变量 `NO_PROXY` 含"已带方括号的 IPv6"（如 `[::1]`），httpx 会生成畸形模式 `all://*[::1]` 并抛 `InvalidURL`，导致**测试无法收集**。这是本机环境问题，Linux CI 不受影响。
+8. **`passlib` 已停止维护，与 `bcrypt >= 4.1` 不兼容。** passlib 1.7.4（2020 年后未再发版）首次 `hash()` 时会运行一个使用超 72 字节测试串的"环绕 bug 自检"，而 bcrypt ≥ 4.1 不再静默截断、会直接抛 `ValueError`。当前在 `requirements.txt` 中把 bcrypt 限定在 `>=4.0,<4.1` 兼容区间。**长期正解是移除 passlib、直接用 `bcrypt` 的 `hashpw` / `checkpw`**（约 10 行改动，bcrypt 哈希格式不变、存量用户密码不受影响），尚未执行。
+9. **CI 分支过滤此前配错。** workflow 只监听 `push: branches: [main]`，而仓库实际工作分支是 `master`，因此**该 CI 从未被触发过**（现已修正为 `[master, main]`，并把默认分支同步改为 `master`）。`main` 是 2026-05 的旧版本分支，与 `master` 无共同祖先，**尚未合并或删除**。
 
 ---
 
