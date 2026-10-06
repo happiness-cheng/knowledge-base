@@ -1,7 +1,8 @@
 import os
 from datetime import datetime, timedelta, timezone
+
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -9,8 +10,14 @@ from app.database import get_db
 from app.models.user import User
 from app.config import settings
 
-# 密码哈希
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# bcrypt 的输入上限是 72 字节，超出部分不参与哈希。
+# 这里显式截断，而不是依赖库行为：bcrypt >= 4.1 对超长输入直接抛 ValueError，
+# 更早的版本则静默截断。行为不一致会让同一个密码在不同环境下得到不同的验证结果。
+_BCRYPT_MAX_BYTES = 72
+
+
+def _bcrypt_input(plain: str) -> bytes:
+    return plain.encode("utf-8")[:_BCRYPT_MAX_BYTES]
 
 # JWT 配置
 SECRET_KEY = settings.secret_key
@@ -22,11 +29,15 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=Fals
 
 
 def hash_password(plain: str) -> str:
-    return pwd_context.hash(plain)
+    return bcrypt.hashpw(_bcrypt_input(plain), bcrypt.gensalt()).decode("ascii")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    try:
+        return bcrypt.checkpw(_bcrypt_input(plain), hashed.encode("ascii"))
+    except ValueError:
+        # 存量哈希格式非法（空串、非 bcrypt 等）时返回 False，而不是让接口 500
+        return False
 
 
 def create_access_token(data: dict) -> str:

@@ -9,12 +9,12 @@ pymysql>=1.1
 chromadb>=0.4
 sentence-transformers>=2.2
 alembic>=1.13
-passlib[bcrypt]>=1.7
-# passlib 1.7.4（2020 年后未再发版）与 bcrypt >= 4.1 不兼容：
-# passlib 首次 hash() 会跑一个"环绕 bug 自检"，该自检使用超过 72 字节的测试串，
-# 而 bcrypt >= 4.1 不再静默截断、直接抛 ValueError: password cannot be longer than 72 bytes，
-# 导致 78 个测试在 fixture 阶段就 ERROR。此处限定到已知兼容区间。
-bcrypt>=4.0,<4.1
+# 密码哈希直接用 bcrypt，不再经过 passlib。
+# passlib 1.7.4（2020 年后未再发版）与 bcrypt >= 4.1 不兼容：它首次 hash() 会运行一个
+# 使用超 72 字节测试串的"环绕 bug 自检"，而 bcrypt >= 4.1 不再静默截断、直接抛
+# ValueError: password cannot be longer than 72 bytes。
+# 实现见 app/auth.py 的 hash_password / verify_password（bcrypt 哈希格式不变，存量密码不受影响）。
+bcrypt>=4.1
 python-jose[cryptography]>=3.3
 cryptography>=42
 slowapi>=0.1.9
