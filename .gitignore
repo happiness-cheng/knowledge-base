@@ -17,6 +17,9 @@ venv/
 # ChromaDB（含用户私人笔记向量，禁止入库）
 chroma_db/
 chroma_db_backup_*/
+# 遗留集合导出（运维备份，含笔记正文）
+legacy_*_export_*.json
+backend/legacy_*.json
 
 # 工具产物
 .codegraph/

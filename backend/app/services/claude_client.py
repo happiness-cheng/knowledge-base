@@ -25,8 +25,18 @@ def _load_cc_switch_config():
     return None
 
 
+def _sanitize_no_proxy() -> None:
+    """兼容旧调用点：真正实现已提到 app/env_sanitize.py（那里才能早于各库导入）。
+
+    具体事故与机制见 app/env_sanitize.py 的模块 docstring。
+    """
+    from app.env_sanitize import sanitize_no_proxy
+    sanitize_no_proxy()
+
+
 class AIClient:
     def __init__(self):
+        _sanitize_no_proxy()
         # Try cc-switch config first
         cc = _load_cc_switch_config()
         if cc:

@@ -1,5 +1,23 @@
-"""用最终语料重建 user_1_nodes 实库（bge 1024维）"""
+"""用最终语料重建 user_1_nodes 实库（bge 1024维）
+
+⚠️⚠️ 危险脚本，已加锁 ⚠️⚠️
+  它做的是：`col.get()` → `col.delete(所有)` → 用 **eval/corpus_*.json（评测语料）** 灌回。
+  两个致命点：
+    1. 灌进去的是**评测数据**，不是真实笔记 → 真实笔记被挤出向量库（生产返回负 id 的根因）
+    2. 删完没有可用的回滚源（真值在 MySQL，不在这个 json 里）→ **不可回滚**
+  生产集合现在由 `build_prod_collection.py` 从 MySQL 重建，本脚本已退役。
+  确需运行请显式设置环境变量：$env:ALLOW_DESTRUCTIVE_REBUILD="1"
+"""
+import os
 import sys
+
+if os.environ.get("ALLOW_DESTRUCTIVE_REBUILD") != "1":
+    raise SystemExit(
+        "拒绝执行：本脚本会用评测语料覆盖真实笔记的向量集合，且不可回滚。\n"
+        "生产集合请改用 build_prod_collection.py（数据源 = MySQL）。\n"
+        '确需运行：$env:ALLOW_DESTRUCTIVE_REBUILD="1"'
+    )
+
 sys.stdout.reconfigure(encoding='utf-8')
 import os
 os.environ['HF_HUB_OFFLINE'] = '1'

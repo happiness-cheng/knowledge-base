@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from chromadb import PersistentClient
+from app.env_sanitize import sanitize_no_proxy  # noqa: F401  必须最先执行（净化 NO_PROXY）
 from app.models.node import KnowledgeNode
 from app.database import SessionLocal
 from app.utils.markdown_cleaner import split_by_headings
@@ -12,14 +13,25 @@ CHROMA_DB_DIR.mkdir(parents=True, exist_ok=True)
 # Initialize ChromaDB
 chroma_client = PersistentClient(path=str(CHROMA_DB_DIR))
 
+# ---------------------------------------------------------------------------
+# 集合名后缀：让"生产集合"可被外部指定，而不是写死在代码里
+# ---------------------------------------------------------------------------
+# 为什么要有这个开关（而不是直接把下面的字符串改掉）：
+#   1. 回滚成本 = 一条命令。删掉环境变量重启，立刻回到旧集合，代码零改动。
+#   2. 旧集合原样留存、只读，直到新集合被验证通过为止——这是迁移的底线。
+#   3. 评测集合用 "_eval" 后缀，与生产集合彻底分家（评测语料不得被用户检索到）。
+# 注意：本值在"模块导入时"读取一次（见下方 _SUFFIX）。运行中改环境变量不生效，
+#       必须重启进程——这是刻意的，避免同一进程中途换集合造成半新半旧。
+KB_CHROMA_SUFFIX_ENV = "KB_CHROMA_SUFFIX"
+_SUFFIX = os.environ.get(KB_CHROMA_SUFFIX_ENV, "")
+
 # Lazy-load embedding model
 _embedding_model = None
 
 def _get_model():
     global _embedding_model
     if _embedding_model is None:
-        import os
-        os.environ["HF_HUB_OFFLINE"] = "1"
+        # 离线开关已由 app.env_sanitize 在导入期设好（那里才能早于 huggingface_hub 缓存常量）
         from sentence_transformers import SentenceTransformer
         # bge-large-zh-v1.5：中文语义（M5-03），1024 维；
         # 换模型必须全量重嵌入（新旧向量不在同一空间）
@@ -27,9 +39,24 @@ def _get_model():
     return _embedding_model
 
 
-def _get_user_collection(user_id: int):
-    """获取用户专属的向量集合"""
-    return chroma_client.get_or_create_collection(name=f"user_{user_id}_nodes")
+def get_collection_name(user_id: int, suffix: str | None = None) -> str:
+    """集合名的唯一出口（健康检查/对账脚本必须调它，不要手写字符串）。
+
+    误写错集合名的后果：检索到别的集合的数据（09-26 实测：生产集合里混了 287 条
+    评测块，真实笔记反而查不到），且不会报任何错——所以集合名必须只在一个地方拼。
+    """
+    if suffix is None:
+        suffix = _SUFFIX
+    return f"user_{user_id}_nodes{suffix}"
+
+
+def _get_user_collection(user_id: int, suffix: str | None = None):
+    """获取用户专属的向量集合
+
+    suffix=None 时用模块级 _SUFFIX（生产默认行为，向后兼容旧调用）；
+    显式传 "" 用于测试/影子脚本，指向旧集合且不受环境变量影响。
+    """
+    return chroma_client.get_or_create_collection(name=get_collection_name(user_id, suffix))
 
 
 # bge 查询指令前缀（M5-03：bge 系列检索时 query 必须加指令，否则检索质量明显下降）
@@ -37,8 +64,21 @@ QUERY_PREFIX = "为这个句子生成表示以用于检索相关文章："
 
 
 def get_embedding(text: str) -> list[float]:
+    """文本 → 向量。**必须归一化**（写入与查询共用此函数，保证两侧同尺度）。
+
+    为什么必须归一化（2026-10-07 实测，不是理论洁癖）：
+      ChromaDB 默认用 L2² 距离，展开为  L2² = ||v||² − 2⟨v,q⟩ + ||q||²。
+      · 若所有文档向量模长相同 → 排名只取决于 ⟨v,q⟩，与模长无关（实测 top-10 28/28 一致）
+      · 若**混存两种模长**（老数据 norm=1、新写入 norm≈18.13）→ ||v||² 这一项参与排序，
+        语义退居次席。实测：与"全部归一化"的 top-10 **0/28 一致，逐位置重合率 51.1%**
+      ——即混入一条未归一化向量，检索结果就开始崩。
+
+    历史坑（09-16/09-26 两次误判的来源）：本项目所有 eval 脚本都写了
+    `normalize_embeddings=True`（见 eval/run_kb_eval.py:130,136），而生产这里没写。
+    于是"评测的余弦"和"生产的距离"从不是同一把尺子，且生产写入会污染库内尺度。
+    """
     model = _get_model()
-    embeddings = model.encode(text)
+    embeddings = model.encode(text, normalize_embeddings=True)
     return embeddings.tolist()
 
 

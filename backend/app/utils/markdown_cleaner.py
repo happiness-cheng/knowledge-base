@@ -9,6 +9,10 @@ MAX_CONTENT_TOKENS = 480
 # 英文句号 `.` 只在「句号 + 空白 + 大写字母」处断（句边界），避免把 3.14 / e.g. 切断
 _SENTENCE_SPLIT = re.compile(r'(?<=[。！？!?；;])|(?<=\.)(?=\s+[A-Z])')
 
+# 标题判定：容忍前导空白（缩进的 `##` 也是标题，见 split_by_headings 的说明）
+_H2_RE = re.compile(r'^\s*##\s+(.*)$')
+_H3_RE = re.compile(r'^\s*###\s')
+
 
 @lru_cache(maxsize=1)
 def _get_tokenizer():
@@ -118,15 +122,33 @@ def _split_long_section(text: str, max_tokens: int = MAX_CONTENT_TOKENS) -> list
 
 
 def split_by_headings(text: str) -> list[tuple[str, str]]:
+    """按 `##` 标题切分，每块再按 token 预算二次切分。
+
+    ⚠️ 标题判定必须**容忍前导空白**（2026-10-07 修）：
+      旧代码 `line.startswith('## ')` 只认顶格标题。而笔记里从网页/PDF 粘贴或
+      编辑器自动缩进的内容，标题常带前导空格（实测 node5「后端项目知识总结」：
+      顶格 `##` 只有 1 个，缩进 `##` 有 7 个）。漏检后果：
+        8 个小节被合并成 1 个 section → 再被按标点硬切成 4 块 →
+        每块混多个主题 → 向量代表"一堆主题的平均" → 单主题查询被稀释。
+      证据：`Collector(3)` 这个 chunk 实际装的是 Monitor/Redis/Lua 的内容，
+      而 heading 元数据写的却是 `Collector(3)` —— **元数据与内容不符**。
+
+    控制变量实测（同一批 12 条 query、同模型、同 top_k，只换本函数）：
+      Recall@3  1.000 → 1.000（饱和，测不出）
+      MRR       0.792 → 0.875（+10.5%）
+      node5 组  0.810 → 0.929；node3/13 对照组未退化
+    详见 exp_chunking_controlled.py。
+    """
     sections = []
     current_title = "Untitled"
     current_lines = []
 
     for line in text.split('\n'):
-        if line.startswith('## ') and not line.startswith('### '):
+        m2 = _H2_RE.match(line)
+        if m2 and not _H3_RE.match(line):
             if current_lines:
                 sections.append((current_title, '\n'.join(current_lines).strip()))
-            current_title = line[3:].strip()
+            current_title = m2.group(1).strip()
             current_lines = []
         else:
             current_lines.append(line)

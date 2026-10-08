@@ -2,6 +2,8 @@ import sys
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
+
+from app import env_sanitize  # noqa: F401  必须最先导入：净化 NO_PROXY，否则 httpx 建 client 即崩
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
