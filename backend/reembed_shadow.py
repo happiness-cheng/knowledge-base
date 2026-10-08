@@ -9,7 +9,8 @@ from app.services import rag_service
 from app.utils.markdown_cleaner import split_by_headings
 
 # 影子集合
-shadow = rag_service.chroma_client.get_or_create_collection(name="user_1_nodes_v2")
+shadow = rag_service.chroma_client.get_or_create_collection(
+    name=rag_service.get_collection_name(1, "_prod"))
 
 # 读 12 笔记（从旧 SQLite；生产 MySQL 未起，笔记内容一致）
 c = sqlite3.connect(r'C:/Users/陈独秀/.knowledge_base/knowledge.db')
