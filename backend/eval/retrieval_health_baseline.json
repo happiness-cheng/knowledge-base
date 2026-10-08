@@ -1,0 +1,120 @@
+{
+  "measured_at": "2026-10-07",
+  "collection": "user_1_nodes_prod",
+  "count": 57,
+  "suffix": "_prod",
+  "n_cases": 18,
+  "recall@3": 1.0,
+  "mrr": 0.9166666666666666,
+  "median_latency_ms": 316.2386000039987,
+  "cases": [
+    {
+      "id": "F1",
+      "gold": 5,
+      "query": "监控服务为什么用无锁计数器而不是互斥锁",
+      "note": "Monitor: 只读 11 个 atomic 计数器，无锁读"
+    },
+    {
+      "id": "F2",
+      "gold": 5,
+      "query": "事件为什么要先在内存里排队再交给下游处理",
+      "note": "Queue: 解耦 I/O 线程和处理线程"
+    },
+    {
+      "id": "F3",
+      "gold": 5,
+      "query": "限流脚本怎么保证计数和过期时间是原子执行的",
+      "note": "Rate Limiter: Lua 脚本原子执行 INCR+EXPIRE"
+    },
+    {
+      "id": "F4",
+      "gold": 5,
+      "query": "事件数据攒够一批再落库是哪个模块负责的",
+      "note": "Storage: 内部维护 buffer 批量 flush"
+    },
+    {
+      "id": "F5",
+      "gold": 5,
+      "query": "接收连接以后怎么解决粘包和拆包的问题",
+      "note": "Collector: 先读 4 字节 header"
+    },
+    {
+      "id": "F6",
+      "gold": 5,
+      "query": "为什么只开两个 I/O 线程而不是八个",
+      "note": "Main: 瓶颈在网络 I/O 不在 CPU"
+    },
+    {
+      "id": "F7",
+      "gold": 5,
+      "query": "Redis 挂掉的时候限流和反序列化分别怎么处理",
+      "note": "Processor: Redis 挂了走 fail-open"
+    },
+    {
+      "id": "F8",
+      "gold": 5,
+      "query": "监控数据是怎么被外部系统定期拉走的",
+      "note": "Monitor: Prometheus 每 15 秒爬取 :9090"
+    },
+    {
+      "id": "D1",
+      "gold": 3,
+      "query": "为什么需要堆内存，栈空间默认多大",
+      "note": "node3 尾部: 栈 Linux 默认 8MB"
+    },
+    {
+      "id": "D2",
+      "gold": 3,
+      "query": "堆内存和栈空间在大小和管理方式上有什么不同",
+      "note": "node3: 堆可运行时任意分配"
+    },
+    {
+      "id": "D3",
+      "gold": 3,
+      "query": "把资源所有权从一个对象转给另一个对象是为了解决什么开销",
+      "note": "node3: 移动语义避免昂贵拷贝"
+    },
+    {
+      "id": "D4",
+      "gold": 3,
+      "query": "多个线程同时拷贝同一个智能指针会不会出问题",
+      "note": "node3: 引用计数原子，对象本身不安全"
+    },
+    {
+      "id": "D5",
+      "gold": 3,
+      "query": "多个线程同时改同一个智能指针的指向安全吗",
+      "note": "node3: 不安全，需额外同步"
+    },
+    {
+      "id": "D6",
+      "gold": 13,
+      "query": "一个线程要同时盯着成千上万个连接，靠什么机制只拿到就绪的那几个",
+      "note": "node13: epoll 回调机制"
+    },
+    {
+      "id": "D7",
+      "gold": 13,
+      "query": "为什么连接数一多，遍历式的方案就不行了",
+      "note": "node13: select/poll 每次传全部 fd"
+    },
+    {
+      "id": "D8",
+      "gold": 12,
+      "query": "建立可靠连接的时候为什么握手要来三个回合",
+      "note": "node12: 三次握手"
+    },
+    {
+      "id": "D9",
+      "gold": 7,
+      "query": "网站地址栏变成 https 之后数据在传输时做了哪些额外的安全处理",
+      "note": "node7: HTTPS"
+    },
+    {
+      "id": "D10",
+      "gold": 17,
+      "query": "编译期常量和预处理宏定义一个数值用哪个更好",
+      "note": "node17: const VS define"
+    }
+  ]
+}
