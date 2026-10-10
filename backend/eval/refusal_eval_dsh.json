@@ -1,0 +1,269 @@
+{
+  "notes_latest_data": "2026-05-20",
+  "eval_date": "2026-10-10",
+  "n": 11,
+  "refused": 10,
+  "supplied_fact": 1,
+  "temporal_mismatch": 1,
+  "object_mismatch": 0,
+  "unparsed": 0,
+  "results": [
+    {
+      "id": "N01",
+      "kind": "NEAR_MISS",
+      "why": "库里是 5/20 的指数，问\"今天\"→ 时效不匹配",
+      "question": "今天上证指数收盘多少",
+      "answer": "我无法回答\"今天\"（2026-10-10）的上证指数收盘价——知识库不覆盖这个日期。\n\n知识库中最新数据截止到 2026-05-20，而今天是 2026-10-10，中间已有近五个月的空白。因此没有任何一条记录能代表今天的收盘情况。\n\n作为参考，知识库中确实有一条包含上证指数的记录 [doc:16]：\n\n- **上证指数**: 4166.29 (-0.08%)\n\n但该条目没有任何日期标注，无法确认它是哪一天的行情，我**不能**把它当作今天的收盘价来呈现。\n\n如需今天的准确数据，请查阅实时行情来源。",
+      "top1_node": 16,
+      "top1_cos": 0.6754298026240644,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "The answer explicitly declines to give today's (2026-10-10) closing price, citing knowledge cutoff 2026-05-20, and only offers an undated reference value it says cannot be treated as today's."
+      },
+      "reason": "The answer explicitly declines to give today's (2026-10-10) closing price, citing knowledge cutoff 2026-05-20, and only offers an undated reference value it says cannot be treated as today's.",
+      "faithfulness": 0.2857142857142857,
+      "unsupported": [
+        "我无法回答\"今天\"（2026-10-10）的上证指数收盘价——知识库不覆盖这个日期。",
+        "知识库中最新数据截止到 2026-05-20，而今天是 2026-10-10，中间已有近五个月的空白。",
+        "因此没有任何一条记录能代表今天的收盘情况。",
+        "作为参考，知识库中确实有一条包含上证指数的记录 [doc:16]：",
+        "如需今天的准确数据，请查阅实时行情来源。"
+      ],
+      "latency_ms": 27542.26429999835
+    },
+    {
+      "id": "N02",
+      "kind": "OUT_OF_SCOPE",
+      "why": "与库内容无关",
+      "question": "帮我写一份辞职信",
+      "answer": "我无法帮你完成这个请求——知识库中没有关于辞职信的内容，也没有任何可供参考的模板或相关素材。\n\n当前上下文中只有以下几类内容：\n\n- **交易日志**（[doc:16]），内容为 2026-05-20 的日志条目\n- **TCP 三次握手**的原理讲解（[doc:12]）\n- **C++ 左值/右值引用与 `std::move`** 的笔记（[doc:3]）\n\n这些都与辞职信的写作无关。如果你需要辞职信，建议提供相关模板或范文到知识库中，或者直接告诉我具体要求，但请注意：我只能依据所提供的上下文作答，无法自行编造内容。\n\n另外提醒一点：知识库中最新数据的日期是 2026-05-20，而今天是 2026-10-10，因此对于 2026-05-20 之后发生的任何事情，本知识库都不覆盖。",
+      "top1_node": 16,
+      "top1_cos": 0.14802842506094294,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "回答明确表示知识库中没有辞职信相关内容，拒绝提供，未给出所请求的事实。"
+      },
+      "reason": "回答明确表示知识库中没有辞职信相关内容，拒绝提供，未给出所请求的事实。",
+      "faithfulness": 0.375,
+      "unsupported": [
+        "交易日志**（[doc:16]），内容为 2026-05-20 的日志条目",
+        "TCP 三次握手**的原理讲解（[doc:12]）",
+        "C++ 左值/右值引用与 `std::move`** 的笔记（[doc:3]）",
+        "如果你需要辞职信，建议提供相关模板或范文到知识库中，或者直接告诉我具体要求，但请注意：我只能依据所提供的上下文作答，无法自行编造内容。",
+        "另外提醒一点：知识库中最新数据的日期是 2026-05-20，而今天是 2026-10-10，因此对于 2026-05-20 之后发生的任何事情，本知识库都不覆盖。"
+      ],
+      "latency_ms": 44777.751399997214
+    },
+    {
+      "id": "N03",
+      "kind": "NEAR_MISS",
+      "why": "库里只有 MySQL 封锁/索引，无 binlog/redolog",
+      "question": "MySQL 的 binlog 和 redolog 的区别",
+      "answer": "知识库中没有关于 MySQL binlog 和 redo log 的内容，无法根据提供的上下文回答这个问题。\n\n现有资料涵盖的主题包括：\n- I/O 多路复用（select/poll/epoll）及 io_context.run() 的内部流程 [doc:13][doc:5]\n- 采集链路架构（Collector → Queue → Processor → Storage/Kafka/Rate Limiter）[doc:5]\n- Storage 批量写 ClickHouse 的设计与风险 [doc:5]\n- C++ 容器对比：vector vs list、map vs unordered_map [doc:2]\n\n如果你需要的是上述任一主题的说明，我可以基于上下文作答。关于 MySQL 日志系统（binlog / redo log / undo log）的区别，建议查阅 MySQL 官方文档或其他资料。",
+      "top1_node": 13,
+      "top1_cos": 0.41724648815022647,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "Answer explicitly states the context lacks MySQL binlog/redo log info and does not supply the requested fact."
+      },
+      "reason": "Answer explicitly states the context lacks MySQL binlog/redo log info and does not supply the requested fact.",
+      "faithfulness": 0.75,
+      "unsupported": [
+        "如果你需要的是上述任一主题的说明，我可以基于上下文作答。",
+        "关于 MySQL 日志系统（binlog / redo log / undo log）的区别，建议查阅 MySQL 官方文档或其他资料。"
+      ],
+      "latency_ms": 26404.12970000034
+    },
+    {
+      "id": "N04",
+      "kind": "OUT_OF_SCOPE",
+      "why": "K8s 与库内容无关",
+      "question": "Kubernetes 的 Pod 和容器的区别",
+      "answer": "我无法回答这个问题——提供的知识库上下文里没有任何关于 Kubernetes、Pod 或容器的内容。\n\n现有资料仅涉及以下主题：\n- C++ 容器对比：vector vs list、map vs unordered_map [doc:2]\n- I/O 多路复用：select/poll/epoll 的对比 [doc:13]\n- 事件处理架构：Storage 批量写入 ClickHouse、Collector → Queue → Processor → Storage 全链路、io_context.run() 内部流程 [doc:5]\n\n这些内容与 Kubernetes 的 Pod/容器区别没有关联，因此我无法基于给定上下文作答。如果你有关于上述主题的问题（例如 epoll 相比 select 的优势、vector 与 list 的适用场景等），我可以帮你解答。",
+      "top1_node": 2,
+      "top1_cos": 0.28245575002063106,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "Answer explicitly states the context contains no Kubernetes/Pod/container content and offers no answer to the question."
+      },
+      "reason": "Answer explicitly states the context contains no Kubernetes/Pod/container content and offers no answer to the question.",
+      "faithfulness": 1.0,
+      "unsupported": [],
+      "latency_ms": 44208.31659999385
+    },
+    {
+      "id": "N05",
+      "kind": "NEAR_MISS",
+      "why": "\"昨天那笔卖出\"——库里只有 5/20 的记录",
+      "question": "帮我看看我昨天记录的那笔卖出赚了多少",
+      "answer": "我没法确认\"昨天\"（2026-10-09）的这笔交易——**知识库不覆盖这个时间段**。目前上下文里最新的数据只到 2026-05-20，没有任何 2026-10-09 前后的记录。\n\n上下文里唯一一笔卖出记录是 [doc:16]：\n\n| 时间 | 操作 | 股票 | 数量 | 价格 | 结果 | 原因 |\n|------|------|------|------|------|------|------|\n| 12:00:56 | sell | 平安银行 | 100 | 10.86 | ✅ | 测试卖出功能 |\n\n需要说明两点：\n\n1. **这笔卖出本身没有盈利**：同一份记录显示 12:00:33 以 10.86 买入 100 股平安银行，随后以同样的 10.86 卖出 [doc:16]，价差为 0，且备注是\"测试卖出功能\"，看起来是功能测试而非实际获利交易。\n2. **日期无法对上**：这条记录的日志里没有可确认的日期，而它所属知识库的最新数据是 2026-05-20，因此**不能把它当作\"昨天\"（2026-10-09）的交易**。\n\n如果你要查的是真正发生于昨天的交易，请提供对应的成交记录，或确认数据源已更新到 2026-10 之后。",
+      "top1_node": 16,
+      "top1_cos": 0.5045080037730951,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "明确拒绝确认昨天的卖出收益，并指出上下文无对应日期的记录；未提供所问的昨天卖出盈利事实。"
+      },
+      "reason": "明确拒绝确认昨天的卖出收益，并指出上下文无对应日期的记录；未提供所问的昨天卖出盈利事实。",
+      "faithfulness": 0.25,
+      "unsupported": [
+        "我没法确认\"昨天\"（2026-10-09）的这笔交易——**知识库不覆盖这个时间段**。",
+        "目前上下文里最新的数据只到 2026-05-20，没有任何 2026-10-09 前后的记录。",
+        "上下文里唯一一笔卖出记录是 [doc:16]：",
+        "1. **这笔卖出本身没有盈利**：同一份记录显示 12:00:33 以 10.86 买入 100 股平安银行，随后以同样的 10.86 卖出 [doc:16]，价差为 0，且备注是\"测试卖出功能\"，看起来是功能测试而非实际获利交易。",
+        "2. **日期无法对上**：这条记录的日志里没有可确认的日期，而它所属知识库的最新数据是 2026-05-20，因此**不能把它当作\"昨天\"（2026-10-09）的交易**。",
+        "如果你要查的是真正发生于昨天的交易，请提供对应的成交记录，或确认数据源已更新到 2026-10 之后。"
+      ],
+      "latency_ms": 21816.381600001478
+    },
+    {
+      "id": "N06",
+      "kind": "NEAR_MISS",
+      "why": "\"昨天大盘\"——库里只有 5/20 一天的数据",
+      "question": "昨天大盘收盘多少",
+      "answer": "知识库中没有覆盖\"昨天\"（2026-10-09）的数据，因此我无法回答昨天大盘的收盘点位。\n\n说明：知识库最新数据截止到 2026-05-20，而今天是 2026-10-10，中间存在较长空档期，没有该期间的行情记录。\n\n上下文里虽然出现了一组指数数值——上证指数 4166.29、深证成指 15608.89、创业板指 3929.48 [doc:16]——但该记录没有标注日期，无法确认它对应哪一天，更不能当作\"昨天的收盘价\"来使用。如果你需要某个具体日期的行情，请提供该日期对应的记录或更新的数据源。",
+      "top1_node": 16,
+      "top1_cos": 0.6536186042461747,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "答案明确表示知识库没有昨天(2026-10-09)的数据，无法回答，未给出所问的具体收盘点位（虽提及指数数值但明确拒绝将其作为答案）。"
+      },
+      "reason": "答案明确表示知识库没有昨天(2026-10-09)的数据，无法回答，未给出所问的具体收盘点位（虽提及指数数值但明确拒绝将其作为答案）。",
+      "faithfulness": 0.25,
+      "unsupported": [
+        "知识库中没有覆盖\"昨天\"（2026-10-09）的数据，因此我无法回答昨天大盘的收盘点位。",
+        "说明：知识库最新数据截止到 2026-05-20，而今天是 2026-10-10，中间存在较长空档期，没有该期间的行情记录。",
+        "如果你需要某个具体日期的行情，请提供该日期对应的记录或更新的数据源。"
+      ],
+      "latency_ms": 17962.296300000162
+    },
+    {
+      "id": "N07",
+      "kind": "NEAR_MISS",
+      "why": "\"今天扫描\"——扫描记录只有 5/20",
+      "question": "今天系统扫描出了哪些超卖的股票",
+      "answer": "我无法回答「今天」的扫描结果，因为知识库不覆盖今天（2026-10-10）。\n\n**原因：** 知识库中确实存在一批扫描记录 [doc:16]，其中包含 RSI 极度超卖的发现（如五粮液 RSI 13、洋河股份 20、中国石化 21、云南白药 21、海天味业 24 等），但这些记录**只带时间戳（如 10:00:27、11:00:32、13:00:20），没有日期**，且知识库最新数据仅到 2026-05-20，远早于今天。因此我无法确认这些记录是否属于今天，也不能把它们当作今日结果呈现。\n\n**如果只问知识库中这批历史扫描记录涉及了哪些标的**（仅为存档记录，不代表今天）：\n- 五粮液：RSI 极度超卖(13)，得分 30 [doc:16]\n- 洋河股份：RSI 极度超卖(20)，得分 30 [doc:16]\n- 中国石化：RSI 极度超卖(21) + MACD 柱放大，得分 40 [doc:16]\n- 云南白药：RSI 极度超卖(21)，得分 30 [doc:16]\n- 海天味业：RSI 极度超卖(24)，得分 30 [doc:16]\n\n另外，同批记录中茅台是 MACD 金叉 + RSI 超卖的 **buy（买入）**信号，不属于「扫描发现的超卖」列表 [doc:16]。\n\n如需今天的实时扫描结果，请查询当前在线的系统日志，知识库中无法提供。",
+      "top1_node": 16,
+      "top1_cos": 0.6199252654161853,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "The answer explicitly declines to provide today's scan results, stating the knowledge base does not cover 2026-10-10, and only offers undated historical records with a caveat, not the requested fact."
+      },
+      "reason": "The answer explicitly declines to provide today's scan results, stating the knowledge base does not cover 2026-10-10, and only offers undated historical records with a caveat, not the requested fact.",
+      "faithfulness": 0.7272727272727273,
+      "unsupported": [
+        "我无法回答「今天」的扫描结果，因为知识库不覆盖今天（2026-10-10）。",
+        "原因：** 知识库中确实存在一批扫描记录 [doc:16]，其中包含 RSI 极度超卖的发现（如五粮液 RSI 13、洋河股份 20、中国石化 21、云南白药 21、海天味业 24 等），但这些记录**只带时间戳（如 10:00:27、11:00:32、13:00:20），没有日期**，且知识库最新数据仅到 2026-05-20，远早于今天。",
+        "如需今天的实时扫描结果，请查询当前在线的系统日志，知识库中无法提供。"
+      ],
+      "latency_ms": 38668.04820000107
+    },
+    {
+      "id": "N08",
+      "kind": "NEAR_MISS",
+      "why": "\"下午两点\"——库里有 13:00:20，无 14:00",
+      "question": "下午两点那次的扫描信号是什么",
+      "answer": "上下文里没有“下午两点”（14:00）的扫描记录。\n\n可查到的扫描信号时间点最晚只到 **13:00:20**，该批次的信号为：\n\n- **洋河股份**：RSI 极度超卖(20)，得分 30 [doc:16]\n- **海天味业**：RSI 极度超卖(24)，得分 30 [doc:16]\n- **云南白药**：RSI 极度超卖(21)，得分 30 [doc:16]\n- **中国石化**：RSI 极度超卖(21)，MACD 柱放大，得分 40 [doc:16]\n- **五粮液**：RSI 极度超卖(13)，得分 30 [doc:16]\n\n另外，知识库最新数据日期为 2026-05-20，而当前日期是 2026-10-10，因此任何“今天/当天”的扫描结果都不在覆盖范围内，我无法提供 14:00 那次扫描的信号。",
+      "top1_node": 16,
+      "top1_cos": 0.005509951586923023,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "The answer explicitly states the context contains no 14:00 scan record and does not provide the requested fact; it only lists the 13:00:20 batch, so no fact for the asked time was supplied."
+      },
+      "reason": "The answer explicitly states the context contains no 14:00 scan record and does not provide the requested fact; it only lists the 13:00:20 batch, so no fact for the asked time was supplied.",
+      "faithfulness": 0.875,
+      "unsupported": [
+        "另外，知识库最新数据日期为 2026-05-20，而当前日期是 2026-10-10，因此任何“今天/当天”的扫描结果都不在覆盖范围内，我无法提供 14:00 那次扫描的信号。"
+      ],
+      "latency_ms": 7611.615099995106
+    },
+    {
+      "id": "N09",
+      "kind": "NEAR_MISS",
+      "why": "宁德时代：库里只有茅台/平安银行/石化/五粮液等",
+      "question": "记录里宁德时代的买入价是多少",
+      "answer": "提供的上下文里没有宁德时代的任何交易记录。交易记录（[doc:16]）中只出现了两只股票：\n\n- 茅台：买入 100 股，价格 1324\n- 平安银行：买入 100 股，价格 10.86，随后以 10.86 卖出\n\n因此无法回答宁德时代的买入价是多少——context 中没有该股票的信息。",
+      "top1_node": 16,
+      "top1_cos": 0.2152468420197735,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "Context contains no 宁德时代 records; answer explicitly declines and supplies no buy price."
+      },
+      "reason": "Context contains no 宁德时代 records; answer explicitly declines and supplies no buy price.",
+      "faithfulness": 1.0,
+      "unsupported": [],
+      "latency_ms": 6848.328100000799
+    },
+    {
+      "id": "N10",
+      "kind": "NEAR_MISS",
+      "why": "\"上一笔交易赚多少\"——无法确定哪笔是\"上一笔\"",
+      "question": "我上一笔交易赚了多少钱",
+      "answer": "根据知识库中的交易记录，我无法给出一笔真实盈利的金额，只能说明如下：\n\n**最后一笔交易**（按记录顺序）是：\n- 12:00:56 卖出 平安银行 100 股，价格 10.86，✅，原因为「测试卖出功能」[doc:16]\n\n而这笔股票在 12:00:33 的买入价同样是 10.86（100 股，✅，原因为「测试买入功能」）[doc:16]。买入价与卖出价相同，因此这笔交易的**价差收益为 0**（且记录中未包含手续费、印花税等成本，实际可能为负）[doc:16]。\n\n**其他记录：**\n- 00:32:57 以 1324 买入茅台 100 股（✅，AI确认），但记录中没有对应的卖出，因此无法计算该笔的已实现盈亏 [doc:16]。\n\n**补充说明：**\n1. 该交易日志由 AI 每日收盘后自动填写，但上下文中未标注具体日期，因此我无法确认「上一笔」是否指最近的交易时段 [doc:16]。\n2. 知识库最新数据为 2026-05-20，不覆盖今天（2026-10-10）或近期的交易情况；如果你问的是这几天的交易，上下文没有相关信息。\n\n所以：**就现有记录而言，最后一笔交易是不赚不亏（0 价差，未计费用）**。",
+      "top1_node": 16,
+      "top1_cos": 0.36183353107932703,
+      "verdict": {
+        "refused": false,
+        "supplied_fact": true,
+        "temporal_match": false,
+        "object_match": true,
+        "reason": "答案给出最后一笔交易价差收益为0，属具体事实；但记录未标注日期且知识库数据(2026-05-20)不覆盖当前(2026-10-10)，时间不匹配；交易对象为用户自身记录，实体匹配。"
+      },
+      "reason": "答案给出最后一笔交易价差收益为0，属具体事实；但记录未标注日期且知识库数据(2026-05-20)不覆盖当前(2026-10-10)，时间不匹配；交易对象为用户自身记录，实体匹配。",
+      "faithfulness": 0.9,
+      "unsupported": [
+        "2. 知识库最新数据为 2026-05-20，不覆盖今天（2026-10-10）或近期的交易情况；"
+      ],
+      "latency_ms": 20742.07049999677
+    },
+    {
+      "id": "N11",
+      "kind": "NEAR_MISS",
+      "why": "\"这周\"——库里只有一天（5/20）的数据",
+      "question": "帮我总结一下这周的交易情况",
+      "answer": "我无法总结\"这周\"的交易情况——知识库中没有覆盖该时间段的数据。\n\n**原因说明：**\n\n- 今天是 2026-10-10，而知识库最新数据日期为 2026-05-20，两者相隔约五个月 [doc:16]。\n- 交易记录表本身**没有任何日期字段**，只有时间戳（00:32:57、12:00:33、12:00:56），因此无法判断这些操作发生在哪一天，更无法确认是否属于\"这周\" [doc:16]。\n\n**知识库中仅有的一条交易记录（时间范围未知，不能当作本周数据）：**\n\n| 时间 | 操作 | 股票 | 数量 | 价格 | 结果 |\n|------|------|------|------|------|------|\n| 00:32:57 | buy | 茅台 | 100 | 1324 | ✅ |\n| 12:00:33 | buy | 平安银行 | 100 | 10.86 | ✅ |\n| 12:00:56 | sell | 平安银行 | 100 | 10.86 | ✅ |\n\n其中后两笔的备注明确写着是\"测试买入功能 / 测试卖出功能\" [doc:16]。\n\n如果你能提供具体的日期范围，或者知识库补充了带日期的交易记录，我可以再做汇总。",
+      "top1_node": 16,
+      "top1_cos": 0.5795860568998421,
+      "verdict": {
+        "refused": true,
+        "supplied_fact": false,
+        "temporal_match": true,
+        "object_match": true,
+        "reason": "The answer explicitly declines to summarize 'this week' because the context lacks dated records, and does not supply a this-week trading summary."
+      },
+      "reason": "The answer explicitly declines to summarize 'this week' because the context lacks dated records, and does not supply a this-week trading summary.",
+      "faithfulness": 0.8,
+      "unsupported": [
+        "今天是 2026-10-10，而知识库最新数据日期为 2026-05-20，两者相隔约五个月 [doc:16]。",
+        "知识库中仅有的一条交易记录（时间范围未知，不能当作本周数据）："
+      ],
+      "latency_ms": 64765.34250000259
+    }
+  ]
+}

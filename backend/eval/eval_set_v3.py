@@ -158,11 +158,23 @@ CASES = [
 
     # ================= 无答案层（测拒答：库里确实没有）=================
     # 注意：这类条目 evidence 为空，判据是"不该被当成笔记内容答出来"
+    # 危险度分两档：
+    #   OUT_OF_SCOPE  与库内容无关 → 余弦低，模型容易识别
+    #   NEAR_MISS     话题相邻但不完整/时间不匹配 → 余弦高，**危险在这类**
+    # 2026-10-10 从 3 条扩到 9 条：首轮实测 NEAR_MISS 只有 1/3 拒答，
+    # 其中 N01 是**时效性幻觉**（把 5/20 的指数当"今天"报出，且 faithfulness=1.00）。
     ("N01", None, "N", "authored", "今天上证指数收盘多少", None, None),
     ("N02", None, "N", "authored", "帮我写一份辞职信", None, None),
     ("N03", None, "N", "authored", "MySQL 的 binlog 和 redolog 的区别", None, None),
     ("N04", None, "N", "authored", "Kubernetes 的 Pod 和容器的区别", None, None),
     ("N05", None, "N", "authored", "帮我看看我昨天记录的那笔卖出赚了多少", None, None),
+    # --- 2026-10-10 新增（用 node16 真实数据造，时间/范围不匹配）---
+    ("N06", None, "N", "authored", "昨天大盘收盘多少", None, None),
+    ("N07", None, "N", "authored", "今天系统扫描出了哪些超卖的股票", None, None),
+    ("N08", None, "N", "authored", "下午两点那次的扫描信号是什么", None, None),
+    ("N09", None, "N", "authored", "记录里宁德时代的买入价是多少", None, None),
+    ("N10", None, "N", "personal", "我上一笔交易赚了多少钱", None, None),
+    ("N11", None, "N", "authored", "帮我总结一下这周的交易情况", None, None),
 ]
 
 

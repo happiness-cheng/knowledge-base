@@ -31,8 +31,18 @@ from app.env_sanitize import sanitize_no_proxy  # noqa: E402
 
 CRED_PATH = Path.home() / '.dsh' / '.credentials.yaml'
 BASE_URL = 'https://api.deepseek.com'
-GEN_MODEL = 'deepseek-flash'      # 生成用便宜的
-JUDGE_MODEL = 'deepseek-v4-pro'   # 判定用更强的（避免"自己评自己"的偏好偏差）
+# ⚠️ 本账号实际开通的模型只有两个：`deepseek-flash` 与 `deepseek-v4-pro`
+# （服务端 400 原文：The supported API model names are deepseek-flash, deepseek-v4-pro）。
+# 注意 `/v1/models` 会列出 60 个名字（如 deepseek-v4.1-flash），但**那不是本账号的可用集**，
+# 传了会 400 invalid_request_error。选模型请看这个错误信息，别信 /v1/models。
+#
+# 选 flash 的理由：比 v4-pro 便宜，符合降本要求。
+# 代价：flash 更容易把 completion 预算打满并返回**空 content**（实测 mt=1024 时
+# finish_reason=length 且 content=''），所以调用方必须给足 max_tokens 并依赖
+# 下面的显式报错兜底。
+DEFAULT_MODEL = 'deepseek-flash'
+GEN_MODEL = DEFAULT_MODEL
+JUDGE_MODEL = DEFAULT_MODEL
 
 
 def load_key() -> str:
