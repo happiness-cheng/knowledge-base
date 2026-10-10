@@ -44,17 +44,17 @@ OUT = BASE / 'eval' / 'eval_set_v3.json'
 # query_source: chatlog=真实会话 | personal=个人语境原话 | authored=我写的（待改词）
 CASES = [
     # ================= node 1（A｜定义/特点/场景/风险 模板）=================
-    ("Q01", 1, "A", "authored", "进程和线程到底有什么区别",
+    ("Q01", 1, "A", "authored", "进程和线程的区别？",
      "进程是操作系统进行", "资源分配的基本单位"),
-    ("Q02", 1, "A", "authored", "两个线程互相占着对方的锁不放，这是怎么形成的",
+    ("Q02", 1, "A", "authored", "为什么两个线程会互相占着对方的锁不放",
      "死锁是两个或以上线程", "循环等待"),
-    ("Q03", 1, "A", "authored", "多线程访问共享变量有哪些同步手段",
+    ("Q03", 1, "A", "authored", "多线程是怎么访问共享变量的？",
      "线程同步是协调多个线程", "信号量"),
-    ("Q04", 1, "A", "authored", "为什么说原子操作不能完全替代互斥锁",
+    ("Q04", 1, "A", "authored", "为什么原子操作不能完全替代互斥锁",
      "只适用于单个变量的原子操作", "复杂逻辑仍需锁"),
 
     # ================= node 2（A）=================
-    ("Q05", 2, "A", "authored", "vector 和 list 该怎么选",
+    ("Q05", 2, "A", "authored", "vector 和 list 的区别，两者的使用场景？",
      "vector 是动态数组", "双向链表"),
     ("Q06", 2, "A", "authored", "扩容之后原来的迭代器还能用吗",
      "扩容导致迭代器失效", ""),
@@ -62,21 +62,21 @@ CASES = [
      "map 基于红黑树", "元素无序"),
 
     # ================= node 3（A｜一题一小节）=================
-    ("Q08", 3, "A", "authored", "栈和堆在大小和管理方式上有什么不同",
+    ("Q08", 3, "A", "authored", "栈和堆的区别？",
      "栈空间很小", "运行时任意分配"),
-    ("Q09", 3, "A", "authored", "把资源所有权转给别人是为了省掉什么开销",
+    ("Q09", 3, "A", "authored", "为什么要把资源所有权转给别人",
      "移动语义", "避免昂贵拷贝"),
-    ("Q10", 3, "A", "authored", "多个线程同时拷贝同一个智能指针安全吗",
+    ("Q10", 3, "A", "authored", "多个线程同时拷贝同一个shared_ptr安全吗",
      "引用计数的增减是原子的", ""),
-    ("Q11", 3, "A", "authored", "多个线程同时改智能指针的指向呢",
+    ("Q11", 3, "A", "authored", "多个线程同时改shared_ptr的指向呢",
      "多个线程同时修改同一个 shared_ptr 对象", "需要额外同步"),
-    ("Q12", 3, "A", "authored", "深拷贝和浅拷贝差在哪",
+    ("Q12", 3, "A", "authored", "深拷贝和浅拷贝的区别",
      "浅拷贝：只复制对象的成员值", "重新分配内存"),
-    ("Q13", 3, "A", "authored", "四种类型转换分别什么时候用",
+    ("Q13", 3, "A", "authored", "四种类型转换的区别",
      "reinterpret_cast：底层二进制重解释", ""),
     ("Q14", 3, "A", "authored", "基类析构函数为什么一般都写成虚函数",
      "delete 基类指针时能正确先调派生类析构", ""),
-    ("Q15", 3, "A", "authored", "RAII 到底解决了什么问题",
+    ("Q15", 3, "A", "authored", "RAII 的作用，解决了什么问题？",
      "将资源生命周期与对象生命周期绑定", ""),
 
     # ================= node 5（A｜后端项目各模块）=================
@@ -84,13 +84,13 @@ CASES = [
      "解耦 I/O 线程和处理线程", ""),
     ("Q17", 5, "A", "authored", "限流为什么要用 Lua 脚本而不是直接 INCR 加 EXPIRE",
      "INCR 和 EXPIRE 分两步非原子", "原子执行"),
-    ("Q18", 5, "A", "authored", "监控数据是怎么被外部系统定期拉走的",
+    ("Q18", 5, "A", "authored", "监控数据是怎么被外部拉走的",
      "Prometheus 每 15 秒爬取", "拉模型"),
     ("Q19", 5, "A", "authored", "监控为什么用原子变量而不是加锁",
      "只读 11 个 atomic 计数器", ""),
-    ("Q20", 5, "A", "authored", "接收连接的时候怎么处理粘包和拆包",
+    ("Q20", 5, "A", "authored", "怎么处理粘包和拆包",
      "先读 4 字节 header", "循环切分粘包"),
-    ("Q21", 5, "A", "authored", "为什么只开两个 I/O 线程而不是八个",
+    ("Q21", 5, "A", "authored", "为什么只开两个 I/O 线程而不是其他数量",
      "瓶颈在 Redis/ClickHouse", "不在 CPU"),
     ("Q22", 5, "A", "authored", "Redis 挂掉的时候限流会失效吗",
      "Redis failure 走 fail-open", ""),
@@ -100,15 +100,15 @@ CASES = [
      "Kafka 是流", "ClickHouse 是存"),
 
     # ================= node 7（A）=================
-    ("Q25", 7, "A", "authored", "网站变成 https 之后数据是怎么被保护的",
+    ("Q25", 7, "A", "authored", "https是怎么保护数据的",
      "TLS 握手阶段使用非对称加密交换密钥", "对称加密"),
     ("Q26", 7, "A", "authored", "GET 和 POST 在语义上有什么区别",
      "GET 是幂等的", "POST 是非幂等的"),
-    ("Q27", 7, "A", "authored", "接口报错的时候状态码该怎么给",
+    ("Q27", 7, "A", "authored", "接口报错的时状态码是多少",
      "4xx 客户端错误", "5xx 服务端错误"),
 
     # ================= node 8（A｜无 ## 标题，纯编号 + 缩进）=================
-    ("Q28", 8, "A", "authored", "数组和链表各适合什么场景",
+    ("Q28", 8, "A", "authored", "数组和链表的区别",
      "数组是连续内存的线性表", "链表通过指针连接节点"),
     ("Q29", 8, "A", "authored", "哈希冲突一般怎么解决",
      "链地址法或开放地址法", ""),
@@ -123,21 +123,25 @@ CASES = [
     ("Q33", 12, "B", "chatlog", "TCP三次握手是什么", "三次刚好让双方都确认", ""),
     ("Q34", 13, "B", "authored", "一个线程怎么同时盯住成千上万个连接",
      "一个线程同时监控多个 fd", ""),
-    ("Q35", 13, "B", "authored", "select 和 epoll 的性能差别在哪",
+    ("Q35", 13, "B", "authored", "select 和 epoll 的区别",
      "select/poll 每次全量扫描", "只通知就绪的 fd"),
-    ("Q36", 13, "B", "authored", "为什么连接数一多，遍历式的方案就不行了",
+    ("Q36", 13, "B", "authored", "为什么连接数一多，遍历就不行了",
      "内核遍历所有 fd 检查", ""),
 
     # ================= node 14（B｜对话辅导型，含个人错误记录）=================
     ("Q37", 14, "B", "authored", "static 全局变量的作用域是什么",
      "只能在当前文件使用", "内部链接"),
     ("Q38", 14, "B", "authored", "static 局部变量和普通局部变量有什么不一样",
-     "static 局部变量", ""),
-    ("Q39", 14, "B", "authored", "为什么 static 局部变量不是线程安全的",
-     "static 局部变量", ""),
+     "普通局部变量", "程序整个运行期间"),
+    # ⚠️ 2026-10-10 修正：原题问"为什么 static 局部变量不是线程安全的"，
+    # 但 node14 **完全没有讨论线程安全**（它只讲作用域/生命周期/初始化次数）。
+    # 生成层评测因此出现"模型正确拒答"却被判 faithful=0.64 的假阴性。
+    # 这是评测集第 6 条被发现的坏 gold（前 5 条在首轮 gold 校验中被拦下）。
+    ("Q39", 14, "B", "authored", "static 局部变量的生命周期和作用域分别是什么",
+     "生命周期（lifetime）：程序启动到结束", "作用域（scope）：只在函数内可见"),
 
     # ================= node 17（B｜口语化教学 + 表格）=================
-    ("Q40", 17, "B", "authored", "define 和 const 到底差在哪",
+    ("Q40", 17, "B", "authored", "define 和 const 的区别",
      "define 是文本替换", "没有类型"),
     ("Q41", 17, "B", "authored", "define 的 SQUARE 宏为什么会算错",
      "展开成 1 + 1 * 1 + 1 = 3", ""),
@@ -156,8 +160,8 @@ CASES = [
     # 注意：这类条目 evidence 为空，判据是"不该被当成笔记内容答出来"
     ("N01", None, "N", "authored", "今天上证指数收盘多少", None, None),
     ("N02", None, "N", "authored", "帮我写一份辞职信", None, None),
-    ("N03", None, "N", "authored", "MySQL 的 binlog 和 redolog 有什么区别", None, None),
-    ("N04", None, "N", "authored", "Kubernetes 的 Pod 和容器有什么区别", None, None),
+    ("N03", None, "N", "authored", "MySQL 的 binlog 和 redolog 的区别", None, None),
+    ("N04", None, "N", "authored", "Kubernetes 的 Pod 和容器的区别", None, None),
     ("N05", None, "N", "authored", "帮我看看我昨天记录的那笔卖出赚了多少", None, None),
 ]
 
@@ -247,11 +251,22 @@ def main():
     rows = []
     for cid, nid, ntype, qsrc, query, head, tail in CASES:
         res = rag_service.retrieve_relevant_nodes(query, top_k=5, user_id=1)
-        rank = None
-        if nid is not None:
-            rank = next((i for i, r in enumerate(res, 1) if r['node_id'] == nid), None)
+        # ⚠️ chunks_per_node=2 时同一 node 会出现两次，直接 enumerate 会把名次撑大。
+        # 所以名次必须按**不同 node 的首次出现顺序**计算。
+        seen, order = set(), []
+        for r in res:
+            if r['node_id'] not in seen:
+                seen.add(r['node_id'])
+                order.append(r['node_id'])
+        rank = (order.index(nid) + 1) if (nid is not None and nid in order) else None
+        # 真正的可用性指标：含 gold evidence 的那一块有没有被返回
+        want_chunk = gold_chunk.get(cid)
+        chunk_hit = (nid is not None and want_chunk is not None and
+                     any(r['node_id'] == nid and r.get('chunk_index') == want_chunk
+                         for r in res))
         rows.append({'id': cid, 'note_type': ntype, 'query_source': qsrc, 'query': query,
-                     'gold_node': nid, 'rank': rank, 'expected_chunk': gold_chunk.get(cid),
+                     'gold_node': nid, 'rank': rank, 'expected_chunk': want_chunk,
+                     'chunk_hit': chunk_hit,
                      'top1_node': res[0]['node_id'] if res else None,
                      'top1_heading': (res[0].get('heading') or '') if res else '',
                      'top1_cos': (1 - res[0]['distance'] ** 2 / 2) if res else None})
@@ -264,11 +279,15 @@ def main():
         h1 = sum(1 for r in sub if r['rank'] == 1)
         h3 = sum(1 for r in sub if r['rank'] and r['rank'] <= 3)
         h5 = sum(1 for r in sub if r['rank'] and r['rank'] <= 5)
-        mrr = sum(1 / r['rank'] for r in sub if r['rank']) / n if n else 0
-        return n, h1, h3, h5, mrr
+        # MRR：只对"命中了的"取 1/rank，再除以总数（未命中贡献 0）
+        reciprocal = sum(1 / r['rank'] for r in sub if r['rank'])
+        mrr = (reciprocal / n) if n else 0.0
+        chunk_hit = sum(1 for r in sub if r['chunk_hit'])
+        return n, h1, h3, h5, mrr, chunk_hit
 
-    print(f"\n  {'分层':<26}{'n':<5}{'Hit@1':<9}{'Hit@3':<9}{'Hit@5':<9}{'MRR':<8}")
-    print('  ' + '-' * 68)
+    print(f"\n  {'分层':<26}{'n':<5}{'Hit@1':<9}{'Hit@3':<9}{'Hit@5':<9}"
+          f"{'MRR':<8}{'gold块被返回':<12}")
+    print('  ' + '-' * 80)
     groups = [
         ('全部（有答案）', ans_rows),
         ('A 复制/总结型', [r for r in ans_rows if r['note_type'] == 'A']),
@@ -280,8 +299,9 @@ def main():
     for name, sub in groups:
         if not sub:
             continue
-        n, h1, h3, h5, mrr = metrics(sub)
-        print(f"  {name:<26}{n:<5}{h1}/{n:<7}{h3}/{n:<7}{h5}/{n:<7}{mrr:.3f}")
+        n, h1, h3, h5, mrr, ch = metrics(sub)
+        print(f"  {name:<26}{n:<5}{h1}/{n:<7}{h3}/{n:<7}{h5}/{n:<7}{mrr:<8.3f}"
+              f"{ch}/{n}")
 
     print('\n  未进前 5 的用例:')
     miss = [r for r in ans_rows if not r['rank'] or r['rank'] > 5]

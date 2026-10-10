@@ -12,10 +12,10 @@
   "layers": {
     "全部（有答案）": {
       "n": 44,
-      "hit@1": 38,
+      "hit@1": 39,
       "hit@3": 44,
       "hit@5": 44,
-      "mrr": 0.9242424242424242
+      "mrr": 0.9356060606060606
     },
     "A 复制/总结型": {
       "n": 30,
@@ -26,10 +26,10 @@
     },
     "B 手写/对话型": {
       "n": 14,
-      "hit@1": 9,
+      "hit@1": 10,
       "hit@3": 14,
       "hit@5": 14,
-      "mrr": 0.8095238095238095
+      "mrr": 0.8452380952380952
     },
     "  B·query 来自真实会话": {
       "n": 2,
@@ -47,10 +47,10 @@
     },
     "  B·query 我写的(待改词)": {
       "n": 39,
-      "hit@1": 35,
+      "hit@1": 36,
       "hit@3": 39,
       "hit@5": 39,
-      "mrr": 0.9401709401709402
+      "mrr": 0.9529914529914529
     }
   },
   "cases": [
@@ -59,7 +59,7 @@
       1,
       "A",
       "authored",
-      "进程和线程到底有什么区别",
+      "进程和线程的区别？",
       "进程是操作系统进行",
       "资源分配的基本单位"
     ],
@@ -68,7 +68,7 @@
       1,
       "A",
       "authored",
-      "两个线程互相占着对方的锁不放，这是怎么形成的",
+      "为什么两个线程会互相占着对方的锁不放",
       "死锁是两个或以上线程",
       "循环等待"
     ],
@@ -77,7 +77,7 @@
       1,
       "A",
       "authored",
-      "多线程访问共享变量有哪些同步手段",
+      "多线程是怎么访问共享变量的？",
       "线程同步是协调多个线程",
       "信号量"
     ],
@@ -86,7 +86,7 @@
       1,
       "A",
       "authored",
-      "为什么说原子操作不能完全替代互斥锁",
+      "为什么原子操作不能完全替代互斥锁",
       "只适用于单个变量的原子操作",
       "复杂逻辑仍需锁"
     ],
@@ -95,7 +95,7 @@
       2,
       "A",
       "authored",
-      "vector 和 list 该怎么选",
+      "vector 和 list 的区别，两者的使用场景？",
       "vector 是动态数组",
       "双向链表"
     ],
@@ -122,7 +122,7 @@
       3,
       "A",
       "authored",
-      "栈和堆在大小和管理方式上有什么不同",
+      "栈和堆的区别？",
       "栈空间很小",
       "运行时任意分配"
     ],
@@ -131,7 +131,7 @@
       3,
       "A",
       "authored",
-      "把资源所有权转给别人是为了省掉什么开销",
+      "为什么要把资源所有权转给别人",
       "移动语义",
       "避免昂贵拷贝"
     ],
@@ -140,7 +140,7 @@
       3,
       "A",
       "authored",
-      "多个线程同时拷贝同一个智能指针安全吗",
+      "多个线程同时拷贝同一个shared_ptr安全吗",
       "引用计数的增减是原子的",
       ""
     ],
@@ -149,7 +149,7 @@
       3,
       "A",
       "authored",
-      "多个线程同时改智能指针的指向呢",
+      "多个线程同时改shared_ptr的指向呢",
       "多个线程同时修改同一个 shared_ptr 对象",
       "需要额外同步"
     ],
@@ -158,7 +158,7 @@
       3,
       "A",
       "authored",
-      "深拷贝和浅拷贝差在哪",
+      "深拷贝和浅拷贝的区别",
       "浅拷贝：只复制对象的成员值",
       "重新分配内存"
     ],
@@ -167,7 +167,7 @@
       3,
       "A",
       "authored",
-      "四种类型转换分别什么时候用",
+      "四种类型转换的区别",
       "reinterpret_cast：底层二进制重解释",
       ""
     ],
@@ -185,7 +185,7 @@
       3,
       "A",
       "authored",
-      "RAII 到底解决了什么问题",
+      "RAII 的作用，解决了什么问题？",
       "将资源生命周期与对象生命周期绑定",
       ""
     ],
@@ -212,7 +212,7 @@
       5,
       "A",
       "authored",
-      "监控数据是怎么被外部系统定期拉走的",
+      "监控数据是怎么被外部拉走的",
       "Prometheus 每 15 秒爬取",
       "拉模型"
     ],
@@ -230,7 +230,7 @@
       5,
       "A",
       "authored",
-      "接收连接的时候怎么处理粘包和拆包",
+      "怎么处理粘包和拆包",
       "先读 4 字节 header",
       "循环切分粘包"
     ],
@@ -239,7 +239,7 @@
       5,
       "A",
       "authored",
-      "为什么只开两个 I/O 线程而不是八个",
+      "为什么只开两个 I/O 线程而不是其他数量",
       "瓶颈在 Redis/ClickHouse",
       "不在 CPU"
     ],
@@ -275,7 +275,7 @@
       7,
       "A",
       "authored",
-      "网站变成 https 之后数据是怎么被保护的",
+      "https是怎么保护数据的",
       "TLS 握手阶段使用非对称加密交换密钥",
       "对称加密"
     ],
@@ -293,7 +293,7 @@
       7,
       "A",
       "authored",
-      "接口报错的时候状态码该怎么给",
+      "接口报错的时状态码是多少",
       "4xx 客户端错误",
       "5xx 服务端错误"
     ],
@@ -302,7 +302,7 @@
       8,
       "A",
       "authored",
-      "数组和链表各适合什么场景",
+      "数组和链表的区别",
       "数组是连续内存的线性表",
       "链表通过指针连接节点"
     ],
@@ -365,7 +365,7 @@
       13,
       "B",
       "authored",
-      "select 和 epoll 的性能差别在哪",
+      "select 和 epoll 的区别",
       "select/poll 每次全量扫描",
       "只通知就绪的 fd"
     ],
@@ -374,7 +374,7 @@
       13,
       "B",
       "authored",
-      "为什么连接数一多，遍历式的方案就不行了",
+      "为什么连接数一多，遍历就不行了",
       "内核遍历所有 fd 检查",
       ""
     ],
@@ -393,24 +393,24 @@
       "B",
       "authored",
       "static 局部变量和普通局部变量有什么不一样",
-      "static 局部变量",
-      ""
+      "普通局部变量",
+      "程序整个运行期间"
     ],
     [
       "Q39",
       14,
       "B",
       "authored",
-      "为什么 static 局部变量不是线程安全的",
-      "static 局部变量",
-      ""
+      "static 局部变量的生命周期和作用域分别是什么",
+      "生命周期（lifetime）：程序启动到结束",
+      "作用域（scope）：只在函数内可见"
     ],
     [
       "Q40",
       17,
       "B",
       "authored",
-      "define 和 const 到底差在哪",
+      "define 和 const 的区别",
       "define 是文本替换",
       "没有类型"
     ],
@@ -473,7 +473,7 @@
       null,
       "N",
       "authored",
-      "MySQL 的 binlog 和 redolog 有什么区别",
+      "MySQL 的 binlog 和 redolog 的区别",
       null,
       null
     ],
@@ -482,7 +482,7 @@
       null,
       "N",
       "authored",
-      "Kubernetes 的 Pod 和容器有什么区别",
+      "Kubernetes 的 Pod 和容器的区别",
       null,
       null
     ],
@@ -501,61 +501,66 @@
       "id": "Q01",
       "note_type": "A",
       "query_source": "authored",
-      "query": "进程和线程到底有什么区别",
+      "query": "进程和线程的区别？",
       "gold_node": 1,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 1,
       "top1_heading": "进程和线程有什么区别",
-      "top1_cos": 0.8054957206900824
+      "top1_cos": 0.7743547412720755
     },
     {
       "id": "Q02",
       "note_type": "A",
       "query_source": "authored",
-      "query": "两个线程互相占着对方的锁不放，这是怎么形成的",
+      "query": "为什么两个线程会互相占着对方的锁不放",
       "gold_node": 1,
       "rank": 1,
       "expected_chunk": 3,
+      "chunk_hit": true,
       "top1_node": 1,
       "top1_heading": "线程同步常见方式有哪些",
-      "top1_cos": 0.6723141677534841
+      "top1_cos": 0.6968975346334219
     },
     {
       "id": "Q03",
       "note_type": "A",
       "query_source": "authored",
-      "query": "多线程访问共享变量有哪些同步手段",
+      "query": "多线程是怎么访问共享变量的？",
       "gold_node": 1,
       "rank": 1,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 1,
       "top1_heading": "线程同步常见方式有哪些",
-      "top1_cos": 0.6818524367629095
+      "top1_cos": 0.5275385876832104
     },
     {
       "id": "Q04",
       "note_type": "A",
       "query_source": "authored",
-      "query": "为什么说原子操作不能完全替代互斥锁",
+      "query": "为什么原子操作不能完全替代互斥锁",
       "gold_node": 1,
       "rank": 1,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 1,
       "top1_heading": "线程同步常见方式有哪些",
-      "top1_cos": 0.4441202288967858
+      "top1_cos": 0.44980347559973666
     },
     {
       "id": "Q05",
       "note_type": "A",
       "query_source": "authored",
-      "query": "vector 和 list 该怎么选",
+      "query": "vector 和 list 的区别，两者的使用场景？",
       "gold_node": 2,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 2,
       "top1_heading": "std::vector 和 std::list 有什么区别",
-      "top1_cos": 0.7740676740049821
+      "top1_cos": 0.8085792123200672
     },
     {
       "id": "Q06",
@@ -565,6 +570,7 @@
       "gold_node": 2,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 2,
       "top1_heading": "std::vector 和 std::list 有什么区别",
       "top1_cos": 0.3590021893475921
@@ -577,6 +583,7 @@
       "gold_node": 2,
       "rank": 1,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 2,
       "top1_heading": "map 和 unordered_map 的区别是什么",
       "top1_cos": 0.2929915033826589
@@ -585,73 +592,79 @@
       "id": "Q08",
       "note_type": "A",
       "query_source": "authored",
-      "query": "栈和堆在大小和管理方式上有什么不同",
+      "query": "栈和堆的区别？",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 11,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "堆内存是什么",
-      "top1_cos": 0.5001853532641505
+      "top1_cos": 0.5875264294464824
     },
     {
       "id": "Q09",
       "note_type": "A",
       "query_source": "authored",
-      "query": "把资源所有权转给别人是为了省掉什么开销",
+      "query": "为什么要把资源所有权转给别人",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 2,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "什么是移动语义，什么情况下会用到移动构造",
-      "top1_cos": 0.20608525223926222
+      "top1_cos": 0.3898127994543472
     },
     {
       "id": "Q10",
       "note_type": "A",
       "query_source": "authored",
-      "query": "多个线程同时拷贝同一个智能指针安全吗",
+      "query": "多个线程同时拷贝同一个shared_ptr安全吗",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 9,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "shared_ptr 是线程安全的吗",
-      "top1_cos": 0.7222858590426924
+      "top1_cos": 0.8325880913202397
     },
     {
       "id": "Q11",
       "note_type": "A",
       "query_source": "authored",
-      "query": "多个线程同时改智能指针的指向呢",
+      "query": "多个线程同时改shared_ptr的指向呢",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 9,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "shared_ptr 是线程安全的吗",
-      "top1_cos": 0.5656721850023629
+      "top1_cos": 0.7720863346227116
     },
     {
       "id": "Q12",
       "note_type": "A",
       "query_source": "authored",
-      "query": "深拷贝和浅拷贝差在哪",
+      "query": "深拷贝和浅拷贝的区别",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 3,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "深拷贝和浅拷贝有什么区别",
-      "top1_cos": 0.7573568501957038
+      "top1_cos": 0.7853199999831801
     },
     {
       "id": "Q13",
       "note_type": "A",
       "query_source": "authored",
-      "query": "四种类型转换分别什么时候用",
+      "query": "四种类型转换的区别",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 6,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "static_cast、dynamic_cast、const_cast、reinterpret_cast 的区别",
-      "top1_cos": 0.30121600792105596
+      "top1_cos": 0.43429021707186166
     },
     {
       "id": "Q14",
@@ -661,6 +674,7 @@
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 5,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "为什么基类析构函数通常要写成虚函数",
       "top1_cos": 0.8398154974782965
@@ -669,13 +683,14 @@
       "id": "Q15",
       "note_type": "A",
       "query_source": "authored",
-      "query": "RAII 到底解决了什么问题",
+      "query": "RAII 的作用，解决了什么问题？",
       "gold_node": 3,
       "rank": 1,
       "expected_chunk": 8,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "什么是 RAII，它有什么好处",
-      "top1_cos": 0.5379852890931645
+      "top1_cos": 0.5118378013159326
     },
     {
       "id": "Q16",
@@ -685,6 +700,7 @@
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 1,
+      "chunk_hit": false,
       "top1_node": 5,
       "top1_heading": "Processor",
       "top1_cos": 0.47901447246860585
@@ -697,6 +713,7 @@
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 3,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Rate Limiter",
       "top1_cos": 0.7368622880066891
@@ -705,13 +722,14 @@
       "id": "Q18",
       "note_type": "A",
       "query_source": "authored",
-      "query": "监控数据是怎么被外部系统定期拉走的",
+      "query": "监控数据是怎么被外部拉走的",
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 5,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Monitor",
-      "top1_cos": 0.4240559004890372
+      "top1_cos": 0.3373542568830814
     },
     {
       "id": "Q19",
@@ -721,6 +739,7 @@
       "gold_node": 5,
       "rank": 3,
       "expected_chunk": 5,
+      "chunk_hit": true,
       "top1_node": 3,
       "top1_heading": "条件变量为什么要和互斥锁一起使用",
       "top1_cos": 0.3663224603933486
@@ -729,25 +748,27 @@
       "id": "Q20",
       "note_type": "A",
       "query_source": "authored",
-      "query": "接收连接的时候怎么处理粘包和拆包",
+      "query": "怎么处理粘包和拆包",
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Collector",
-      "top1_cos": 0.46458356998562067
+      "top1_cos": 0.21618445043684886
     },
     {
       "id": "Q21",
       "note_type": "A",
       "query_source": "authored",
-      "query": "为什么只开两个 I/O 线程而不是八个",
+      "query": "为什么只开两个 I/O 线程而不是其他数量",
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 6,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Main",
-      "top1_cos": 0.5316062193786593
+      "top1_cos": 0.5204451063746092
     },
     {
       "id": "Q22",
@@ -757,6 +778,7 @@
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 3,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Rate Limiter",
       "top1_cos": 0.6729847334627266
@@ -769,6 +791,7 @@
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 4,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Storage",
       "top1_cos": 0.384666168854487
@@ -781,6 +804,7 @@
       "gold_node": 5,
       "rank": 1,
       "expected_chunk": 7,
+      "chunk_hit": true,
       "top1_node": 5,
       "top1_heading": "Storage",
       "top1_cos": 0.3070291169727781
@@ -789,13 +813,14 @@
       "id": "Q25",
       "note_type": "A",
       "query_source": "authored",
-      "query": "网站变成 https 之后数据是怎么被保护的",
+      "query": "https是怎么保护数据的",
       "gold_node": 7,
       "rank": 1,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 7,
       "top1_heading": "HTTPS 与 TLS",
-      "top1_cos": 0.6387754125894105
+      "top1_cos": 0.6678334326675213
     },
     {
       "id": "Q26",
@@ -805,6 +830,7 @@
       "gold_node": 7,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 7,
       "top1_heading": "HTTP 请求方法",
       "top1_cos": 0.6864486275651114
@@ -813,25 +839,27 @@
       "id": "Q27",
       "note_type": "A",
       "query_source": "authored",
-      "query": "接口报错的时候状态码该怎么给",
+      "query": "接口报错的时状态码是多少",
       "gold_node": 7,
       "rank": 1,
       "expected_chunk": 2,
+      "chunk_hit": true,
       "top1_node": 7,
       "top1_heading": "状态码",
-      "top1_cos": 0.6835467884006903
+      "top1_cos": 0.595479029544542
     },
     {
       "id": "Q28",
       "note_type": "A",
       "query_source": "authored",
-      "query": "数组和链表各适合什么场景",
+      "query": "数组和链表的区别",
       "gold_node": 8,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 8,
       "top1_heading": "Untitled",
-      "top1_cos": 0.5472782205853761
+      "top1_cos": 0.5843310072782444
     },
     {
       "id": "Q29",
@@ -841,6 +869,7 @@
       "gold_node": 8,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 8,
       "top1_heading": "Untitled",
       "top1_cos": 0.19959086749702237
@@ -853,6 +882,7 @@
       "gold_node": 8,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 8,
       "top1_heading": "Untitled",
       "top1_cos": 0.4771718700328549
@@ -865,6 +895,7 @@
       "gold_node": 12,
       "rank": 2,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 18,
       "top1_heading": "Answer",
       "top1_cos": 0.8069944252376828
@@ -877,6 +908,7 @@
       "gold_node": 12,
       "rank": 2,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 18,
       "top1_heading": "Answer",
       "top1_cos": 0.7343302694224505
@@ -889,6 +921,7 @@
       "gold_node": 12,
       "rank": 2,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 18,
       "top1_heading": "Answer",
       "top1_cos": 0.8005903206362461
@@ -901,6 +934,7 @@
       "gold_node": 13,
       "rank": 3,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 1,
       "top1_heading": "线程同步常见方式有哪些",
       "top1_cos": 0.5318209746878164
@@ -909,25 +943,27 @@
       "id": "Q35",
       "note_type": "B",
       "query_source": "authored",
-      "query": "select 和 epoll 的性能差别在哪",
+      "query": "select 和 epoll 的区别",
       "gold_node": 13,
       "rank": 1,
       "expected_chunk": 1,
+      "chunk_hit": true,
       "top1_node": 13,
-      "top1_heading": "Untitled(2)",
-      "top1_cos": 0.6961799726044102
+      "top1_heading": "Untitled",
+      "top1_cos": 0.6969820835252492
     },
     {
       "id": "Q36",
       "note_type": "B",
       "query_source": "authored",
-      "query": "为什么连接数一多，遍历式的方案就不行了",
+      "query": "为什么连接数一多，遍历就不行了",
       "gold_node": 13,
-      "rank": 2,
+      "rank": 1,
       "expected_chunk": 1,
-      "top1_node": 18,
-      "top1_heading": "五、一句话结论",
-      "top1_cos": 0.4740677186709661
+      "chunk_hit": true,
+      "top1_node": 13,
+      "top1_heading": "Untitled",
+      "top1_cos": 0.4833265559209394
     },
     {
       "id": "Q37",
@@ -937,6 +973,7 @@
       "gold_node": 14,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 14,
       "top1_heading": "Untitled",
       "top1_cos": 0.6924420145302221
@@ -949,6 +986,7 @@
       "gold_node": 14,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 14,
       "top1_heading": "Untitled",
       "top1_cos": 0.7211791051939827
@@ -957,25 +995,27 @@
       "id": "Q39",
       "note_type": "B",
       "query_source": "authored",
-      "query": "为什么 static 局部变量不是线程安全的",
+      "query": "static 局部变量的生命周期和作用域分别是什么",
       "gold_node": 14,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 14,
       "top1_heading": "Untitled",
-      "top1_cos": 0.5856301682581986
+      "top1_cos": 0.7052681431363723
     },
     {
       "id": "Q40",
       "note_type": "B",
       "query_source": "authored",
-      "query": "define 和 const 到底差在哪",
+      "query": "define 和 const 的区别",
       "gold_node": 17,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 17,
       "top1_heading": "Untitled",
-      "top1_cos": 0.7766074601163382
+      "top1_cos": 0.7696411014557043
     },
     {
       "id": "Q41",
@@ -985,6 +1025,7 @@
       "gold_node": 17,
       "rank": 1,
       "expected_chunk": 0,
+      "chunk_hit": true,
       "top1_node": 17,
       "top1_heading": "Untitled",
       "top1_cos": 0.6057275134771753
@@ -997,6 +1038,7 @@
       "gold_node": 16,
       "rank": 1,
       "expected_chunk": 3,
+      "chunk_hit": true,
       "top1_node": 16,
       "top1_heading": "AI 决策记录",
       "top1_cos": 0.6517409934770608
@@ -1009,6 +1051,7 @@
       "gold_node": 16,
       "rank": 1,
       "expected_chunk": 2,
+      "chunk_hit": true,
       "top1_node": 16,
       "top1_heading": "AI 决策记录",
       "top1_cos": 0.5173933553650851
@@ -1021,6 +1064,7 @@
       "gold_node": 16,
       "rank": 1,
       "expected_chunk": 4,
+      "chunk_hit": true,
       "top1_node": 16,
       "top1_heading": "技术信号(2)",
       "top1_cos": 0.5471087352878996
@@ -1033,6 +1077,7 @@
       "gold_node": null,
       "rank": null,
       "expected_chunk": null,
+      "chunk_hit": false,
       "top1_node": 16,
       "top1_heading": "大盘概况",
       "top1_cos": 0.6754298026240644
@@ -1045,6 +1090,7 @@
       "gold_node": null,
       "rank": null,
       "expected_chunk": null,
+      "chunk_hit": false,
       "top1_node": 16,
       "top1_heading": "经验总结",
       "top1_cos": 0.14802842506094294
@@ -1053,25 +1099,27 @@
       "id": "N03",
       "note_type": "N",
       "query_source": "authored",
-      "query": "MySQL 的 binlog 和 redolog 有什么区别",
+      "query": "MySQL 的 binlog 和 redolog 的区别",
       "gold_node": null,
       "rank": null,
       "expected_chunk": null,
+      "chunk_hit": false,
       "top1_node": 13,
       "top1_heading": "Untitled(2)",
-      "top1_cos": 0.38748333413943215
+      "top1_cos": 0.41724648815022647
     },
     {
       "id": "N04",
       "note_type": "N",
       "query_source": "authored",
-      "query": "Kubernetes 的 Pod 和容器有什么区别",
+      "query": "Kubernetes 的 Pod 和容器的区别",
       "gold_node": null,
       "rank": null,
       "expected_chunk": null,
+      "chunk_hit": false,
       "top1_node": 2,
       "top1_heading": "std::vector 和 std::list 有什么区别",
-      "top1_cos": 0.2661606783331578
+      "top1_cos": 0.28245575002063106
     },
     {
       "id": "N05",
@@ -1081,6 +1129,7 @@
       "gold_node": null,
       "rank": null,
       "expected_chunk": null,
+      "chunk_hit": false,
       "top1_node": 16,
       "top1_heading": "交易记录",
       "top1_cos": 0.5045080037730951

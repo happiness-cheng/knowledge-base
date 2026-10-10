@@ -126,6 +126,9 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
     top_k = _bounded_int(input_dict.get("top_k"), default=5, minimum=1, maximum=10)
 
     user_id = kwargs.get("user_id", 1)
+    # chunks_per_node 走 rag_service 的模块默认值（MAX_CHUNKS_PER_NODE=2）：
+    # 每个 node 多返回一块，实测把"答案段进上下文"从 0.818 提到 0.977，延迟仅 +10ms。
+    # 依据见 rag_service.retrieve_relevant_nodes 的注释与 exp_rerank_decision.py。
     results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
     # 截断内容避免撑爆上下文
     trimmed = []
