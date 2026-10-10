@@ -30,10 +30,14 @@ from pathlib import Path
 _BACKEND = Path(r'C:/Users/陈独秀/knowledge-base/backend')
 sys.path.insert(0, str(_BACKEND))
 sys.path.insert(0, str(_BACKEND / 'eval'))
+# 引导：必须在导入任何 app 模块之前执行（设 DATABASE_URL、净化 NO_PROXY）。
+# 注意：不要写 `import eval._bootstrap` —— `eval` 是内置函数名，且本目录不是包，
+# 直接按文件名导入最稳。
+import _bootstrap  # noqa: E402,F401
 sys.stdout.reconfigure(encoding='utf-8')
 
 import dsh_provider  # noqa: E402
-import eval.generation_eval as ge  # noqa: E402
+import generation_eval as ge  # noqa: E402
 from app.services import rag_service  # noqa: E402
 
 REFUSAL_SYS = (
@@ -94,37 +98,53 @@ def main():
     gen = dsh_provider.make_caller(dsh_provider.GEN_MODEL, max_tokens=8192)
     judge = dsh_provider.make_caller(dsh_provider.JUDGE_MODEL, max_tokens=16384)
 
-    # 知识库里最新数据的日期（人工确认：node16 交易日志标题为 2026-05-20）。
-    # 为什么必须告知生成器"今天是什么时候"：否则模型无从判断"今天"与笔记日期的关系，
-    # 只能按相似度作答 —— 实测 N01 把 5/20 的指数当作"今天"报出（时效性幻觉）。
-    KB_DATE = '2026-10-10'      # 评测执行日
-    NOTES_LATEST = '2026-05-20'
+    # ⚠️ 这里**不再注入任何硬编码日期**（上一版写死 KB_DATE/NOTES_LATEST，
+    # 那只是用来证明问题所在，不是工程方案）。现在测真实链路：
+    #   · 工具输出：agent_tools._handle_search 的原始 JSON（含 note_date/kb_latest_date）
+    #   · 提示词：只根据上下文作答 + 生产同一条 DATA_FRESHNESS_RULES（共享常量）
+    # 若模型仍能正确拒答，说明"日期随检索结果流转"这条生产修复有效。
+    #
+    # 为什么不用 AGENT_SYSTEM_PROMPT：它教模型"调用工具"，而本评测是**直接问**模型
+    # （不起 Agent 循环），于是模型会输出工具调用文本（实测出现 DSML 格式的
+    # `<｜｜DSML｜｜ invoke ...>`，判定器判定为"未作答"）。所以用 GENERATE_SYS 的
+    # "只根据上下文回答"框架 + 同一套时效规则。
+    from app.services.agent_service import AGENT_SYSTEM_PROMPT, DATA_FRESHNESS_RULES
+    from app.services.agent_tools import _handle_search
+    from app.database import SessionLocal
+
+    # 一致性校验：共享常量必须真的在生产 system prompt 里（防两处漂移）
+    assert DATA_FRESHNESS_RULES.splitlines()[1] in AGENT_SYSTEM_PROMPT, (
+        'DATA_FRESHNESS_RULES 与 AGENT_SYSTEM_PROMPT 不一致 —— 生产提示词没同步')
+    gen_sys = ge.GENERATE_SYS + '\n\n' + DATA_FRESHNESS_RULES
 
     print(f'负例 {len(negatives)} 条  集合={rag_service._get_user_collection(1).name}')
-    print(f'评测日={KB_DATE}  库内最新数据日期={NOTES_LATEST}\n')
+    print('真实链路：_handle_search 的 JSON + GENERATE_SYS + 生产时效规则（无硬编码日期）\n')
 
     def one(case):
         cid, _nid, _nt, _qs, question, _h, _t = case
         t0 = time.perf_counter()
-        retrieved = rag_service.retrieve_relevant_nodes(question, top_k=3, user_id=1)
-        ctxs = [c['content'] for c in retrieved]
-        ctx_text = '\n---\n'.join(f'[doc:{c["node_id"]}] {c["content"]}' for c in retrieved)
-        # 把"今天"和"笔记最新日期"都给模型，让它能判断时间是否匹配
-        gen_sys = (ge.GENERATE_SYS +
-                   f'\n\nTEMPORAL AWARENESS: Today is {KB_DATE}. '
-                   f'The knowledge base\'s most recent data is dated {NOTES_LATEST}. '
-                   'If the user asks about a time period the context does not cover '
-                   '(e.g. "today"/"yesterday"/"this week" when the newest note is older), '
-                   'you MUST say the context does not cover that period instead of '
-                   'presenting an older fact as if it were current.')
-        answer = gen(gen_sys, f'CONTEXT:\n{ctx_text}\n\nQUESTION: {question}')
-        verdict, reason = judge_refusal(judge, question, ctxs, answer, kb_date=KB_DATE)
+        db = SessionLocal()
+        try:
+            tool_out = _handle_search({'query': question, 'top_k': 3}, db, user_id=1)
+        finally:
+            db.close()
+        try:
+            parsed = json.loads(tool_out)
+            items = parsed if isinstance(parsed, list) else []
+        except Exception:
+            items = []
+        ctxs = [it.get('content', '') for it in items]
+        answer = gen(gen_sys, f'CONTEXT (JSON from search tool):\n{tool_out}\n\nQUESTION: {question}')
+        verdict, reason = judge_refusal(judge, question, ctxs, answer)
         faith, fdet = ge.faithfulness(judge, answer, ctxs)
         return {
             'id': cid, 'kind': KIND[cid][0], 'why': KIND[cid][1],
             'question': question, 'answer': answer,
-            'top1_node': retrieved[0]['node_id'] if retrieved else None,
-            'top1_cos': (1 - retrieved[0]['distance'] ** 2 / 2) if retrieved else None,
+            'top1_node': items[0].get('node_id') if items else None,
+            'top1_cos': (1 - items[0]['distance'] ** 2 / 2)
+            if items and items[0].get('distance') is not None else None,
+            'note_dates': [it.get('note_date') for it in items],
+            'kb_latest_date': items[0].get('kb_latest_date') if items else None,
             'verdict': verdict, 'reason': reason, 'faithfulness': faith,
             'unsupported': fdet.get('unsupported', []),
             'latency_ms': (time.perf_counter() - t0) * 1000,

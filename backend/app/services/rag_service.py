@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 from chromadb import PersistentClient
@@ -5,6 +6,7 @@ from app.env_sanitize import sanitize_no_proxy  # noqa: F401  必须最先执行
 from app.models.node import KnowledgeNode
 from app.database import SessionLocal
 from app.utils.markdown_cleaner import split_by_headings
+from app.utils.time_meta import note_date_of
 
 # Setup paths
 CHROMA_DB_DIR = Path(__file__).parent.parent.parent / "chroma_db"
@@ -126,7 +128,6 @@ def remove_node_from_index(node_id: int, user_id: int = 1):
         # 兜底：旧版 id = str(node_id) 也可能残留
         collection.delete(ids=[str(node_id)])
     except Exception as e:
-        import logging
         logging.getLogger(__name__).warning("Error deleting from chroma: %s", e)
 
 
@@ -191,7 +192,69 @@ def retrieve_relevant_nodes(query: str, top_k: int = 3, user_id: int = 1,
     out: list[dict] = []
     for node_id in order[:top_k]:
         out.extend(grouped[node_id])
-    return out
+    return _attach_note_dates(out, user_id)
+
+
+def _attach_note_dates(items: list[dict], user_id: int) -> list[dict]:
+    """给检索结果补上"笔记日期"，并整体附上"库内最新数据日期"。
+
+    ## 为什么需要（2026-10-10 实测，M5-35 数据新鲜度）
+    实测负例「今天上证指数收盘多少」被答成「今天收盘 4166.29」——那个数字来自一条
+    **2026-05-20** 的交易日志。这类**时效性幻觉**的特征是：faithfulness 满分、引用正确、
+    数字真实，**但对用户完全错误**（把 5 个月前的数据当"今天"）。
+
+    根因是**信息缺失**而非阈值：余弦只测"语义是否相邻"，测不出"时间是否匹配"；
+    而检索结果里既没有笔记日期，也没有"库里最新到什么时候"。
+    正例最高余弦 0.671 与负例最高余弦 0.675 几乎相等，正说明余弦分不开这两者。
+
+    ## 实现取舍
+    · 一次 SQL 批量取（`id.in_()`），不做 N+1 查询
+    · 日期来源优先标题/正文里的日期（事件发生时间），退回 `created_at`（入库时间），
+      并用 `date_source` 标明 —— **不能把入库时间当事件时间用**
+    · 失败时**静默降级**为空日期，不让检索整体失败（这类元数据是增强而非必需）
+    """
+    if not items:
+        return items
+    node_ids = list({it['node_id'] for it in items})
+    meta: dict[int, tuple[str, str]] = {}
+    latest = ''
+    _log = logging.getLogger(__name__)
+    _db = SessionLocal()
+    try:
+        rows = (_db.query(KnowledgeNode.id, KnowledgeNode.title, KnowledgeNode.content,
+                          KnowledgeNode.created_at)
+                .filter(KnowledgeNode.id.in_(node_ids)).all())
+        for nid, title, content, created in rows:
+            meta[nid] = note_date_of(title, content, created)
+
+        # ⚠️ kb_latest_date 必须是**全库**最新日期，不能只算本批结果里的最大值。
+        # 实测踩过：同一份库，query 不同会得到 2026-05-11 / 2026-05-21 两个值 ——
+        # 那样模型会误以为"库只到 5 月 11 日"，从而错误判定"今天的数据没有"。
+        # 这也是"数据新鲜度"的语义：它描述**整个知识库的覆盖范围**。
+        try:
+            all_rows = (_db.query(KnowledgeNode.title, KnowledgeNode.content,
+                                  KnowledgeNode.created_at)
+                        .filter(KnowledgeNode.user_id == user_id).all())
+        except Exception as e:
+            # 旧评测库（2026-05 的 SQLite）**没有 user_id 列**，会在这里抛错。
+            # 之前这里被外层 except 一起吞掉，导致 meta 也变空（连带 note_date 全丢）——
+            # 那是"静默失败"，所以这里显式降级并**打出可见日志**。
+            _log.warning("kb_latest_date: user_id filter failed (%s); "
+                         "falling back to whole table", e)
+            _db.rollback()
+            all_rows = _db.query(KnowledgeNode.title, KnowledgeNode.content,
+                                 KnowledgeNode.created_at).all()
+        latest = max((note_date_of(t, c, cr)[0] for t, c, cr in all_rows), default='')
+    except Exception as e:
+        # 元数据是增强项：失败降级为"无日期"，但不能让检索整体失败
+        _log.warning("attach note dates failed: %s", e)
+    finally:
+        _db.close()
+
+    for it in items:
+        it['note_date'], it['date_source'] = meta.get(it['node_id'], ('', 'unknown'))
+        it['kb_latest_date'] = latest
+    return items
 
 
 def reindex_all_nodes(user_id: int = 1):

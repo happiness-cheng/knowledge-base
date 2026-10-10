@@ -130,7 +130,6 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
     # 每个 node 多返回一块，实测把"答案段进上下文"从 0.818 提到 0.977，延迟仅 +10ms。
     # 依据见 rag_service.retrieve_relevant_nodes 的注释与 exp_rerank_decision.py。
     results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
-    # 截断内容避免撑爆上下文
     trimmed = []
     for r in results:
         content = r.get("content", "")
@@ -143,6 +142,16 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
             "title": r.get("title", ""),
             "content": content,
             "distance": r.get("distance"),
+            # ↓ 数据新鲜度（M5-35）：没有这两个字段，模型无法判断"用户问的时间段库里覆盖没覆盖"，
+            #   只能按语义相似度硬答 —— 实测负例「今天上证指数收盘多少」被答成"今天收盘 4166.29"，
+            #   而那个数字来自 2026-05-20 的交易日志（时效性幻觉，且 faithfulness 满分）。
+            "note_date": r.get("note_date", ""),
+            "date_source": r.get("date_source", ""),   # title/content/created_at，标明日期可信度
+            # 全库最新数据日期：让模型知道"库的覆盖范围"，而不是只看本批结果。
+            # 每项都带一份是**刻意的冗余**：返回体必须保持"列表"结构，
+            # 因为 agent_service.py 的引用追踪按 list 解析（`isinstance(result_data, list)`）。
+            # 一旦改成 {"results": [...]} 字典，引用白名单会静默失效 —— 那正是它要防的幻觉。
+            "kb_latest_date": r.get("kb_latest_date", ""),
         })
     return json.dumps(trimmed, ensure_ascii=False)
 
