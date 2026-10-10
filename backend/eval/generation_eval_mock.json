@@ -1,0 +1,2726 @@
+{
+  "mode": "mock",
+  "model": "MOCK",
+  "top_k": 3,
+  "summary": {
+    "n_cases": 44,
+    "n_scored": 44,
+    "n_errors": 0,
+    "faithfulness": 0.6372,
+    "faithfulness_n": 44,
+    "answer_relevancy": 0.75,
+    "answer_relevancy_n": 44,
+    "context_recall": 0.6061,
+    "context_recall_n": 44,
+    "median_latency_ms": 0.0,
+    "gold_in_context_rate": 0.9773
+  },
+  "cases": [
+    {
+      "id": "Q01",
+      "question": "进程和线程的区别？",
+      "ref_node": 1,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.17630000365898013,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "进程是操作系统进行**资源分配的基本单位**，拥有独立的地址空间；",
+            "线程是**CPU调度的基本单位**，共享进程的内存和资源。",
+            "进程隔离性强，创建/切换开销大；",
+            "线程共享地址空间，切换开销小，但同步复杂且一个线程崩溃可能影响整个进程。",
+            "进程用于需要强隔离的独立服务（如微服务、浏览器多标签页）；",
+            "线程用于需要高性能并发的任务（如多核计算、GUI线程）。",
+            "进程间通信（IPC）复杂、成本高；",
+            "线程存在数据竞态、死锁、资源泄漏等并发风险。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q02",
+      "question": "为什么两个线程会互相占着对方的锁不放",
+      "ref_node": 1,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.13110000145388767,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "死锁是两个或以上线程/进程互相持有对方需要的资源且互不释放，导致所有相关任务无限期阻塞。",
+            "四个必要条件必须同时满足：**互斥**、**持有并等待**、**不可剥夺**、**循环等待**。",
+            "嵌套获取多个锁、数据库事务等待、多线程转账等。",
+            "一旦发生，相关线程永久阻塞，系统部分功能丧失，查找和恢复困难。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q03",
+      "question": "多线程是怎么访问共享变量的？",
+      "ref_node": 1,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.008800001523923129,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "定义**  线程同步是协调多个线程对共享资源的访问，防止数据不一致。",
+            "常见方式包括互斥锁、条件变量、原子操作、读写锁、信号量等。",
+            "互斥锁 (mutex)**  - **特点**：独占访问，加锁期间其他线程阻塞。",
+            "场景**：保护临界区，一次只允许一个线程修改共享数据。",
+            "风险**：不当使用可能导致死锁或锁竞争严重。",
+            "条件变量 (condition_variable)**  - **特点**：与互斥锁配合，让线程等待某个条件成立时唤醒。",
+            "场景**：生产者-消费者模型。",
+            "风险**：必须用 while 循环检查条件，避免虚假唤醒；",
+            "原子操作 (atomic)**  - **特点**：无锁、不可中断，性能高。",
+            "场景**：计数器、标志位等简单数据。",
+            "风险**：只适用于单个变量的原子操作，复杂逻辑仍需锁。",
+            "读写锁 (shared_mutex)**  - **特点**：允许多读单写，读共享写独占。",
+            "场景**：读多写少的缓存、配置管理。",
+            "风险**：写线程可能饿死，实现开销略高。",
+            "信号量 (counting_semaphore)**  - **特点**：控制同时访问资源的线程数量。",
+            "场景**：连接池限流、资源池控制。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q04",
+      "question": "为什么原子操作不能完全替代互斥锁",
+      "ref_node": 1,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.9645999962231144,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "定义**  线程同步是协调多个线程对共享资源的访问，防止数据不一致。",
+            "常见方式包括互斥锁、条件变量、原子操作、读写锁、信号量等。",
+            "互斥锁 (mutex)**  - **特点**：独占访问，加锁期间其他线程阻塞。",
+            "场景**：保护临界区，一次只允许一个线程修改共享数据。",
+            "风险**：不当使用可能导致死锁或锁竞争严重。",
+            "条件变量 (condition_variable)**  - **特点**：与互斥锁配合，让线程等待某个条件成立时唤醒。",
+            "场景**：生产者-消费者模型。",
+            "风险**：必须用 while 循环检查条件，避免虚假唤醒；",
+            "原子操作 (atomic)**  - **特点**：无锁、不可中断，性能高。",
+            "场景**：计数器、标志位等简单数据。",
+            "风险**：只适用于单个变量的原子操作，复杂逻辑仍需锁。",
+            "读写锁 (shared_mutex)**  - **特点**：允许多读单写，读共享写独占。",
+            "场景**：读多写少的缓存、配置管理。",
+            "风险**：写线程可能饿死，实现开销略高。",
+            "信号量 (counting_semaphore)**  - **特点**：控制同时访问资源的线程数量。",
+            "场景**：连接池限流、资源池控制。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q05",
+      "question": "vector 和 list 的区别，两者的使用场景？",
+      "ref_node": 2,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.3530000030878,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "vector 是动态数组（连续内存）；",
+            "list 是双向链表（非连续节点）。",
+            "vector：随机访问 O(1)，尾端插入/删除快，非尾端插入/删除需移动元素 O(n)，扩容导致迭代器失效。",
+            "list：不提供随机访问，任何位置插入/删除 O(1)，迭代器稳定，频繁申请/释放内存有额外开销。",
+            "vector：需要随机访问、尾部增减、缓存友好的场景。",
+            "list：需要频繁在中间插入/删除且迭代器不能失效的场景。",
+            "vector 首中部插入可能引发性能问题，扩容可能抛出异常并导致迭代器失效。",
+            "list 内存碎片化严重，缓存局部性差，导致遍历慢。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q06",
+      "question": "扩容之后原来的迭代器还能用吗",
+      "ref_node": 2,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6428571428571429,
+      "latency_ms": 0.020699997548945248,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "vector 是动态数组（连续内存）；",
+            "list 是双向链表（非连续节点）。",
+            "vector：随机访问 O(1)，尾端插入/删除快，非尾端插入/删除需移动元素 O(n)，扩容导致迭代器失效。",
+            "list：不提供随机访问，任何位置插入/删除 O(1)，迭代器稳定，频繁申请/释放内存有额外开销。",
+            "vector：需要随机访问、尾部增减、缓存友好的场景。",
+            "list：需要频繁在中间插入/删除且迭代器不能失效的场景。",
+            "vector 首中部插入可能引发性能问题，扩容可能抛出异常并导致迭代器失效。",
+            "list 内存碎片化严重，缓存局部性差，导致遍历慢。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q07",
+      "question": "需要按键的顺序遍历，应该用哪个容器",
+      "ref_node": 2,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6428571428571429,
+      "latency_ms": 0.008000002708286047,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "map 基于红黑树，元素按键有序；",
+            "unordered_map 基于哈希表，元素无序。",
+            "map 的插入/查找/删除均为 O(log n)，可按键序遍历。",
+            "unordered_map 平均 O(1)，最坏 O(n)（哈希冲突），需要哈希函数和桶管理，内存占用更大。",
+            "需要有序输出或范围查询时用 map；",
+            "仅需快速键值查询且对次序无要求时用 unordered_map。",
+            "unordered_map 的性能严重依赖哈希函数质量，冲突恶化可导致退化；",
+            "map 的缓存不友好，频繁插入删除时性能稍差。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q08",
+      "question": "栈和堆的区别？",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.009000003046821803,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "程序运行时，内存分成几个区域：",
+            "栈 (stack)：局部变量、函数参数，离开作用域自动释放，编译器自动管理。",
+            "堆 (heap)：new/malloc 分配的东西，手动释放或由智能指针管理。",
+            "全局/静态区：全局变量、static 变量，程序启动到结束。",
+            "代码段：编译后的机器指令，程序存活期，只读。",
+            "常量区：字符串字面量 \"hello\"，程序存活期，只读。",
+            "int global_a = 1;",
+            "void foo() {",
+            "int b = 2;",
+            "std::string str = \"hi\";",
+            "// str 对象在栈上，但内部的 char* 指向堆上的 \"hi\" 副本",
+            "int* p = new int(3);",
+            "// p 在栈上，*p 在堆上",
+            "delete p;",
+            "// 堆上那 4 字节被释放",
+            "}                              // b 和 str 栈上释放，但如果没有 delete p，堆上的 *p 就泄漏了",
+            "堆的意义：栈空间很小（Linux 默认 8MB），而且大小必须在编译期确定。",
+            "堆可以在运行时任意分配。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q09",
+      "question": "为什么要把资源所有权转给别人",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.01049999991664663,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "移动语义：将资源（堆内存、文件句柄等）的所有权从一个对象转移到另一个对象，避免昂贵拷贝。",
+            "移动后源对象仍可析构，但通常处于有效但未定义状态（不应再使用其值）。",
+            "函数返回局部对象（在无法执行 RVO 时）；",
+            "容器扩容转移元素；",
+            "unique_ptr 传递所有权；",
+            "通过 std::move 显式转移。",
+            "对移动后对象解引用或假设其原有内容会引发未定义行为；",
+            "移动构造未声明为 noexcept 可能导致容器使用拷贝而非移动。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "多个线程同时拷贝同一个shared_ptr安全吗",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.008800001523923129,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "shared_ptr 的线程安全性分为：引用计数的修改、控制块的安全性、所指对象的并发访问。",
+            "引用计数的增减是原子的，线程安全；",
+            "控制块本身的分配/销毁安全。",
+            "多线程拷贝、销毁同一个 shared_ptr 是安全的。",
+            "多个线程同时修改同一个 shared_ptr 对象（赋值、重置）或同时修改其管理的对象并非线程安全，需要额外同步；",
+            "混淆\"引用计数安全\"与\"对象安全\"可能导致数据竞争。",
+            "安全：多个线程去拷贝、销毁各自手里的 shared_ptr（即便它们底层指向同一个内存）。",
+            "因为底层的\"引用计数加减\"是线程安全（原子）的。",
+            "不安全：多线程同时去改同一个智能指针变量（改变它的指向），或者多线程同时去改智能指针指着的那个实体对象（修改对象内容）。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "多个线程同时改shared_ptr的指向呢",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.007199996616691351,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "shared_ptr 的线程安全性分为：引用计数的修改、控制块的安全性、所指对象的并发访问。",
+            "引用计数的增减是原子的，线程安全；",
+            "控制块本身的分配/销毁安全。",
+            "多线程拷贝、销毁同一个 shared_ptr 是安全的。",
+            "多个线程同时修改同一个 shared_ptr 对象（赋值、重置）或同时修改其管理的对象并非线程安全，需要额外同步；",
+            "混淆\"引用计数安全\"与\"对象安全\"可能导致数据竞争。",
+            "安全：多个线程去拷贝、销毁各自手里的 shared_ptr（即便它们底层指向同一个内存）。",
+            "因为底层的\"引用计数加减\"是线程安全（原子）的。",
+            "不安全：多线程同时去改同一个智能指针变量（改变它的指向），或者多线程同时去改智能指针指着的那个实体对象（修改对象内容）。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "深拷贝和浅拷贝的区别",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6428571428571429,
+      "latency_ms": 0.008900002285372466,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "浅拷贝：只复制对象的成员值，若含指针，只复制指针本身。",
+            "深拷贝：复制整个对象，为指针成员重新分配内存并复制所指向的数据。",
+            "浅拷贝成本低，但多个对象共享底层资源；",
+            "深拷贝成本高，对象独立。",
+            "浅拷贝：无动态资源的简单类型或明确共享语义。",
+            "深拷贝：类管理动态内存（如字符串、动态数组）且需要独立副本。",
+            "浅拷贝导致双重释放或意外共享；",
+            "深拷贝性能代价高，且可能遇到循环引用问题。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "四种类型转换的区别",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.625,
+      "latency_ms": 0.007700000423938036,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "static_cast：编译时类型转换，用于相关类型转换。",
+            "dynamic_cast：运行时多态安全向下转换。",
+            "const_cast：移除或添加 const/volatile 属性。",
+            "reinterpret_cast：底层二进制重解释。",
+            "static_cast 无运行时检查；",
+            "dynamic_cast 要求虚函数，失败有定义行为；",
+            "const_cast 只能改变 cv 限定；",
+            "reinterpret_cast 不可移植。",
+            "上行/下行转换（确定安全时）用 static_cast；",
+            "多态向下转换用 dynamic_cast；",
+            "调用非const接口用 const_cast；",
+            "极度底层的指针/整数互转用 reinterpret_cast。",
+            "static_cast 在错误下转时无警告；",
+            "dynamic_cast 性能开销；",
+            "修改原 const 对象是未定义行为；",
+            "reinterpret_cast 几乎总是危险且不可移植。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "基类析构函数为什么一般都写成虚函数",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.5,
+      "latency_ms": 0.0042000028770416975,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "基类将析构函数声明为 virtual，使 delete 基类指针时能正确先调派生类析构。",
+            "实现多态析构，依赖虚表动态查找。",
+            "任何设计为多态基类的类（即允许通过基类指针销毁派生类对象）。",
+            "如果非虚析构，delete 基类指针只调用基类析构，派生类资源泄漏，行为未定义。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "RAII 的作用，解决了什么问题？",
+      "ref_node": 3,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.006299997039604932,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "RAII（资源获取即初始化）：将资源生命周期与对象生命周期绑定，构造获取资源，析构释放资源。",
+            "异常安全，离开作用域自动释放，无需手动释放。",
+            "智能指针、互斥锁管理（lock_guard）、文件流、数据库连接等任何需配对操作的资源。",
+            "如果 RAII 对象被循环引用，可能导致资源不释放（可用弱引用打破）。",
+            "违反 RAII 理念则失去异常安全。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "事件为什么要先在内存里排队再交给下游处理",
+      "ref_node": 5,
+      "gold_in_context": false,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6363636363636364,
+      "latency_ms": 0.008000002708286047,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "BoundedBlockingQueue 是有界阻塞队列，用 mutex + condition_variable 实现生产者/消费者模型，capacity 控制最大缓存。",
+            "用 condition_variable::wait_for 阻塞等待而非 busy-wait，OS 把 CPU 时间片让给别的线程。",
+            "超时返回 nullopt → 回到",
+            "while(running_) 检查退出条件，否则 stop() 无法终止消费线程。",
+            "解耦 I/O 线程和处理线程：I/O 线程收完推队列就走，Processor 从队列取数据处理。",
+            "没有 Queue，I/O 线程被阻塞",
+            "50ms，吞吐量暴跌。",
+            "capacity 太小 → 生产者频繁阻塞；",
+            "太大 → 内存飙升，数据排队太久失去时效性。",
+            "和 Rate Limiter 互补：Queue 控水位，Rate",
+            "Limiter 控频率。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "限流为什么要用 Lua 脚本而不是直接 INCR 加 EXPIRE",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6428571428571429,
+      "latency_ms": 0.2584999965620227,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "基于 Redis 的滑动窗口限流，用 Lua 脚本原子执行 INCR + EXPIRE，控制单位时间内的请求频率。",
+            "INCR 和 EXPIRE 分两步非原子 → Lua 脚本在 Redis 内原子执行，类似数据库事务。",
+            "Redis failure 走 fail-open，和 Processor",
+            "防止恶意用户高频发送事件，保护下游 ClickHouse 和 Kafka。",
+            "和 Queue 互补：Rate Limiter 控频率（入口），Queue",
+            "控水位（中间缓冲）。",
+            "fail-open 下 Redis 故障 = 无限放行 → 下游可能被打满。",
+            "Lua 脚本执行过长会阻塞 Redis 主线程。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "监控数据是怎么被外部拉走的",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.007000002369750291,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "独立 HTTP 服务，监听 :9090 端口，将 metrics 格式化为 Prometheus 文本供外部爬取。",
+            "只读 11 个 atomic 计数器，无锁读：Prometheus 线程读、I/O 线程写，不需要 mutex → 适合高频读低频写。",
+            "完全隔离，监控流量不抢占业务带宽。",
+            "Prometheus 每 15 秒爬取 :9090，拉模型让监控系统控制频率 → 和 Queue 的背压思想一致：由消费者决定节奏。",
+            "atomic 只保证单个变量原子性，不保证多个 atomic 之间的一致性快照 → 监控数据可能瞬时不一致，但对监控场景可接受。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "监控为什么用原子变量而不是加锁",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.004800000169780105,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "独立 HTTP 服务，监听 :9090 端口，将 metrics 格式化为 Prometheus 文本供外部爬取。",
+            "只读 11 个 atomic 计数器，无锁读：Prometheus 线程读、I/O 线程写，不需要 mutex → 适合高频读低频写。",
+            "完全隔离，监控流量不抢占业务带宽。",
+            "Prometheus 每 15 秒爬取 :9090，拉模型让监控系统控制频率 → 和 Queue 的背压思想一致：由消费者决定节奏。",
+            "atomic 只保证单个变量原子性，不保证多个 atomic 之间的一致性快照 → 监控数据可能瞬时不一致，但对监控场景可接受。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "怎么处理粘包和拆包",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.5714285714285714,
+      "latency_ms": 0.005800000508315861,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "Collector 负责监听 8080 端口，用 async_accept 接收客户端 TCP 连接，读取序列化字节后推入队列。",
+            "acceptor_.async_accept 通过 this 捕获 Collector 对象，回调触发时可访问成员变量。",
+            "先读 4 字节 header 获取 body",
+            "长度，再精确读指定长度 body，循环切分粘包。",
+            "高并发事件收集，I/O 线程只做收数据推队列（微秒级），不参与业务处理，避免被 Processor 的 Redis 查询阻塞导致新连接无法",
+            "header 读取错误导致后续所有包错位；",
+            "无定长头协议，粘包/拆包会使整个解析链崩溃。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q21",
+      "question": "为什么只开两个 I/O 线程而不是其他数量",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.00549999822396785,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "main.cpp 初始化 io_context、Collector、Queue、Processor 等模块，启动 2 个 I/O 线程跑 io_context.run()。",
+            "2 个 I/O 线程共享同一个 io_context → epoll 事件统一管理，线程竞争执行回调，等价于 multiple Reactor threads。",
+            "signals_.async_wait 等 SIGTERM → io_context.stop() 唤醒所有线程退出。",
+            "线程数选 2 而非 8：瓶颈在 Redis/ClickHouse（网络 I/O），不在 CPU → 多线程只增加锁竞争，不提升吞吐。",
+            "所有 async 回调共享 io_context → 一个慢回调阻塞事件循环 → 需确保回调内不做阻塞操作。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q22",
+      "question": "Redis 挂掉的时候限流会失效吗",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6428571428571429,
+      "latency_ms": 0.007500006176996976,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "基于 Redis 的滑动窗口限流，用 Lua 脚本原子执行 INCR + EXPIRE，控制单位时间内的请求频率。",
+            "INCR 和 EXPIRE 分两步非原子 → Lua 脚本在 Redis 内原子执行，类似数据库事务。",
+            "Redis failure 走 fail-open，和 Processor",
+            "防止恶意用户高频发送事件，保护下游 ClickHouse 和 Kafka。",
+            "和 Queue 互补：Rate Limiter 控频率（入口），Queue",
+            "控水位（中间缓冲）。",
+            "fail-open 下 Redis 故障 = 无限放行 → 下游可能被打满。",
+            "Lua 脚本执行过长会阻塞 Redis 主线程。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q23",
+      "question": "数据是攒一批再写还是来一条写一条",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.005200003215577453,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "Storage 负责将事件批量写入 ClickHouse，内部维护 buffer，攒够一定量后批量 flush。",
+            "save(const Event& e) 用 const 引用 → 调用者保留所有权 → buffer_.push_back 必须拷贝不能 move，因为同一份数据还要传给",
+            "body_ 是成员变量复用于多次读取，move 掉下次无 buffer 可用。",
+            "永久存储给分析查询用，ClickHouse 擅长列式存储和聚合分析，不适合实时流处理（那是 Kafka 的活）。",
+            "buffer 过大 → 内存高；",
+            "flush 失败 → 数据丢失（内存 buffer 重启即没）。",
+            "需权衡 batch size 和 flush 频率。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q24",
+      "question": "Kafka 和 ClickHouse 在这里分别干什么",
+      "ref_node": 5,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.64,
+      "latency_ms": 0.007000002369750291,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "全链路：客户端 → Collector(:8080) → Queue(内存) → Processor → Storage(ClickHouse) + Kafka(下游) + Rate",
+            "Limiter(Redis)，每个环节只做一件事。",
+            "Queue ↔ Rate Limiter 互补：一个控水位，一个控频率。",
+            "Storage const 引用 + 拷贝 ← Processor 要多路分发不能",
+            "Monitor atomic 无锁 ← 读写频率差异大，对比 Queue 读写都频繁必须用 mutex。",
+            "Kafka 是流（实时消费者，可重放），ClickHouse 是存（分析查询，永久保留），Queue",
+            "是临时缓冲（进程内存，重启丢失）——三层存储各司其职。",
+            "Redis 挂 → fail-open 放行；",
+            "Kafka 挂 → 事件仍入库 ClickHouse；",
+            "Queue 满 → I/O",
+            "没有全局熔断机制是当前架构缺口。",
+            "io_context.run()内部",
+            "io_context.run() 内部做的事：",
+            "1. 调 epoll_wait() 阻塞等待",
+            "2. 有 fd 就绪 → 从内核拿到就绪事件",
+            "3. 找到对应的回调函数",
+            "4. 执行回调（比如 do_read_header 的 lambda）",
+            "5. 回调里可能发起新的 async_read → 注册新的 fd 到 epoll",
+            "6. 回到第 1 步"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q25",
+      "question": "https是怎么保护数据的",
+      "ref_node": 7,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.007199996616691351,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "HTTPS = HTTP + TLS，在传输层加密数据，防止中间人攻击。",
+            "TLS 握手阶段使用非对称加密交换密钥，传输阶段使用对称加密提高性能。",
+            "所有涉及敏感数据的场景（登录、支付）必须使用 HTTPS。",
+            "证书过期或配置错误会导致浏览器拦截；",
+            "TLS 1.0/1.1 已不安全，必须用 1.2+。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q26",
+      "question": "GET 和 POST 在语义上有什么区别",
+      "ref_node": 7,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.007399998139590025,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "HTTP 定义了 GET、POST、PUT、DELETE 等请求方法，每种方法有明确的语义。",
+            "GET 是幂等的，多次请求结果相同；",
+            "POST 是非幂等的，每次可能产生不同结果。",
+            "RESTful API 设计中，用 GET 获取资源、POST 创建资源、PUT 更新资源、DELETE 删除资源。",
+            "误用 POST 代替 GET 会导致缓存失效、浏览器历史记录异常。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q27",
+      "question": "接口报错的时状态码是多少",
+      "ref_node": 7,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.008199996955227107,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "HTTP 状态码表示请求结果，1xx 信息、2xx 成功、3xx 重定向、4xx 客户端错误、5xx 服务端错误。",
+            "200 OK 表示成功，301 永久重定向，404 资源不存在，500 服务器内部错误。",
+            "API 设计中正确使用状态码让调用方快速判断结果。",
+            "所有错误都返回 200 + 错误体是常见反模式，会让监控和调试变困难。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q28",
+      "question": "数组和链表的区别",
+      "ref_node": 8,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.007300004654098302,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "1. 数组与链表",
+            "数组是连续内存的线性表，支持 O(1) 随机访问；",
+            "链表通过指针连接节点，支持 O(1) 插入删除。",
+            "数组缓存友好但扩容代价大；",
+            "链表灵活但不支持随机访问。",
+            "频繁随机访问用数组，频繁插入删除用链表。",
+            "数组中间插入 O(n)；",
+            "链表查找 O(n)。",
+            "栈是 LIFO（后进先出）结构，队列是 FIFO（先进先出）结构。",
+            "都可以用数组或链表实现，核心操作都是 O(1)。",
+            "函数调用栈用栈，BFS 广度优先搜索用队列。",
+            "栈溢出（递归过深）；",
+            "队列阻塞（生产者消费者模型）。",
+            "通过哈希函数将键映射到数组索引，实现平均 O(1) 的查找。",
+            "哈希冲突时用链地址法或开放地址法解决。",
+            "缓存、字典、去重等需要快速查找的场景。",
+            "最坏情况 O(n)（所有键冲突）；",
+            "需要合理设计哈希函数和负载因子。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q29",
+      "question": "哈希冲突一般怎么解决",
+      "ref_node": 8,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.007999995432328433,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "1. 数组与链表",
+            "数组是连续内存的线性表，支持 O(1) 随机访问；",
+            "链表通过指针连接节点，支持 O(1) 插入删除。",
+            "数组缓存友好但扩容代价大；",
+            "链表灵活但不支持随机访问。",
+            "频繁随机访问用数组，频繁插入删除用链表。",
+            "数组中间插入 O(n)；",
+            "链表查找 O(n)。",
+            "栈是 LIFO（后进先出）结构，队列是 FIFO（先进先出）结构。",
+            "都可以用数组或链表实现，核心操作都是 O(1)。",
+            "函数调用栈用栈，BFS 广度优先搜索用队列。",
+            "栈溢出（递归过深）；",
+            "队列阻塞（生产者消费者模型）。",
+            "通过哈希函数将键映射到数组索引，实现平均 O(1) 的查找。",
+            "哈希冲突时用链地址法或开放地址法解决。",
+            "缓存、字典、去重等需要快速查找的场景。",
+            "最坏情况 O(n)（所有键冲突）；",
+            "需要合理设计哈希函数和负载因子。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q30",
+      "question": "BFS 一般用什么数据结构",
+      "ref_node": 8,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5714285714285714,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6363636363636364,
+      "latency_ms": 0.005199995939619839,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "1. 数组与链表",
+            "数组是连续内存的线性表，支持 O(1) 随机访问；",
+            "链表通过指针连接节点，支持 O(1) 插入删除。",
+            "数组缓存友好但扩容代价大；",
+            "链表灵活但不支持随机访问。",
+            "频繁随机访问用数组，频繁插入删除用链表。",
+            "数组中间插入 O(n)；",
+            "链表查找 O(n)。",
+            "栈是 LIFO（后进先出）结构，队列是 FIFO（先进先出）结构。",
+            "都可以用数组或链表实现，核心操作都是 O(1)。",
+            "函数调用栈用栈，BFS 广度优先搜索用队列。",
+            "栈溢出（递归过深）；",
+            "队列阻塞（生产者消费者模型）。",
+            "通过哈希函数将键映射到数组索引，实现平均 O(1) 的查找。",
+            "哈希冲突时用链地址法或开放地址法解决。",
+            "缓存、字典、去重等需要快速查找的场景。",
+            "最坏情况 O(n)（所有键冲突）；",
+            "需要合理设计哈希函数和负载因子。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q31",
+      "question": "为什么要三次握手，两次为什么不行",
+      "ref_node": 12,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.5,
+      "latency_ms": 0.009000003046821803,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "第二次：服务端证明自己能收也能发  - 第三次：客户端证明自己能收  三次刚好让双方都确认了彼此的收发能力。",
+            "两次不够，四次多余。"
+          ],
+          "in_context": [
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q32",
+      "question": "为什么要三次握手",
+      "ref_node": 12,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.5,
+      "latency_ms": 0.006099995516706258,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "第二次：服务端证明自己能收也能发  - 第三次：客户端证明自己能收  三次刚好让双方都确认了彼此的收发能力。",
+            "两次不够，四次多余。"
+          ],
+          "in_context": [
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q33",
+      "question": "TCP三次握手是什么",
+      "ref_node": 12,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.5,
+      "latency_ms": 0.7295000032172538,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "第二次：服务端证明自己能收也能发  - 第三次：客户端证明自己能收  三次刚好让双方都确认了彼此的收发能力。",
+            "两次不够，四次多余。"
+          ],
+          "in_context": [
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q34",
+      "question": "一个线程怎么同时盯住成千上万个连接",
+      "ref_node": 13,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.006300004315562546,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "select/poll/epoll 是什么  它们都解决同一个问题：一个线程同时监控多个 fd（文件描述符），哪个有数据就处理哪个。",
+            "没有 I/O 多路复用：  客户端 A → 线程 1（阻塞等 A）  客户端 B → 线程 2（阻塞等 B）     ← 一个连接一个线程，浪费  客户端 C → 线程 3（阻塞等 C）  有 I/O 多路复用：  线程 1 → 监控 A、B、C 三个 fd           哪个有数据就处理哪个      ← 一个线程处理多个连接  三者对比  ┌──────────────┬────────────────────────────────────────┬──────────────────┬────────────────────────┐  │              │                 select                 │       poll       │         epoll          │  ├──────────────┼────────────────────────────────────────┼──────────────────┼────────────────────────┤  │ 监控 fd 数量 │ 默认最多 1024                          │ 无上限           │ 无上限                 │  ├──────────────┼────────────────────────────────────────┼──────────────────┼────────────────────────┤  │ 每次调用     │ 需要把所有 fd 传给内核                 │ 同左             │ 只传新增的 fd          │  ├──────────────┼────────────────────────────────────────┼──────────────────┼────────────────────────┤  │ 返回结果     │ 只告诉你\"有 fd 就绪了\"，要遍历找是哪个 │ 同左             │ 直接返回就绪的 fd 列表 │  ├──────────────┼────────────────────────────────────────┼──────────────────┼────────────────────────┤  │ 内核实现     │ 遍历所有 fd 检查                       │ 遍历所有 fd 检查 │ 回调机制，只处理就绪的 │  ├──────────────┼────────────────────────────────────────┼──────────────────┼────────────────────────┤  │ 时间复杂度   │ O(n) 遍历                              │ O(n) 遍历        │ O(1) 就绪通知          │  └──────────────┴────────────────────────────────────────┴──────────────────┴────────────────────────┘  为什么不用 select/poll  核心问题：每次调用都要把所有 fd 传给内核，内核要遍历所有 fd。",
+            "select/poll 的问题：  你有 10,000 个连接  每次 epoll_wait/select → 传 10,000 个 fd 给内核  内核逐个检查 → O(10,000)  其中只有 5 个就绪 → 99.95% 的检查是浪费  epoll 的优势：  fd 只注册一次（epoll_ctl ADD）"
+          ],
+          "in_context": [
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q35",
+      "question": "select 和 epoll 的区别",
+      "ref_node": 13,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.00910000380827114,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "每次 wait 只返回就绪的 → O(1)  一句话：select/poll 每次全量扫描，epoll 用回调机制只通知就绪的 fd。",
+            "连接数越多，epoll 优势越大。",
+            "① select/poll/epoll：基本正确。",
+            "补充精确说法：  select 的问题（你说对了）：  1. 每次调用：用户态 → 内核态（拷贝全部 fd）  2. 内核遍历所有 fd 检查就绪  3. 内核态 → 用户态（拷贝全部 fd 回来）  4. 用户态遍历找就绪的 fd  → 每次都是 O(n)，n = 连接数  epoll 的优势：  1. fd 只用 epoll_ctl 注册一次（红黑树存储）  2. epoll_wait 只返回就绪的 fd（就绪队列）  → 每次 O(1) 就绪通知"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q36",
+      "question": "为什么连接数一多，遍历就不行了",
+      "ref_node": 13,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.5,
+      "latency_ms": 0.008699993486516178,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "每次 wait 只返回就绪的 → O(1)  一句话：select/poll 每次全量扫描，epoll 用回调机制只通知就绪的 fd。",
+            "连接数越多，epoll 优势越大。",
+            "① select/poll/epoll：基本正确。",
+            "补充精确说法：  select 的问题（你说对了）：  1. 每次调用：用户态 → 内核态（拷贝全部 fd）  2. 内核遍历所有 fd 检查就绪  3. 内核态 → 用户态（拷贝全部 fd 回来）  4. 用户态遍历找就绪的 fd  → 每次都是 O(n)，n = 连接数  epoll 的优势：  1. fd 只用 epoll_ctl 注册一次（红黑树存储）  2. epoll_wait 只返回就绪的 fd（就绪队列）  → 每次 O(1) 就绪通知"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q37",
+      "question": "static 全局变量的作用域是什么",
+      "ref_node": 14,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.631578947368421,
+      "latency_ms": 0.7533999960287474,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "① static：只答了一种，且说法反了。",
+            "static 在 C++ 里有 4 种用法：  用法 1：static 全局变量（你知道的）  // 没有 static：其他文件可以用 extern int x 访问  int x = 10;",
+            "// 有 static：只能在当前文件使用，其他文件看不到  static int x = 10;",
+            "你说\"全局可以修改\"——反了。",
+            "static 的作用是限制作用域到当前文件（内部链接），不是让它全局可访问。",
+            "用法 2：static 局部变量  void counter() {      static int count = 0;",
+            "// 只初始化一次      count++;",
+            "cout << count << endl;",
+            "}  counter();",
+            "// 输出 1  counter();",
+            "// 输出 2（count 没有重新初始化）  counter();",
+            "// 输出 3  只初始化一次，生命周期到程序结束，但作用域只在函数内。",
+            "\"全局可见\"不对。",
+            "作用域还是在函数内，只是生命周期延长到程序结束。",
+            "static 局部变量：    作用域（scope）：只在函数内可见，外面访问不到    生命周期（lifetime）：程序启动到结束，不会随函数返回而销毁    初始化：只执行一次  void func() {      static int count = 0;",
+            "count++;",
+            "}  int main() {      func();",
+            "cout << count;",
+            "// ❌ 编译报错：count 在这里不可见  }  区分两个概念：  ┌──────────┬──────────────┬──────────────────┐  │   概念   │ 普通局部变量 │ static 局部变量  │  ├──────────┼──────────────┼──────────────────┤  │ 作用域   │ 函数内       │ 函数内（不变）   │  ├──────────┼──────────────┼──────────────────┤  │ 生命周期 │ 函数调用期间 │ 程序整个运行期间 │  ├──────────┼──────────────┼──────────────────┤"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q38",
+      "question": "static 局部变量和普通局部变量有什么不一样",
+      "ref_node": 14,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.631578947368421,
+      "latency_ms": 0.006200003554113209,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "① static：只答了一种，且说法反了。",
+            "static 在 C++ 里有 4 种用法：  用法 1：static 全局变量（你知道的）  // 没有 static：其他文件可以用 extern int x 访问  int x = 10;",
+            "// 有 static：只能在当前文件使用，其他文件看不到  static int x = 10;",
+            "你说\"全局可以修改\"——反了。",
+            "static 的作用是限制作用域到当前文件（内部链接），不是让它全局可访问。",
+            "用法 2：static 局部变量  void counter() {      static int count = 0;",
+            "// 只初始化一次      count++;",
+            "cout << count << endl;",
+            "}  counter();",
+            "// 输出 1  counter();",
+            "// 输出 2（count 没有重新初始化）  counter();",
+            "// 输出 3  只初始化一次，生命周期到程序结束，但作用域只在函数内。",
+            "\"全局可见\"不对。",
+            "作用域还是在函数内，只是生命周期延长到程序结束。",
+            "static 局部变量：    作用域（scope）：只在函数内可见，外面访问不到    生命周期（lifetime）：程序启动到结束，不会随函数返回而销毁    初始化：只执行一次  void func() {      static int count = 0;",
+            "count++;",
+            "}  int main() {      func();",
+            "cout << count;",
+            "// ❌ 编译报错：count 在这里不可见  }  区分两个概念：  ┌──────────┬──────────────┬──────────────────┐  │   概念   │ 普通局部变量 │ static 局部变量  │  ├──────────┼──────────────┼──────────────────┤  │ 作用域   │ 函数内       │ 函数内（不变）   │  ├──────────┼──────────────┼──────────────────┤  │ 生命周期 │ 函数调用期间 │ 程序整个运行期间 │  ├──────────┼──────────────┼──────────────────┤"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q39",
+      "question": "为什么 static 局部变量不是线程安全的",
+      "ref_node": 14,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.631578947368421,
+      "latency_ms": 0.008199996955227107,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "① static：只答了一种，且说法反了。",
+            "static 在 C++ 里有 4 种用法：  用法 1：static 全局变量（你知道的）  // 没有 static：其他文件可以用 extern int x 访问  int x = 10;",
+            "// 有 static：只能在当前文件使用，其他文件看不到  static int x = 10;",
+            "你说\"全局可以修改\"——反了。",
+            "static 的作用是限制作用域到当前文件（内部链接），不是让它全局可访问。",
+            "用法 2：static 局部变量  void counter() {      static int count = 0;",
+            "// 只初始化一次      count++;",
+            "cout << count << endl;",
+            "}  counter();",
+            "// 输出 1  counter();",
+            "// 输出 2（count 没有重新初始化）  counter();",
+            "// 输出 3  只初始化一次，生命周期到程序结束，但作用域只在函数内。",
+            "\"全局可见\"不对。",
+            "作用域还是在函数内，只是生命周期延长到程序结束。",
+            "static 局部变量：    作用域（scope）：只在函数内可见，外面访问不到    生命周期（lifetime）：程序启动到结束，不会随函数返回而销毁    初始化：只执行一次  void func() {      static int count = 0;",
+            "count++;",
+            "}  int main() {      func();",
+            "cout << count;",
+            "// ❌ 编译报错：count 在这里不可见  }  区分两个概念：  ┌──────────┬──────────────┬──────────────────┐  │   概念   │ 普通局部变量 │ static 局部变量  │  ├──────────┼──────────────┼──────────────────┤  │ 作用域   │ 函数内       │ 函数内（不变）   │  ├──────────┼──────────────┼──────────────────┤  │ 生命周期 │ 函数调用期间 │ 程序整个运行期间 │  ├──────────┼──────────────┼──────────────────┤"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q40",
+      "question": "define 和 const 的区别",
+      "ref_node": 17,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.006800000846851617,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "define（宏定义）",
+            "define 是预处理指令——编译器在正式编译之前，做简单的文本替换。",
+            "define MAX_CONNECTIONS 10000   // 编译前，所有 MAX_CONNECTIONS 替换成 10000",
+            "define PI 3.14159",
+            "int a = MAX_CONNECTIONS;",
+            "// 预处理后变成：int a = 10000;",
+            "const 是真正的变量——有类型、有作用域、有内存。",
+            "const int MAX_CONNECTIONS = 10000;",
+            "// 有类型(int)、有作用域",
+            "│          │            #define            │          const           │",
+            "│ 本质     │ 文本替换，没有类型            │ 真正的变量，有类型       │",
+            "│ 作用域   │ 全局（从定义处到文件末尾）    │ 遵循普通变量的作用域规则 │",
+            "│ 调试     │ ❌ 调试器看不到（已被替换了） │ ✅ 调试器能看到          │",
+            "│ 类型检查 │ ❌ 没有                       │ ✅ 编译期检查            │",
+            "│ 现代 C++ │ 不推荐用                      │ 推荐用                   │",
+            "// define 的坑：",
+            "define SQUARE(x) x * x",
+            "int a = SQUARE(1 + 1);",
+            "// 展开成 1 + 1 * 1 + 1 = 3，不是 4！",
+            "// const 没有这个问题",
+            "const int SQUARE(int x) { return x * x;",
+            "int a = SQUARE(1 + 1);",
+            "面试时一句话：\"define 是文本替换，没有类型、没有作用域、不好调试。",
+            "现代 C++ 用 const/constexpr 替代。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q41",
+      "question": "define 的 SQUARE 宏为什么会算错",
+      "ref_node": 17,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.007200003892648965,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "define（宏定义）",
+            "define 是预处理指令——编译器在正式编译之前，做简单的文本替换。",
+            "define MAX_CONNECTIONS 10000   // 编译前，所有 MAX_CONNECTIONS 替换成 10000",
+            "define PI 3.14159",
+            "int a = MAX_CONNECTIONS;",
+            "// 预处理后变成：int a = 10000;",
+            "const 是真正的变量——有类型、有作用域、有内存。",
+            "const int MAX_CONNECTIONS = 10000;",
+            "// 有类型(int)、有作用域",
+            "│          │            #define            │          const           │",
+            "│ 本质     │ 文本替换，没有类型            │ 真正的变量，有类型       │",
+            "│ 作用域   │ 全局（从定义处到文件末尾）    │ 遵循普通变量的作用域规则 │",
+            "│ 调试     │ ❌ 调试器看不到（已被替换了） │ ✅ 调试器能看到          │",
+            "│ 类型检查 │ ❌ 没有                       │ ✅ 编译期检查            │",
+            "│ 现代 C++ │ 不推荐用                      │ 推荐用                   │",
+            "// define 的坑：",
+            "define SQUARE(x) x * x",
+            "int a = SQUARE(1 + 1);",
+            "// 展开成 1 + 1 * 1 + 1 = 3，不是 4！",
+            "// const 没有这个问题",
+            "const int SQUARE(int x) { return x * x;",
+            "int a = SQUARE(1 + 1);",
+            "面试时一句话：\"define 是文本替换，没有类型、没有作用域、不好调试。",
+            "现代 C++ 用 const/constexpr 替代。"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true,
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q42",
+      "question": "那天 AI 建议我买茅台的时候有多大把握",
+      "ref_node": 16,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6666666666666666,
+      "latency_ms": 0.018800004909280688,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "00:32:57 - 茅台",
+            "建议**: 买入 (置信度 70%)",
+            "分析**: 技术面好转"
+          ],
+          "in_context": [
+            false,
+            true,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q43",
+      "question": "那天茅台买在什么价位",
+      "ref_node": 16,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.6,
+      "latency_ms": 0.3552000052877702,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true,
+            false
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "| 时间 | 操作 | 股票 | 数量 | 价格 | 结果 | 原因 |",
+            "| 00:32:57 | buy | 茅台 | 100 | 1324 | ✅ | AI确认 |",
+            "| 12:00:33 | buy | 平安银行 | 100 | 10.86 | ✅ | 测试买入功能 |",
+            "| 12:00:56 | sell | 平安银行 | 100 | 10.86 | ✅ | 测试卖出功能 |"
+          ],
+          "in_context": [
+            false,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "id": "Q44",
+      "question": "那天系统扫描出了哪些超卖的股票",
+      "ref_node": 16,
+      "gold_in_context": true,
+      "answer": "第一句：这是打桩生成的第一条断言内容。第二句：这是打桩生成的第二条断言内容。第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 0.75,
+      "context_recall": 0.0,
+      "latency_ms": 0.005699999746866524,
+      "error": "",
+      "detail": {
+        "faithfulness": {
+          "claims": [
+            "第一句：这是打桩生成的第一条断言内容。",
+            "第二句：这是打桩生成的第二条断言内容。",
+            "第三句：这是打桩生成的第三条断言内容，带 [doc:1] 引用。"
+          ],
+          "supported": [
+            false,
+            true,
+            true
+          ],
+          "unsupported": [
+            "第一句：这是打桩生成的第一条断言内容。"
+          ]
+        },
+        "answer_relevancy": {
+          "gen_question": "（打桩）反向生成的问题？",
+          "same": true
+        },
+        "context_recall": {
+          "facts": [
+            "00:32:57 **茅台**: buy - MACD金叉+RSI超卖- 10:00:27 **中国石化**: scan - 扫描发现: RSI极度超卖(21), MACD柱放大 (得分40)- 10:00:27 **五粮液**: scan - 扫描发现: RSI极度超卖(13) (得分30)- 10:00:27 **洋河股份**: scan - 扫描发现: RSI极度超卖(20) (得分30)- 10:00:27 **海天味业**: scan - 扫描发现: RSI极度超卖(24) (得分30)- 10:00:27 **云南白药**: scan - 扫描发现: RSI极度超卖(21) (得分30)- 11:00:32 **中国石化**: scan - 扫描发现: RSI极度超卖(21), MACD柱放大 (得分40)- 11:00:32 **五粮液**: scan - 扫描发现: RSI极度超卖(13) (得分30)- 11:00:32 **洋河股份**: scan - 扫描发现: RSI极度超卖(20) (得分30)- 11:00:32 **海天味业**: scan - 扫描发现: RSI极度超卖(24) (得分30)- 11:00:32 **云南白药**: scan - 扫描发现: RSI极度超卖(21) (得分30)- 13:00:20 **中国石化**: scan - 扫描发现: RSI极度超卖(21), MACD柱放大 (得分40)- 13:00:20 **五粮液**: scan - 扫描发现: RSI极度超卖(13) (得分30)"
+          ],
+          "in_context": [
+            false
+          ]
+        }
+      }
+    }
+  ]
+}
