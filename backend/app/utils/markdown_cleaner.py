@@ -1,5 +1,8 @@
+import logging
 import re
 from functools import lru_cache
+
+logger = logging.getLogger(__name__)
 
 # bge-large-zh-v1.5 的 embedding 上限 = 512 token（M5-03）
 # content 预算 480：留 ~32 token 给 title（add_node_to_index 会拼 "title\ncontent" 一起编码）
@@ -82,10 +85,74 @@ def _iter_sentences(text: str):
         yield buf
 
 
+def _force_split(text: str, max_tokens: int) -> list[str]:
+    """最后兜底：确保**任何**输入都被压到预算以内。
+
+    ⚠️ 为什么必须存在（2026-10-10 实测 bug）：
+    原 `_hard_split` **只按 `\\n` 切行**。遇到"单行 784 token、全文零换行"的输入
+    （典型来源：PDF 粘贴、被压成一行的笔记、无标点的口述记录），循环只跑一轮就把
+    整个 784 token 原样返回 —— **兜底函数在最需要它的时候失效**。
+    后果：该块既超过 MAX_CONTENT_TOKENS(480)，也超过 bge 的 512 上限 ⇒
+    embedding **静默截断**，向量只代表开头，检索质量被无声拉低。
+
+    降级顺序：按标点断句 → 按空白/标点逐段 → 逐字符。
+    逐字符是唯一**无前提**的保证：只要 max_tokens >= 1 就一定能收敛。
+    """
+    if _n_tokens(text) <= max_tokens:
+        return [text]
+    logger.warning('force split: %d tokens > %d, no usable boundary (len=%d chars)',
+                   _n_tokens(text), max_tokens, len(text))
+    # 1) 按标点断句（借 _iter_sentences，它会把超长"句子"整体产出）
+    pieces = [s for s in _iter_sentences(text) if s.strip()]
+    if len(pieces) > 1:
+        out = []
+        for p in pieces:
+            out.extend(_force_split(p, max_tokens) if _n_tokens(p) > max_tokens else [p])
+        return out
+    # 2) 按空白/标点切成 token 级的碎片
+    coarse = [p for p in re.split(r'(\s+|[，,、])', text) if p and p.strip()]
+    if len(coarse) > 1:
+        out, buf = [], ''
+        for p in coarse:
+            cand = buf + p
+            if buf and _n_tokens(cand) > max_tokens:
+                out.append(buf)
+                buf = p
+            else:
+                buf = cand
+        if buf.strip():
+            out.append(buf)
+        # 仍可能有单块超限（某个碎片本身太长）→ 继续下沉
+        final = []
+        for c in out:
+            final.extend(_force_split(c, max_tokens) if _n_tokens(c) > max_tokens else [c])
+        if all(_n_tokens(c) <= max_tokens for c in final):
+            return final
+    # 3) 逐字符（无前提保证）：按字符数估算切，切完再校验
+    chars_per_chunk = max(1, int(len(text) * max_tokens / max(1, _n_tokens(text))))
+    out = [text[i:i + chars_per_chunk] for i in range(0, len(text), chars_per_chunk)]
+    # 若中文/英文混排导致估算偏小，再收敛一次
+    if any(_n_tokens(c) > max_tokens for c in out):
+        out = [text[i:i + max(1, chars_per_chunk // 2)]
+               for i in range(0, len(text), max(1, chars_per_chunk // 2))]
+    return [c for c in out if c]
+
+
 def _hard_split(text: str, max_tokens: int) -> list[str]:
-    """无标点硬切兜底：按行贪心打包（代码块/超长无标点段落）"""
+    """按行贪心打包；**单行自身超预算时下沉到 _force_split**。
+
+    修复点：原实现遇到"单行超限"时会把整行原样返回，破坏"所有块 <= max_tokens"的契约。
+    现在每一块产出前都校验，超限就走 `_force_split`。
+    """
     parts, buf = [], ''
     for line in text.split('\n'):
+        # 单行本身就超预算 → 先冲刷 buf，再对该行强制切分
+        if _n_tokens(line) > max_tokens:
+            if buf.strip():
+                parts.append(buf)
+                buf = ''
+            parts.extend(_force_split(line, max_tokens))
+            continue
         cand = (buf + '\n' + line).strip() if buf else line
         if buf and _n_tokens(cand) > max_tokens:
             parts.append(buf)
@@ -94,7 +161,11 @@ def _hard_split(text: str, max_tokens: int) -> list[str]:
             buf = cand
     if buf.strip():
         parts.append(buf)
-    return parts
+    # 最终契约校验：任何残留超限块都强制切分
+    out = []
+    for p in parts:
+        out.extend(_force_split(p, max_tokens) if _n_tokens(p) > max_tokens else [p])
+    return out
 
 
 def _split_long_section(text: str, max_tokens: int = MAX_CONTENT_TOKENS) -> list[str]:
