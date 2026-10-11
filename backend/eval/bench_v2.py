@@ -257,19 +257,31 @@ def main():
     print(f'  node Hit@1 {h1}/{len(srows)}  Hit@3 {h3}/{len(srows)}  Hit@5 {h5}/{len(srows)}  '
           f'MRR {mrr:.3f}')
 
-    print('\n  按脏法分组（找"哪类脏法最伤检索"）:')
+    # ⚠️ 必须同时报"答案块进上下文"（2026-10-11 修正）
+    # 只报 node Hit@1 会把"gold 排第 2"当成失败，而排第 2 时答案**已经在上下文里**了。
+    # 后果实测：gen_messy 按 Hit@1 显示 1/4（最差），但按"答案块进上下文"是 3/4，
+    # 与其它 pattern 同档；真正的失败只有 S07 一条。
+    # 两个口径回答的是不同问题：
+    #   Hit@1 = "我指定的那份笔记排第 1 了吗"（受 gold 指向哪一份影响）
+    #   答案块进上下文 = "用户拿到答案了吗"（用户关心的量）
+    print('\n  按脏法分组（同时给两个口径 —— 只看 Hit@1 会误判"整类脏法失效"）:')
+    print(f'    {"pattern":<24}{"n":<4}{"Hit@1":<10}{"Hit@3":<10}{"MRR":<9}答案块进上下文')
     by = {}
     for r in srows:
         by.setdefault(r['pattern'], []).append(r)
     for p, sub in sorted(by.items(), key=lambda kv: -len(kv[1])):
         h1_, h3_, _, mrr_ = metrics(sub)
-        print(f'    {p:<24} n={len(sub):<3} Hit@1 {h1_}/{len(sub)}  '
-              f'Hit@3 {h3_}/{len(sub)}  MRR {mrr_:.3f}')
+        ck_ = sum(1 for r in sub if r['chunk_hit'])
+        print(f'    {p:<24}{len(sub):<4}{h1_}/{len(sub):<8}{h3_}/{len(sub):<8}'
+              f'{mrr_:<9.3f}{ck_}/{len(sub)} = {ck_ / len(sub):.3f}')
 
     print('\n  未命中明细:')
     for r in srows:
         if not r['rank'] or r['rank'] > 3:
-            print(f"    {r['id']} gold={r['gold']} rank={r['rank']} top1={r['top1']}  {r['query']}")
+            # 区分"没进上下文"（用户拿不到答案）与"没排第 1"（照样拿得到）
+            kind = '没进上下文' if not r['chunk_hit'] else f"进上下文但排第{r['rank']}"
+            print(f"    {r['id']} gold={r['gold']} rank={r['rank']} top1={r['top1']} "
+                  f"[{kind}]  {r['query']}")
 
     print('\n' + '=' * 88)
     print('对照（同一批合成 query，但在**只有合成语料**的池里检索）:')
