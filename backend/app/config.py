@@ -41,9 +41,11 @@ class Settings(BaseSettings):
 
     app_env: Literal["development", "production"] = "development"
     database_url: str = _db_url
+    kb_chroma_url: str = ""
     ai_api_key: str = ""
-    ai_base_url: str = "https://api.deepseek.com/v1"
-    ai_model_name: str = "deepseek-chat"
+    allow_personal_ai_config: bool = False
+    ai_base_url: str = "https://api.deepseek.com/anthropic"
+    ai_model_name: str = "deepseek-flash"
     ai_key_encryption_key: str = ""
     upload_dir: str = os.path.join(_data_dir, "uploads")
     cors_origins: Annotated[list[str], NoDecode] = Field(
@@ -71,6 +73,11 @@ class Settings(BaseSettings):
             raise RuntimeError(
                 "AI_KEY_ENCRYPTION_KEY must be a valid Fernet key in production"
             ) from exc
+        from app.services.index_store import parse_server_url
+        try:
+            parse_server_url(self.kb_chroma_url)
+        except ValueError:
+            raise RuntimeError('KB_CHROMA_URL must be a valid HTTP(S) origin in production') from None
 
 
 settings = Settings()

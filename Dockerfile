@@ -1,5 +1,5 @@
 # 阶段 1: 编译前端
-FROM node:20-alpine AS frontend-build
+FROM node:24-alpine AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
@@ -7,8 +7,10 @@ COPY frontend/ ./
 RUN npm run build
 
 # 阶段 2: Python 后端
-FROM python:3.11-slim
+FROM python:3.12-slim
 WORKDIR /app
+ENV KB_FRONTEND_DIST=/app/frontend/dist
+ENV KB_CHROMA_DIR=/state/chroma
 
 # 安装系统依赖（MySQL 客户端、jieba 需要的）
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -30,5 +32,5 @@ RUN python -c "import jieba; jieba.initialize()" 2>/dev/null || true
 
 EXPOSE 8766
 
-# 启动前由部署入口统一执行迁移，避免多个 worker 并发抢占 DDL
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8766 --workers 2"]
+# 不自动修改 schema；索引由显式独立 worker 执行，服务缺表时 readiness 拒绝就绪。
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8766", "--workers", "1"]

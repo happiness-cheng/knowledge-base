@@ -20,3 +20,6 @@ cryptography>=42
 slowapi>=0.1.9
 jieba>=0.42
 ddgs>=8.0
+# 严格 RAG 候选实际使用 Document / Retriever / Runnable / ChatModel。
+langchain-core==1.6.10
+rank-bm25==0.2.2

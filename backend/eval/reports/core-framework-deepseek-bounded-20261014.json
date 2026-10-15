@@ -1,0 +1,1681 @@
+{
+  "mode": "online",
+  "physical_requests": 20,
+  "physical_request_limit": 25,
+  "input_chars_limit": 16000,
+  "output_tokens_limit": 600,
+  "rewrite_output_tokens_limit": 300,
+  "cases": [
+    {
+      "case_id": "CR02",
+      "question": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？",
+      "split": "development",
+      "query_category": "concrete_api_error",
+      "gold_sha256": "ec30acc878a76471045f399d4f05170ba837930edef61747318b03b7c306dbbc"
+    },
+    {
+      "case_id": "CR07",
+      "question": "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？",
+      "split": "development",
+      "query_category": "semantic_rephrase",
+      "gold_sha256": "efc0d822ffd2b4cb16d5ab94011e99f55560de3b49e627a44ff32e7c267efd4c"
+    },
+    {
+      "case_id": "CR13",
+      "question": "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？",
+      "split": "development",
+      "query_category": "multi_document",
+      "gold_sha256": "2a78b66d2f81123b0d5f577de811455876db8931ca4be1e4e8b7ed61c40ca039"
+    },
+    {
+      "case_id": "CR19",
+      "question": "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "gold_sha256": "a3af82f950eb0085c8b36d5e28217fb92dc49332f01795eb1ddd1c372dea62b1"
+    },
+    {
+      "case_id": "CR26",
+      "question": "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？",
+      "split": "development",
+      "query_category": "missing_evidence",
+      "gold_sha256": "3c6507f1be154fc04900731d20fb0e10baf3a7ae7917b060d3f9606c57fdf852"
+    }
+  ],
+  "frozen_retrieval": {
+    "CR02": [
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。"
+      },
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "# Redis\n<!-- GFM-TOC -->\n* [Redis](#redis)\n    * [一、概述](#一概述)\n    * [二、数据类型](#二数据类型)\n        * [STRING](#string)\n        * [LIST](#list)\n        * [SET](#set)\n        * [HASH](#hash)\n        * [ZSET](#zset)\n    * [三、数据结构](#三数据结构)\n        * [字典](#字典)\n        * [跳跃表](#跳跃表)\n    * [四、使用场景](#四使用场景)\n        * [计数器](#计数器)\n        * [缓存](#缓存)\n        * [查找表](#查找表)\n        * [消息队列](#消息队列)\n        * [会话缓存](#会话缓存)\n        * [分布式锁实现](#分布式锁实现)\n        * [其它](#其它)\n    * [五、Redis 与 Memcached](#五redis-与-memcached)\n        * [数据类型](#数据类型)\n        * [数据持久化](#数据持久化)\n        * [分布式](#分布式)\n        * [内存管理机制](#内存管理机制)\n    * [六、键的过期时间](#六键的过期时间)\n    * [七、数据淘汰策略](#七数据淘汰策略)\n    * [八、持久化](#八持久化)\n        * [RDB 持久化](#rdb-持久化)\n        * [AOF 持久化](#aof-持久化)\n    * [九、事务](#九事务)\n    * [十、事件](#十事件)\n        * [文件事件](#文件事件)"
+      }
+    ],
+    "CR07": [
+      {
+        "node_id": 1003,
+        "title": "计算机操作系统 - 内存管理",
+        "content": "为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。"
+      },
+      {
+        "node_id": 1003,
+        "title": "计算机操作系统 - 内存管理",
+        "content": "程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "下图显示了 4 个程序创建了 4 个进程，这 4 个进程可以并发地执行。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。"
+      }
+    ],
+    "CR13": [
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。"
+      },
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "- 尝试从 N 个互相独立 Redis 实例获取锁；\n- 计算获取锁消耗的时间，只有时间小于锁的过期时间，并且从大多数（N / 2 + 1）实例上获取了锁，才认为获取锁成功；\n- 如果获取锁失败，就到每个实例上释放锁。"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "# Redis\n<!-- GFM-TOC -->\n* [Redis](#redis)\n    * [一、概述](#一概述)\n    * [二、数据类型](#二数据类型)\n        * [STRING](#string)\n        * [LIST](#list)\n        * [SET](#set)\n        * [HASH](#hash)\n        * [ZSET](#zset)\n    * [三、数据结构](#三数据结构)\n        * [字典](#字典)\n        * [跳跃表](#跳跃表)\n    * [四、使用场景](#四使用场景)\n        * [计数器](#计数器)\n        * [缓存](#缓存)\n        * [查找表](#查找表)\n        * [消息队列](#消息队列)\n        * [会话缓存](#会话缓存)\n        * [分布式锁实现](#分布式锁实现)\n        * [其它](#其它)\n    * [五、Redis 与 Memcached](#五redis-与-memcached)\n        * [数据类型](#数据类型)\n        * [数据持久化](#数据持久化)\n        * [分布式](#分布式)\n        * [内存管理机制](#内存管理机制)\n    * [六、键的过期时间](#六键的过期时间)\n    * [七、数据淘汰策略](#七数据淘汰策略)\n    * [八、持久化](#八持久化)\n        * [RDB 持久化](#rdb-持久化)\n        * [AOF 持久化](#aof-持久化)\n    * [九、事务](#九事务)\n    * [十、事件](#十事件)\n        * [文件事件](#文件事件)"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键。"
+      }
+    ],
+    "CR19": [
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。"
+      },
+      {
+        "node_id": 1002,
+        "title": "计算机操作系统 - 死锁",
+        "content": "- 互斥：每个资源要么已经分配给了一个进程，要么就是可用的。\n- 占有和等待：已经得到了某个资源的进程可以再请求新的资源。\n- 不可抢占：已经分配给一个进程的资源不能强制性地被抢占，它只能被占有它的进程显式地释放。\n- 环路等待：有两个或者两个以上的进程组成一条环路，该环路中的每个进程都在等待下一个进程所占有的资源。"
+      },
+      {
+        "node_id": 1002,
+        "title": "计算机操作系统 - 死锁",
+        "content": "定义：如果没有死锁发生，并且即使所有进程突然请求对资源的最大需求，也仍然存在某种调度次序能够使得每一个进程运行完毕，则称该状态是安全的。"
+      }
+    ],
+    "CR26": [
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。"
+      },
+      {
+        "node_id": 1009,
+        "title": "MySQL",
+        "content": "实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。"
+      },
+      {
+        "node_id": 1009,
+        "title": "MySQL",
+        "content": "B+ Tree 是基于 B Tree 和叶子节点顺序访问指针进行实现，它具有 B Tree 的平衡性，并且通过顺序访问指针来提高区间查询的性能。"
+      }
+    ]
+  },
+  "retrieval_sha256": "633089830487fc3d1b3be4f2d686a900eb8c6c1af1e639ea0eaf9be57b702c91",
+  "dataset_sha256": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+  "manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+  "source_hashes": {
+    "1001": "81bd8a81bb1055b6663bbf4e853a50cba4b34c802ca393da9feb66f455f89300",
+    "1002": "87a42f25f08e4a301a4ce8a7519089606fc77f6cd352cb544b6dabd9e96537a0",
+    "1003": "8f9bd33ec0604c1a913cfbc098dd63566cc7780752d9c3961fc7aae8490b7a32",
+    "1004": "e5825d7e4dd94556ce040970057ebfe7a63adaad2d6ec6b6022696ebb608452c",
+    "1005": "0bf0a7d12f9590d3bb07c6fe3df16f9cf29609a9146217ccb9f4012c4df4826e",
+    "1006": "5e54865e07cbe176c144a711e0e22894ab19de6a48d0cbb0b6d215b42fe641f2",
+    "1007": "a7ba76f04513e5dcd548915ad356caef806568e66a7fd25c5fddc3d9c845cdf5",
+    "1008": "23faa226b377bbb997daf22af95302d0ff2842d9a0f4f0167f37d261ed984001",
+    "1009": "9bb762abdaa7bec4cec9f81b070ee3c7166696d43e53ea7b76f967a46cf7b981",
+    "1010": "34aa3bf502064d0c53d6a130891f2d20609d17771fb62eadb00f946b9282b1d8",
+    "1011": "02dbf18d6b038e17f3eef0483003e222ff0c063575d01942013dd551771b49a3",
+    "1012": "d34637bf2dd4a477d8c4a3bbe060922a14f13e255836863f0e0c17642b01951a",
+    "1013": "7c523c492d44d141e3df4f95225a19f99de338943ffabf5907ee99fb358dacd0",
+    "1014": "f311fc2ba7b04d638398992f177cd8380d7d148df94ed79b9f24dec9a65a0572",
+    "1015": "28b0238e43ff193a5bb2dd73a65d5180897dcf6c166a2fdb18e42a23a01341e1",
+    "1016": "c474e2f11587641ab8d1c9cc5bb841e1dbf5e986de403c016563e55937c767b2"
+  },
+  "human_fact_review": "pending",
+  "external_transfer_authorization": "explicit invocation",
+  "online_assembly_ready": true,
+  "blind_test": false,
+  "comparison_limit": "frameworks differ in tool schemas, prompts and detail metadata; detail content uses frozen fragments",
+  "detail_content_policy": "same frozen fragments as retrieval; full note excluded",
+  "new_request_budget": 20,
+  "results": [
+    {
+      "case_id": "CR02",
+      "backend": "strict_agent",
+      "result": {
+        "content": "SETNX（set if not exist）插入一个键值对：如果 Key 已经存在，返回 False；否则插入成功并返回 True [doc:1013]。笔记利用它做分布式锁的方式是：SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，因此可以用一个 Key 的键值对是否存在来判断是否处于锁定状态 [doc:1013]。此外，笔记还提到可以使用 Redis 自带的 SETNX 命令实现分布式锁，也可以使用官方提供的 RedLock 分布式锁实现 [doc:1008]。",
+        "source_ids": [
+          1008,
+          1013
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "SETNX 分布式锁 返回值",
+              "top_k": 5
+            },
+            "tool_use_id": "call_00_0QAIF96LMUW0ZYb3uei89857"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_0QAIF96LMUW0ZYb3uei89857",
+            "content": "[{\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1008, \"title\": \"Redis\", \"content\": \"可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock ..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "Redis SETNX distributed lock",
+              "top_k": 5
+            },
+            "tool_use_id": "call_01_T330mRh2cOYp0o2E3Wzv9614"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_T330mRh2cOYp0o2E3Wzv9614",
+            "content": "[{\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1008, \"title\": \"Redis\", \"content\": \"可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock ..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1013
+            },
+            "tool_use_id": "call_00_Md8EdDoGpDSxWKQJDj9J9202"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_Md8EdDoGpDSxWKQJDj9J9202",
+            "content": "{\"id\": 1013, \"title\": \"分布式\", \"content\": \"使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。\\n\\nSETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。\", \"summary\": null, \"category\": null, \"tags\": [], \"importance\": 0.5, \"ai_analyzed\": false, \"relationships\": [], \"content_policy\": \"frozen_fragments\"}"
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1008
+            },
+            "tool_use_id": "call_01_co6TSYJHNxfVOtJ3veoP3879"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_co6TSYJHNxfVOtJ3veoP3879",
+            "content": "{\"id\": 1008, \"title\": \"Redis\", \"content\": \"可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。\\n\\n# Redis\\n<!-- GFM-TOC -->\\n* [Redis](#redis)\\n    * [一、概述](#一概述)\\n    * [二、数据类型](#二数据类型)\\n        * [STRING](#string)\\n        * [LIST](#list)\\n        * [SET](#set)\\n        * [HASH](#hash)\\n        * [ZSET](#zset)\\n    * [三、数据结构](#三数据结构)\\n        * [字典](#字典)\\n        * [跳跃表](#跳跃表)\\n    * [四、使用场景](#四使用场景)\\n        * [计数器](#计数器)\\n        * [缓存](#缓存)\\n        * [查找表](#查找表)\\n        * [消息队列]..."
+          },
+          {
+            "type": "final_answer",
+            "content": "SETNX（set if not exist）插入一个键值对：如果 Key 已经存在，返回 False；否则插入成功并返回 True [doc:1013]。笔记利用它做分布式锁的方式是：SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，因此可以用一个 Key 的键值对是否存在来判断是否处于锁定状态 [doc:1013]。此外，笔记还提到可以使用 Redis 自带的 SETNX 命令实现分布式锁，也可以使用官方提供的 RedLock 分布式锁实现 [doc:1008]。"
+          }
+        ],
+        "web_sources": []
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "24a2bf738480a4ab44f43a923fc44b07d1148756799ff17de0d9bccb8a7a1db2"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "24a2bf738480a4ab44f43a923fc44b07d1148756799ff17de0d9bccb8a7a1db2"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "c0294eec8bb0c37c23098a790c245948d38b8812af44bf6186a7eb4ec3fe32de"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "b313b98eaac15ac5986ae71133924ed760217a8e68f3adcb40e44d90ff8e9283"
+        }
+      ],
+      "latency_ms": 2983.467,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR02",
+      "backend": "langchain",
+      "result": {
+        "content": "使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。[doc:1013]\n\nSETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。[doc:1013] 可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。[doc:1008]",
+        "source_ids": [
+          1008,
+          1013
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 4,
+            "chunk_count": 4,
+            "selected": [
+              {
+                "node_id": 1013,
+                "content_sha256": "2b322a6d8c9b4a5f46e715c90118ae95d079ef1e07bd057515d1fb455d569e54"
+              },
+              {
+                "node_id": 1013,
+                "content_sha256": "f8c2cd39a4f20e029ef28e150ec5bf7d49645e3789a436e4b341db0459e3b0f0"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "c55674cba73925a9f068d857481d59ecb4efc9e7e116e2bc6acaa4bbbd6ab853"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "3077b69dea90b89fa19d98317393c2ee081b056a77f4ea003724555e1e0833a4"
+              }
+            ],
+            "parent_limit": 2,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1008,
+              1013
+            ],
+            "chunk_count": 4
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。[doc:1013]\n\nSETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。[doc:1013] 可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。[doc:1008]"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 898,
+          "output_tokens": 133,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 898
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 898,
+          "output_tokens": 133,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 898
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 2771,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "8e8e1c4ffb3206b42b13767d7fc7598be2039cac5dd2350ec66fcd840758a724"
+        }
+      ],
+      "latency_ms": 995.432,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR07",
+      "backend": "strict_agent",
+      "result": {
+        "content": "知识库中与“同一程序内多个执行单元（线程）vs 每个单元独立进程”相关的记录只有关于线程调度单位的说明：线程是独立调度的基本单位，在同一进程中线程的切换不会引起进程切换，只有从一个进程中的线程切换到另一个进程中的线程时才会引起进程切换（[doc:1001]）。因此按现有证据，同一程序内多个执行单元之间的切换不需要发生进程切换，这是检索到的笔记中唯一直接支持的开销差异；知识库笔记并未进一步说明创建进程或线程各自的具体系统开销，也未提供资源（如地址空间、打开文件、页表）共享与创建成本方面的记录，故无法据此给出更完整的开销原因。",
+        "source_ids": [
+          1001
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "多个执行单元 线程 比进程 系统开销小",
+              "top_k": 5
+            },
+            "tool_use_id": "call_00_CZozKeB32mp5AM5eBx6l5629"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_CZozKeB32mp5AM5eBx6l5629",
+            "content": "[{\"node_id\": 1003, \"title\": \"计算机操作系统 - 内存管理\", \"content\": \"为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1003, \"title\": \"计算机操作系统 - 内存管理\", \"content\": \"程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "线程与进程的区别 创建开销 上下文切换",
+              "top_k": 5
+            },
+            "tool_use_id": "call_01_B4M8CJ94FWNfdpcG4Typ7812"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_B4M8CJ94FWNfdpcG4Typ7812",
+            "content": "[{\"node_id\": 1003, \"title\": \"计算机操作系统 - 内存管理\", \"content\": \"为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1003, \"title\": \"计算机操作系统 - 内存管理\", \"content\": \"程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1001
+            },
+            "tool_use_id": "call_00_Yjb4ljqXpqHahaiOPvlQ2197"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_Yjb4ljqXpqHahaiOPvlQ2197",
+            "content": "{\"id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"下图显示了 4 个程序创建了 4 个进程，这 4 个进程可以并发地执行。\\n\\n线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。\", \"summary\": null, \"category\": null, \"tags\": [], \"importance\": 0.5, \"ai_analyzed\": false, \"relationships\": [], \"content_policy\": \"frozen_fragments\"}"
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "线程共享进程资源 地址空间 打开文件 拥有资源",
+              "top_k": 5
+            },
+            "tool_use_id": "call_01_1KDMJhl38DJwEwFUE1c10639"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_1KDMJhl38DJwEwFUE1c10639",
+            "content": "[{\"node_id\": 1003, \"title\": \"计算机操作系统 - 内存管理\", \"content\": \"为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1003, \"title\": \"计算机操作系统 - 内存管理\", \"content\": \"程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"..."
+          },
+          {
+            "type": "final_answer",
+            "content": "知识库中与“同一程序内多个执行单元（线程）vs 每个单元独立进程”相关的记录只有关于线程调度单位的说明：线程是独立调度的基本单位，在同一进程中线程的切换不会引起进程切换，只有从一个进程中的线程切换到另一个进程中的线程时才会引起进程切换（[doc:1001]）。因此按现有证据，同一程序内多个执行单元之间的切换不需要发生进程切换，这是检索到的笔记中唯一直接支持的开销差异；知识库笔记并未进一步说明创建进程或线程各自的具体系统开销，也未提供资源（如地址空间、打开文件、页表）共享与创建成本方面的记录，故无法据此给出更完整的开销原因。"
+          }
+        ],
+        "web_sources": []
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc6501cd76decdbfd08ed295a6ddd34078e93f4909a086e5efeb39f288c0b851"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc6501cd76decdbfd08ed295a6ddd34078e93f4909a086e5efeb39f288c0b851"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "a08c0eb4133ad8980d85be311f3b72a5562315596070a6cb7355b97b9deaa1c1"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc6501cd76decdbfd08ed295a6ddd34078e93f4909a086e5efeb39f288c0b851"
+        }
+      ],
+      "latency_ms": 4137.832,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR07",
+      "backend": "langchain",
+      "result": {
+        "content": "同一进程内的多个线程（执行单元）共享同一地址空间，线程切换不会引起进程切换，因此比切换到另一个进程的线程开销小；而每个单元若为独立进程，从一个进程切换到另一个进程会发生进程切换，开销更大。[doc:1001]",
+        "source_ids": [
+          1001
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 4,
+            "chunk_count": 4,
+            "selected": [
+              {
+                "node_id": 1003,
+                "content_sha256": "9e7f0a2ebb39a83df317af4dca1fc4a1b91cdcd15724eef2175a429bad048ac9"
+              },
+              {
+                "node_id": 1003,
+                "content_sha256": "6ce1984d71b2445ac747b247120b1f1709f0ea3edd2369235c369d7616f7badd"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "c8fd9f16d416b882be0eaffb543e252037d9550490a59963d3742ae1e9d3f1c0"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "fbd68747af15ab7d73031580ac07adefd79f67fe043b63aa4899f9eeb7bc15d9"
+              }
+            ],
+            "parent_limit": 2,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1001,
+              1003
+            ],
+            "chunk_count": 4
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "同一进程内的多个线程（执行单元）共享同一地址空间，线程切换不会引起进程切换，因此比切换到另一个进程的线程开销小；而每个单元若为独立进程，从一个进程切换到另一个进程会发生进程切换，开销更大。[doc:1001]"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 648,
+          "output_tokens": 70,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 648
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 648,
+          "output_tokens": 70,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 648
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 2067,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "eade262c787af7c08e1637d959f68c76fb3308b72270ae88033329bb86ed8605"
+        }
+      ],
+      "latency_ms": 1059.052,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR13",
+      "backend": "strict_agent",
+      "result": {
+        "content": "根据笔记，EXPIRE 指令可以为一个键值对设置过期时间，从而避免了「数据库唯一索引实现方式」中释放锁失败的问题 [doc:1013]。即：锁持有者释放失败（没能主动删除锁键）时，靠过期时间兜底，不会让锁永久残留。至于过期后键会怎样，Redis 笔记说明：Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键 [doc:1008]。",
+        "source_ids": [
+          1008,
+          1013
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "分布式锁 Redis 过期时间 释放失败",
+              "top_k": 5
+            },
+            "tool_use_id": "call_00_ttgWjUswAkpWAr0YJbct5308"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_ttgWjUswAkpWAr0YJbct5308",
+            "content": "[{\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"- 尝试从 N 个互相独立 Redis 实例获取锁；\\n- 计算获取锁消耗的时间，只有时间小于锁的过期时间，并且从大多数（N / 2 + 1）实例上获取了锁，才认为获取锁成功；\\n- 如果获取锁失败，就到每个实例上释放锁。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1008, \"title\": \"Redis\", \"content\": \"# Redis\\n<!-- GFM-TOC -->\\n* [Redis]..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "Redis 键过期时间 TTL 自动删除",
+              "top_k": 5
+            },
+            "tool_use_id": "call_01_Mn7KbthPDKZ9KbVIgAB16517"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_Mn7KbthPDKZ9KbVIgAB16517",
+            "content": "[{\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1013, \"title\": \"分布式\", \"content\": \"- 尝试从 N 个互相独立 Redis 实例获取锁；\\n- 计算获取锁消耗的时间，只有时间小于锁的过期时间，并且从大多数（N / 2 + 1）实例上获取了锁，才认为获取锁成功；\\n- 如果获取锁失败，就到每个实例上释放锁。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1008, \"title\": \"Redis\", \"content\": \"# Redis\\n<!-- GFM-TOC -->\\n* [Redis]..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1013
+            },
+            "tool_use_id": "call_00_wekLyCD7eAATemDtDP486699"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_wekLyCD7eAATemDtDP486699",
+            "content": "{\"id\": 1013, \"title\": \"分布式\", \"content\": \"EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。\\n\\n- 尝试从 N 个互相独立 Redis 实例获取锁；\\n- 计算获取锁消耗的时间，只有时间小于锁的过期时间，并且从大多数（N / 2 + 1）实例上获取了锁，才认为获取锁成功；\\n- 如果获取锁失败，就到每个实例上释放锁。\", \"summary\": null, \"category\": null, \"tags\": [], \"importance\": 0.5, \"ai_analyzed\": false, \"relationships\": [], \"content_policy\": \"frozen_fragments\"}"
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1008
+            },
+            "tool_use_id": "call_01_E0nETl0cD0ipVwA1OW1w2667"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_E0nETl0cD0ipVwA1OW1w2667",
+            "content": "{\"id\": 1008, \"title\": \"Redis\", \"content\": \"# Redis\\n<!-- GFM-TOC -->\\n* [Redis](#redis)\\n    * [一、概述](#一概述)\\n    * [二、数据类型](#二数据类型)\\n        * [STRING](#string)\\n        * [LIST](#list)\\n        * [SET](#set)\\n        * [HASH](#hash)\\n        * [ZSET](#zset)\\n    * [三、数据结构](#三数据结构)\\n        * [字典](#字典)\\n        * [跳跃表](#跳跃表)\\n    * [四、使用场景](#四使用场景)\\n        * [计数器](#计数器)\\n        * [缓存](#缓存)\\n        * [查找表](#查找表)\\n        * [消息队列](#消息队列)\\n        * [会话缓存](#会话缓存)\\n        * [分布式锁实现](#分布式锁实现)\\n  ..."
+          },
+          {
+            "type": "final_answer",
+            "content": "根据笔记，EXPIRE 指令可以为一个键值对设置过期时间，从而避免了「数据库唯一索引实现方式」中释放锁失败的问题 [doc:1013]。即：锁持有者释放失败（没能主动删除锁键）时，靠过期时间兜底，不会让锁永久残留。至于过期后键会怎样，Redis 笔记说明：Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键 [doc:1008]。"
+          }
+        ],
+        "web_sources": []
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "102b1cd1f185b0f3d1250e2540abee18393a81d6c1da0ff3d99f2a6b4aeca89e"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "102b1cd1f185b0f3d1250e2540abee18393a81d6c1da0ff3d99f2a6b4aeca89e"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "322ffcc2906b0bd9cdbfaff61911d70b25a54fafd6036b7624b3e9368e0e9858"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "f21b7396ec1c9c035da513d0c4267dd3404f810dc7a15aa1918a7f0aa96efff2"
+        }
+      ],
+      "latency_ms": 3256.787,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR13",
+      "backend": "langchain",
+      "result": {
+        "content": "为键设置过期时间可以避免释放锁失败带来的问题；在 Redis 中，键过期时会自动删除该键。[doc:1013][doc:1008]",
+        "source_ids": [
+          1008,
+          1013
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 4,
+            "chunk_count": 4,
+            "selected": [
+              {
+                "node_id": 1013,
+                "content_sha256": "f00d19de1c2eac98dae51bd3d30ed336608a79d715218c7970ff671b4b41ae87"
+              },
+              {
+                "node_id": 1013,
+                "content_sha256": "07a8114fcafc44c4c6fc3cd6fe5be28a7314add248d8b4497e51330a4a876ff7"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "3077b69dea90b89fa19d98317393c2ee081b056a77f4ea003724555e1e0833a4"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "5b58039b46ec36605fe0928ebb3f1fc7ddeab66784c6921eb59c9d5cb7b594aa"
+              }
+            ],
+            "parent_limit": 2,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1008,
+              1013
+            ],
+            "chunk_count": 4
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "为键设置过期时间可以避免释放锁失败带来的问题；在 Redis 中，键过期时会自动删除该键。[doc:1013][doc:1008]"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 923,
+          "output_tokens": 53,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 923
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 923,
+          "output_tokens": 53,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 923
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 2770,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "b481d603646cdb9b58841b7e2e17b218b448df58ea2dc59b2f3a7fa29ade0085"
+        }
+      ],
+      "latency_ms": 1188.253,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR19",
+      "backend": "strict_agent",
+      "result": {
+        "content": "两者不同：资源分配的基本单位是进程——\"进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源\"[doc:1001]；独立调度的基本单位是线程——\"线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换\"[doc:1001]。",
+        "source_ids": [
+          1001
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "资源分配基本单位 独立调度基本单位 进程 线程",
+              "top_k": 5
+            },
+            "tool_use_id": "call_00_MZG6Y9nWTcEvEBnH1xKN9150"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_MZG6Y9nWTcEvEBnH1xKN9150",
+            "content": "[{\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1002, \"title\": \"计算机操作系统 - 死锁\", \"content\": \"- 互斥：每个资源要么已经分配给了一个进程，要么就是可用的。\\n- 占有和等待：已经得到了某个资源的进程可以再请求新的资源。\\n- 不可..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "操作系统中进程是资源分配的基本单位 线程是独立调度和分派的基本单位",
+              "top_k": 5
+            },
+            "tool_use_id": "call_01_oZF4Uhxa2gwpPMzAYH0k9911"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_oZF4Uhxa2gwpPMzAYH0k9911",
+            "content": "[{\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1002, \"title\": \"计算机操作系统 - 死锁\", \"content\": \"- 互斥：每个资源要么已经分配给了一个进程，要么就是可用的。\\n- 占有和等待：已经得到了某个资源的进程可以再请求新的资源。\\n- 不可..."
+          },
+          {
+            "type": "final_answer",
+            "content": "两者不同：资源分配的基本单位是进程——\"进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源\"[doc:1001]；独立调度的基本单位是线程——\"线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换\"[doc:1001]。"
+          }
+        ],
+        "web_sources": []
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "56ce44d063f99437d9931c4dee4af242b15ad0421b953dc14baab69653743da1"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "56ce44d063f99437d9931c4dee4af242b15ad0421b953dc14baab69653743da1"
+        }
+      ],
+      "latency_ms": 2358.722,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR19",
+      "backend": "langchain",
+      "result": {
+        "content": "资源分配的基本单位是进程；独立调度的基本单位是线程。证据指出：“进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。”以及“线程是独立调度的基本单位”。[doc:1001]",
+        "source_ids": [
+          1001
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 4,
+            "chunk_count": 4,
+            "selected": [
+              {
+                "node_id": 1001,
+                "content_sha256": "63ffe1105b2820b742fb1278a91355585a17a0178f1296eaaf083378d9f07e79"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "fbd68747af15ab7d73031580ac07adefd79f67fe043b63aa4899f9eeb7bc15d9"
+              },
+              {
+                "node_id": 1002,
+                "content_sha256": "c42d117ce4e5a439fcc3e9d7ba0f3cee817154690122f11add97f1941a7a78e8"
+              },
+              {
+                "node_id": 1002,
+                "content_sha256": "aac389fb1aeaa0e1fec623457ccbbcd6c3c087f694cd8638d70362ab441f4e34"
+              }
+            ],
+            "parent_limit": 2,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1001,
+              1002
+            ],
+            "chunk_count": 4
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "资源分配的基本单位是进程；独立调度的基本单位是线程。证据指出：“进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。”以及“线程是独立调度的基本单位”。[doc:1001]"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 645,
+          "output_tokens": 68,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 645
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 645,
+          "output_tokens": 68,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 645
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 2070,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "b5a65426980852b7f957c2999ae8ececb2e5c82a69c71732c6999af13b1ac727"
+        }
+      ],
+      "latency_ms": 1082.685,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR26",
+      "backend": "strict_agent",
+      "result": {
+        "content": "NOT_FOUND_IN_KB: 本次检索未找到支持该问题的证据。",
+        "source_ids": [],
+        "is_from_kb": false,
+        "found_in_kb": false,
+        "answer_status": "not_found",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "Python yield 生成器 局部变量 保存 恢复 实现原理",
+              "top_k": 10
+            },
+            "tool_use_id": "call_00_g7jO79401jrMVG4PHn797961"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_g7jO79401jrMVG4PHn797961",
+            "content": "[{\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1009, \"title\": \"MySQL\", \"content\": \"实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1001, ..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "generator frame f_locals next() resume local variables",
+              "top_k": 10
+            },
+            "tool_use_id": "call_01_RWcwvS5qbSENB93a7FXH8982"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_RWcwvS5qbSENB93a7FXH8982",
+            "content": "[{\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1009, \"title\": \"MySQL\", \"content\": \"实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1001, ..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1001
+            },
+            "tool_use_id": "call_00_Yf62T76Q70WZlCaEn1VW2198"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_00_Yf62T76Q70WZlCaEn1VW2198",
+            "content": "{\"id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。\\n\\n由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。\", \"summary\": null, \"category\": null, \"tags\": [], \"importance\": 0.5, \"ai_analyzed\": false, \"relationships\": [], \"content_policy\": \"frozen_fragments\"}"
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "get_node_details",
+            "tool_input": {
+              "node_id": 1009
+            },
+            "tool_use_id": "call_01_oglDEcLFcxnpC3WY34um5887"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_01_oglDEcLFcxnpC3WY34um5887",
+            "content": "{\"id\": 1009, \"title\": \"MySQL\", \"content\": \"实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。\\n\\nB+ Tree 是基于 B Tree 和叶子节点顺序访问指针进行实现，它具有 B Tree 的平衡性，并且通过顺序访问指针来提高区间查询的性能。\", \"summary\": null, \"category\": null, \"tags\": [], \"importance\": 0.5, \"ai_analyzed\": false, \"relationships\": [], \"content_policy\": \"frozen_fragments\"}"
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "协程 迭代器 生成器 状态保存 栈帧",
+              "top_k": 10
+            },
+            "tool_use_id": "call_02_2jmAex7jMtG8A6Gm7mjS2795"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_02_2jmAex7jMtG8A6Gm7mjS2795",
+            "content": "[{\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1009, \"title\": \"MySQL\", \"content\": \"实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1001, ..."
+          },
+          {
+            "type": "tool_call",
+            "tool_name": "search_knowledge_base",
+            "tool_input": {
+              "query": "Python 语言特性 语法笔记",
+              "top_k": 10
+            },
+            "tool_use_id": "call_03_Qywm1upNsNynNpfUIiSQ8359"
+          },
+          {
+            "type": "tool_result",
+            "tool_use_id": "call_03_Qywm1upNsNynNpfUIiSQ8359",
+            "content": "[{\"node_id\": 1001, \"title\": \"计算机操作系统 - 进程管理\", \"content\": \"管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1009, \"title\": \"MySQL\", \"content\": \"实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。\", \"distance\": null, \"note_date\": \"\", \"date_source\": \"\", \"kb_latest_date\": \"\"}, {\"node_id\": 1001, ..."
+          },
+          {
+            "type": "final_answer",
+            "content": "NOT_FOUND_IN_KB: 本次检索未找到支持该问题的证据。"
+          }
+        ],
+        "web_sources": []
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc9b4b73b3fed895bd612f218bd3ff9cada0ff73fdcb7527a802079f2dc8881c"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc9b4b73b3fed895bd612f218bd3ff9cada0ff73fdcb7527a802079f2dc8881c"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "d00e37a183bf70a96a442f464b632eb6ea3c2e849ddd8e2925711d42e4798b73"
+        },
+        {
+          "tool": "get_node_details",
+          "result_sha256": "7172e442730af8dd5381d6dc866cf265aa7df5767dd5f5847535013aba4383e1"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc9b4b73b3fed895bd612f218bd3ff9cada0ff73fdcb7527a802079f2dc8881c"
+        },
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "cc9b4b73b3fed895bd612f218bd3ff9cada0ff73fdcb7527a802079f2dc8881c"
+        }
+      ],
+      "latency_ms": 2861.559,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR26",
+      "backend": "langchain",
+      "result": {
+        "content": "NOT_FOUND_IN_KB: 本次检索未找到支持该问题的证据。",
+        "source_ids": [],
+        "is_from_kb": false,
+        "found_in_kb": false,
+        "answer_status": "not_found",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 4,
+            "chunk_count": 4,
+            "selected": [
+              {
+                "node_id": 1001,
+                "content_sha256": "526b00fb36296743f20d606d7e72c7ce01d86759611ae803480f8acc1e0d3c1c"
+              },
+              {
+                "node_id": 1009,
+                "content_sha256": "bd825980ea1380230ad32414a99ad329d627ea78ce087ae70eb2e677d843bd6c"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "8e7f0802bbfd95216260be41da18bb7310bfb90e1390c9961420c907b0e21be5"
+              },
+              {
+                "node_id": 1009,
+                "content_sha256": "f3f7c17cd5f429f5871fe751ba94490870d890410400bd05b0c2d6188500bb35"
+              }
+            ],
+            "parent_limit": 2,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1001,
+              1009
+            ],
+            "chunk_count": 4
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "NOT_FOUND_IN_KB: 本次检索未找到支持该问题的证据。"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 671,
+          "output_tokens": 15,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 671
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 671,
+          "output_tokens": 15,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 671
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 2152,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "result_sha256": "74795531d64dd9828c8d61bfe5ba2d8fc365c2ce9703dced2341b2561d250d5a"
+        }
+      ],
+      "latency_ms": 558.139,
+      "human_fact_review": "pending"
+    }
+  ],
+  "rewrites": [
+    {
+      "case_id": "CR02",
+      "candidate": {
+        "original_query": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？",
+        "rewrite_query": null,
+        "queries": [
+          "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？"
+        ],
+        "accepted": false,
+        "model_calls": 1,
+        "usage": {
+          "status": "known",
+          "input_tokens": 198,
+          "output_tokens": 29,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 198
+        },
+        "failure_reason": "unchanged_rewrite",
+        "trace": [
+          {
+            "type": "rewrite_model_call",
+            "count": 1
+          },
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "unchanged_rewrite"
+          }
+        ],
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 890,
+          "max_rewrite_chars": 1000
+        }
+      },
+      "retrieval_gain_measured": false
+    }
+  ],
+  "selected_model": "deepseek-flash",
+  "credential_source": "explicit_deepseek_file",
+  "thinking": "disabled",
+  "requests": [
+    {
+      "physical_request": 1,
+      "case_id": "CR02",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 2943,
+      "max_output_tokens": 600,
+      "payload_sha256": "6f504d5b9247469b1e4ce5bdd3f259a0eebf251109d645e62213938ef5db58fc",
+      "prompt_sha256": "fd0469ada60ed98776364aa010c74e6cbdd474f79ea29ac4c95c47378d88688a",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 249,
+        "output_tokens": 129,
+        "cache_read_input_tokens": 640,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 796.123
+    },
+    {
+      "physical_request": 2,
+      "case_id": "CR02",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 6910,
+      "max_output_tokens": 600,
+      "payload_sha256": "8e35968e9985d7a7c1537fb5e87927a3d715926e0c9f95e57eb2a3318da6bf9b",
+      "prompt_sha256": "2d09fb407c1729bced9228d77e98b538f5c96bf617713dd8e68eb4c7e1619b6d",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 1392,
+        "output_tokens": 86,
+        "cache_read_input_tokens": 896,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1026.102
+    },
+    {
+      "physical_request": 3,
+      "case_id": "CR02",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 8367,
+      "max_output_tokens": 600,
+      "payload_sha256": "b0722877a807b148b6625da4fa51df792f8801e511dcb09b1d152094cefedbb9",
+      "prompt_sha256": "66f4ee91955360447e0261f2c3adc08335af94631a35bf293d57fb0c55f968a5",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 2354,
+        "output_tokens": 143,
+        "cache_read_input_tokens": 256,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1120.797
+    },
+    {
+      "physical_request": 4,
+      "case_id": "CR02",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 2844,
+      "max_output_tokens": 600,
+      "payload_sha256": "5d4cd8f7e4cb41513ff9b049a1a8407e1de0519ea4bf1d6c15677a7cb7554062",
+      "prompt_sha256": "158a63e14e755725368192cf974ee47d5f46c228048a9a7e0af50bf44002b47f",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 898,
+        "output_tokens": 133,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 979.512
+    },
+    {
+      "physical_request": 5,
+      "case_id": "CR07",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 2941,
+      "max_output_tokens": 600,
+      "payload_sha256": "58055e75be2ed3aa070a217bdc994e879836a9e56dfc34fff704c05a6caedc85",
+      "prompt_sha256": "cb9fd80afd79055a741e8047310394908991f1c294f3efcc86734eec84aca153",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 247,
+        "output_tokens": 134,
+        "cache_read_input_tokens": 640,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1211.814
+    },
+    {
+      "physical_request": 6,
+      "case_id": "CR07",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 5484,
+      "max_output_tokens": 600,
+      "payload_sha256": "1f01c60694dc9ffd6c87a8920aebdd944e9a4e16c5b943e1a8bcdc0313303b5b",
+      "prompt_sha256": "71062c197f8be545b682329421f8a7f9760b0a65f36d30b9ac23e585e964784d",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 899,
+        "output_tokens": 111,
+        "cache_read_input_tokens": 896,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1163.668
+    },
+    {
+      "physical_request": 7,
+      "case_id": "CR07",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 6757,
+      "max_output_tokens": 600,
+      "payload_sha256": "c029a8b71f8e894bd122a9cecc2b72746738693faaa17aa98e8e3236291a1570",
+      "prompt_sha256": "c8ef808a26735c2fee56564e358a26253c9094f549be8627ca43866ca84b1b31",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 1803,
+        "output_tokens": 165,
+        "cache_read_input_tokens": 256,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1750.575
+    },
+    {
+      "physical_request": 8,
+      "case_id": "CR07",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 2140,
+      "max_output_tokens": 600,
+      "payload_sha256": "882b357b2f7618c7c93af366770db5a9a9c6df956b84009f47cb566a2e252a04",
+      "prompt_sha256": "6832634cdd87bab95c21f813636740d3cb26d2042d6f032d69171be06d0c2f8a",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 648,
+        "output_tokens": 70,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1053.69
+    },
+    {
+      "physical_request": 9,
+      "case_id": "CR13",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 2950,
+      "max_output_tokens": 600,
+      "payload_sha256": "aeed879a91f19735d73a44f5c87bd860a23ce38409b6855c5b924207a30143ec",
+      "prompt_sha256": "b05dd4056ff52febc026ac95174ab965b07b5e2e06ed94be1761afc1185be0b0",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 253,
+        "output_tokens": 136,
+        "cache_read_input_tokens": 640,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1256.042
+    },
+    {
+      "physical_request": 10,
+      "case_id": "CR13",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 6908,
+      "max_output_tokens": 600,
+      "payload_sha256": "6f169859889d84260f8793f96414108a082ccea0015a8fcdb2f5977b1b24aff5",
+      "prompt_sha256": "a5ef85150155d93c8dc927c4750e1c35c289b419ca6bc71f9c4bd1d5acb8d9c9",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 1317,
+        "output_tokens": 81,
+        "cache_read_input_tokens": 1024,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 832.703
+    },
+    {
+      "physical_request": 11,
+      "case_id": "CR13",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 8341,
+      "max_output_tokens": 600,
+      "payload_sha256": "490c0cdd11efd7a976a5310a3c3f690d8183ade347aed36fc37510c7327d2677",
+      "prompt_sha256": "6e08bcd79189d7620beda12bed2e445105bfcd3701ce26aae3e79a0da241cb82",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 2423,
+        "output_tokens": 124,
+        "cache_read_input_tokens": 256,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1156.517
+    },
+    {
+      "physical_request": 12,
+      "case_id": "CR13",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 2843,
+      "max_output_tokens": 600,
+      "payload_sha256": "ebde0776a319afbf84048aebd6a8fefd1b66ec26d0f7491deab6cb92cdb80bce",
+      "prompt_sha256": "939d744c0c3371cf322559164063b997b73cd4a1143d71a94536e9ecde18b0e5",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 923,
+        "output_tokens": 53,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1182.5
+    },
+    {
+      "physical_request": 13,
+      "case_id": "CR19",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 2943,
+      "max_output_tokens": 600,
+      "payload_sha256": "7b416c3d51a614576618563841a3526e8ecedd902dfc79acfde8e9561a67065b",
+      "prompt_sha256": "f5e3838cb1d13f219913e0a76329acd0ea38c947e226c72824bf51c1f77bbe64",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 247,
+        "output_tokens": 143,
+        "cache_read_input_tokens": 640,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1236.608
+    },
+    {
+      "physical_request": 14,
+      "case_id": "CR19",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 5503,
+      "max_output_tokens": 600,
+      "payload_sha256": "5ac7da79b8c501d80aabb42d1da0da7e0ac0757ebae00b53274db5df92b473f4",
+      "prompt_sha256": "1a8a751c81b1bb97df1c5b613b7ca1fb1dbd4714b3bcfdd002002507b9b4e149",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 1030,
+        "output_tokens": 106,
+        "cache_read_input_tokens": 768,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1116.705
+    },
+    {
+      "physical_request": 15,
+      "case_id": "CR19",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 2143,
+      "max_output_tokens": 600,
+      "payload_sha256": "dcd983d60c02e32d26c7c07f874c510ef1372bee818111ca60fd70e3f23f3b94",
+      "prompt_sha256": "6f2f12489d43c4f403b0f530e9d32e0756f37d4128dd2dc2e7d47e90db6d6941",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 645,
+        "output_tokens": 68,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1077.509
+    },
+    {
+      "physical_request": 16,
+      "case_id": "CR26",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 2952,
+      "max_output_tokens": 600,
+      "payload_sha256": "f9bdda9ed35e4691f7c1613c54637968946f455c7bf796202071979316c27eb7",
+      "prompt_sha256": "9ad3c6b47e336abd566f7211218d0087ee6071fee5b1c2bb2cdebb24e746fce9",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 249,
+        "output_tokens": 148,
+        "cache_read_input_tokens": 640,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1274.871
+    },
+    {
+      "physical_request": 17,
+      "case_id": "CR26",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 5725,
+      "max_output_tokens": 600,
+      "payload_sha256": "e24149aa327cf5fe6c952e17d30b51bd70488bc345c05360862eb91ef0969653",
+      "prompt_sha256": "1470e2650e5871c28a79fc482e3446270c79d978f56d2f3df8a6b745d8259a55",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 829,
+        "output_tokens": 204,
+        "cache_read_input_tokens": 1024,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1113.733
+    },
+    {
+      "physical_request": 18,
+      "case_id": "CR26",
+      "backend": "strict_agent",
+      "model": "deepseek-flash",
+      "input_chars": 9114,
+      "max_output_tokens": 600,
+      "payload_sha256": "3e4c782350e1660d2db730e573d326d90d7dd37cc13fd1981a0696c487875016",
+      "prompt_sha256": "2ab61d29f1f73cbdab103b969741e46dd70bbf484ba2916b1296e85c75893401",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 2616,
+        "output_tokens": 18,
+        "cache_read_input_tokens": 256,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 458.617
+    },
+    {
+      "physical_request": 19,
+      "case_id": "CR26",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 2225,
+      "max_output_tokens": 600,
+      "payload_sha256": "517d831d761d3b42382520d54685f26b14cd87f5c0b3b86d8a0a0578b78e12d8",
+      "prompt_sha256": "f12fe3f525b4a50bf720ee5542b5021bc1935d89af365defa76b008a1f697fea",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 671,
+        "output_tokens": 15,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 552.594
+    },
+    {
+      "physical_request": 20,
+      "case_id": "CR02",
+      "backend": "rewrite",
+      "model": "deepseek-flash",
+      "input_chars": 963,
+      "max_output_tokens": 300,
+      "payload_sha256": "1ca6a9666e07047cf6e0c00e7508d2446cdc6c265ed90d099524800776f77b9b",
+      "prompt_sha256": "e23820bb66b63015f0e54a7b7dba93f4df28857ed12104210ad8142ab243ee80",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 198,
+        "output_tokens": 29,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 748.858
+    }
+  ],
+  "usage_totals": {
+    "input_tokens": 28723,
+    "output_tokens": 2096
+  },
+  "halted": false,
+  "rewrite_cases_not_run": 4
+}

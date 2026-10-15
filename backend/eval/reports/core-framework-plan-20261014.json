@@ -1,0 +1,183 @@
+{
+  "mode": "dry_run",
+  "physical_requests": 0,
+  "physical_request_limit": 25,
+  "input_chars_limit": 16000,
+  "output_tokens_limit": 600,
+  "rewrite_output_tokens_limit": 300,
+  "cases": [
+    {
+      "case_id": "CR02",
+      "question": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？",
+      "split": "development",
+      "query_category": "concrete_api_error",
+      "gold_sha256": "ec30acc878a76471045f399d4f05170ba837930edef61747318b03b7c306dbbc"
+    },
+    {
+      "case_id": "CR07",
+      "question": "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？",
+      "split": "development",
+      "query_category": "semantic_rephrase",
+      "gold_sha256": "efc0d822ffd2b4cb16d5ab94011e99f55560de3b49e627a44ff32e7c267efd4c"
+    },
+    {
+      "case_id": "CR13",
+      "question": "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？",
+      "split": "development",
+      "query_category": "multi_document",
+      "gold_sha256": "2a78b66d2f81123b0d5f577de811455876db8931ca4be1e4e8b7ed61c40ca039"
+    },
+    {
+      "case_id": "CR19",
+      "question": "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "gold_sha256": "a3af82f950eb0085c8b36d5e28217fb92dc49332f01795eb1ddd1c372dea62b1"
+    },
+    {
+      "case_id": "CR26",
+      "question": "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？",
+      "split": "development",
+      "query_category": "missing_evidence",
+      "gold_sha256": "3c6507f1be154fc04900731d20fb0e10baf3a7ae7917b060d3f9606c57fdf852"
+    }
+  ],
+  "frozen_retrieval": {
+    "CR02": [
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。"
+      },
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "# Redis\n<!-- GFM-TOC -->\n* [Redis](#redis)\n    * [一、概述](#一概述)\n    * [二、数据类型](#二数据类型)\n        * [STRING](#string)\n        * [LIST](#list)\n        * [SET](#set)\n        * [HASH](#hash)\n        * [ZSET](#zset)\n    * [三、数据结构](#三数据结构)\n        * [字典](#字典)\n        * [跳跃表](#跳跃表)\n    * [四、使用场景](#四使用场景)\n        * [计数器](#计数器)\n        * [缓存](#缓存)\n        * [查找表](#查找表)\n        * [消息队列](#消息队列)\n        * [会话缓存](#会话缓存)\n        * [分布式锁实现](#分布式锁实现)\n        * [其它](#其它)\n    * [五、Redis 与 Memcached](#五redis-与-memcached)\n        * [数据类型](#数据类型)\n        * [数据持久化](#数据持久化)\n        * [分布式](#分布式)\n        * [内存管理机制](#内存管理机制)\n    * [六、键的过期时间](#六键的过期时间)\n    * [七、数据淘汰策略](#七数据淘汰策略)\n    * [八、持久化](#八持久化)\n        * [RDB 持久化](#rdb-持久化)\n        * [AOF 持久化](#aof-持久化)\n    * [九、事务](#九事务)\n    * [十、事件](#十事件)\n        * [文件事件](#文件事件)"
+      }
+    ],
+    "CR07": [
+      {
+        "node_id": 1003,
+        "title": "计算机操作系统 - 内存管理",
+        "content": "为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。"
+      },
+      {
+        "node_id": 1003,
+        "title": "计算机操作系统 - 内存管理",
+        "content": "程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "下图显示了 4 个程序创建了 4 个进程，这 4 个进程可以并发地执行。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。"
+      }
+    ],
+    "CR13": [
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。"
+      },
+      {
+        "node_id": 1013,
+        "title": "分布式",
+        "content": "- 尝试从 N 个互相独立 Redis 实例获取锁；\n- 计算获取锁消耗的时间，只有时间小于锁的过期时间，并且从大多数（N / 2 + 1）实例上获取了锁，才认为获取锁成功；\n- 如果获取锁失败，就到每个实例上释放锁。"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "# Redis\n<!-- GFM-TOC -->\n* [Redis](#redis)\n    * [一、概述](#一概述)\n    * [二、数据类型](#二数据类型)\n        * [STRING](#string)\n        * [LIST](#list)\n        * [SET](#set)\n        * [HASH](#hash)\n        * [ZSET](#zset)\n    * [三、数据结构](#三数据结构)\n        * [字典](#字典)\n        * [跳跃表](#跳跃表)\n    * [四、使用场景](#四使用场景)\n        * [计数器](#计数器)\n        * [缓存](#缓存)\n        * [查找表](#查找表)\n        * [消息队列](#消息队列)\n        * [会话缓存](#会话缓存)\n        * [分布式锁实现](#分布式锁实现)\n        * [其它](#其它)\n    * [五、Redis 与 Memcached](#五redis-与-memcached)\n        * [数据类型](#数据类型)\n        * [数据持久化](#数据持久化)\n        * [分布式](#分布式)\n        * [内存管理机制](#内存管理机制)\n    * [六、键的过期时间](#六键的过期时间)\n    * [七、数据淘汰策略](#七数据淘汰策略)\n    * [八、持久化](#八持久化)\n        * [RDB 持久化](#rdb-持久化)\n        * [AOF 持久化](#aof-持久化)\n    * [九、事务](#九事务)\n    * [十、事件](#十事件)\n        * [文件事件](#文件事件)"
+      },
+      {
+        "node_id": 1008,
+        "title": "Redis",
+        "content": "Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键。"
+      }
+    ],
+    "CR19": [
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。"
+      },
+      {
+        "node_id": 1002,
+        "title": "计算机操作系统 - 死锁",
+        "content": "- 互斥：每个资源要么已经分配给了一个进程，要么就是可用的。\n- 占有和等待：已经得到了某个资源的进程可以再请求新的资源。\n- 不可抢占：已经分配给一个进程的资源不能强制性地被抢占，它只能被占有它的进程显式地释放。\n- 环路等待：有两个或者两个以上的进程组成一条环路，该环路中的每个进程都在等待下一个进程所占有的资源。"
+      },
+      {
+        "node_id": 1002,
+        "title": "计算机操作系统 - 死锁",
+        "content": "定义：如果没有死锁发生，并且即使所有进程突然请求对资源的最大需求，也仍然存在某种调度次序能够使得每一个进程运行完毕，则称该状态是安全的。"
+      }
+    ],
+    "CR26": [
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "管程引入了   **条件变量**   以及相关的操作：**wait()** 和 **signal()** 来实现同步操作。对条件变量执行 wait() 操作会导致调用进程阻塞，把管程让出来给另一个进程持有。signal() 操作用于唤醒被阻塞的进程。"
+      },
+      {
+        "node_id": 1009,
+        "title": "MySQL",
+        "content": "实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ Next-Key Locking 防止幻影读。"
+      },
+      {
+        "node_id": 1001,
+        "title": "计算机操作系统 - 进程管理",
+        "content": "由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。"
+      },
+      {
+        "node_id": 1009,
+        "title": "MySQL",
+        "content": "B+ Tree 是基于 B Tree 和叶子节点顺序访问指针进行实现，它具有 B Tree 的平衡性，并且通过顺序访问指针来提高区间查询的性能。"
+      }
+    ]
+  },
+  "retrieval_sha256": "633089830487fc3d1b3be4f2d686a900eb8c6c1af1e639ea0eaf9be57b702c91",
+  "dataset_sha256": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+  "manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+  "source_hashes": {
+    "1001": "81bd8a81bb1055b6663bbf4e853a50cba4b34c802ca393da9feb66f455f89300",
+    "1002": "87a42f25f08e4a301a4ce8a7519089606fc77f6cd352cb544b6dabd9e96537a0",
+    "1003": "8f9bd33ec0604c1a913cfbc098dd63566cc7780752d9c3961fc7aae8490b7a32",
+    "1004": "e5825d7e4dd94556ce040970057ebfe7a63adaad2d6ec6b6022696ebb608452c",
+    "1005": "0bf0a7d12f9590d3bb07c6fe3df16f9cf29609a9146217ccb9f4012c4df4826e",
+    "1006": "5e54865e07cbe176c144a711e0e22894ab19de6a48d0cbb0b6d215b42fe641f2",
+    "1007": "a7ba76f04513e5dcd548915ad356caef806568e66a7fd25c5fddc3d9c845cdf5",
+    "1008": "23faa226b377bbb997daf22af95302d0ff2842d9a0f4f0167f37d261ed984001",
+    "1009": "9bb762abdaa7bec4cec9f81b070ee3c7166696d43e53ea7b76f967a46cf7b981",
+    "1010": "34aa3bf502064d0c53d6a130891f2d20609d17771fb62eadb00f946b9282b1d8",
+    "1011": "02dbf18d6b038e17f3eef0483003e222ff0c063575d01942013dd551771b49a3",
+    "1012": "d34637bf2dd4a477d8c4a3bbe060922a14f13e255836863f0e0c17642b01951a",
+    "1013": "7c523c492d44d141e3df4f95225a19f99de338943ffabf5907ee99fb358dacd0",
+    "1014": "f311fc2ba7b04d638398992f177cd8380d7d148df94ed79b9f24dec9a65a0572",
+    "1015": "28b0238e43ff193a5bb2dd73a65d5180897dcf6c166a2fdb18e42a23a01341e1",
+    "1016": "c474e2f11587641ab8d1c9cc5bb841e1dbf5e986de403c016563e55937c767b2"
+  },
+  "human_fact_review": "pending",
+  "external_transfer_authorization": "pending",
+  "online_assembly_ready": true,
+  "blind_test": false,
+  "comparison_limit": "frameworks differ in tool schemas, prompts and get_node_details flow"
+}

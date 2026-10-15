@@ -1,134 +1,103 @@
-# Knowledge Base
+# Knowledge Base · 可评测、可恢复的 RAG 知识库
 
 [![CI](https://github.com/happiness-cheng/knowledge-base/actions/workflows/ci.yml/badge.svg)](https://github.com/happiness-cheng/knowledge-base/actions/workflows/ci.yml)
 
-[简体中文](./README_zh.md) &nbsp;&nbsp;|&nbsp;&nbsp; **English**
+把 Markdown 笔记组织成知识图谱，通过带来源引用的问答检索知识。项目重点是两个实际问题：**检索命中了文档，答案证据为什么仍然缺失？笔记更新成功后，向量索引如何可靠地跟上？**
 
----
+**Python / FastAPI / SQLAlchemy / Alembic / BGE / Chroma / LangChain / React**
 
-Personal knowledge management system: graph visualization + **benchmark-driven RAG chat** + intelligent note linking.
+[快速复现](#快速复现) · [实验与故障案例](docs/project-evidence.md) · [完整使用说明](README_zh.md) · [Agent / Paper 配套项目](https://github.com/happiness-cheng/ai-trader)
 
-**In one line**: build a 28-query three-tier evaluation set first, measure the real retrieval floor, *then* optimize — every number is reproducible.
+## 项目看点
 
-> [!WARNING]
-> Personal learning project, not a production deployment. It binds to `127.0.0.1` by default — do not expose it to the public internet.
-
-## 30-Second Overview
-
-| Concern | How this project handles it |
-|---|---|
-| **The single most valuable thing** | **Measure before optimizing.** A 28-query three-tier eval set showed Recall@3 was only **10.7%** — turning "feels usable" into a reproducible number. After the fix: **92.9%** |
-| **Full RAG pipeline** | Chunking → embedding → vector store → retrieval → generation → **clickable source citations**, all hand-rolled |
-| **Failure triage** | Self-retrieval control experiment rules out index faults; then layered attribution (index / chunking / retrieval / generation) |
-| **Chunking** | Semantic split by headings + **480-token cap** + CJK/Latin punctuation-aware splitting + code-block protection + hard-split fallback + **parent-child chunking** (match a small chunk, return the full parent) |
-| **Query side** | Adds the bge **query instruction prefix** (query only, never documents) — the classic root cause of "eval looks great, production finds nothing" |
-| **Agent** | ReAct loop + autonomous multi-tool selection + **loop detection** + graceful degradation to plain chat |
-| **Multi-tenancy** | **Per-user ChromaDB collections**; tools only ever reach the authenticated user's data |
-| **How it's proven** | **135 pytest green**; evaluation scripts are committed, so every change has a numeric guardrail |
-
-## RAG Retrieval Quality (Data-Driven Optimization)
-
-All numbers are reproducible — see `backend/eval/`:
-
-| Metric | Before (MiniLM) | After (bge-large-zh-v1.5 + query instruction) |
-|--------|----------------|-----------------------------------------------|
-| **Recall@3** | 10.7% | **92.9%** |
-| **MRR** | 0.136 | **0.818** |
-
-**Optimization process** (single-variable controlled, per-case failure attribution):
-
-1. **Evaluation first** — 28 queries × 3-tier corpus (short notes / long docs / external), with layered reports so a good total can't hide a weak tier.
-2. **Root cause** — self-retrieval control experiments ruled out "the document never entered the index"; the real cause was an English-only model (MiniLM) failing on a Chinese corpus.
-3. **Model switch** — `bge-large-zh-v1.5`, with full re-embedding, vector-DB backup, and 135 tests green.
-4. **Chunking** — semantic split by headings + size fallback + title-prefixed encoding.
-5. **Component testing** — hybrid search (BM25+RRF) and cross-encoder rerank show **no gain** at this recall level. Components are adopted based on observed failure modes, not by default.
-6. **Failure attribution** — remaining failures traced to ambiguous queries (legitimate multi-topic competition). A Query Rewrite **offline experiment** moved the target document from rank 6 to rank 1 (**not shipped to production**).
-
-### Deep-tail measurement
-
-An eval set covering only "answers within the first 512 tokens" systematically overstates quality. After building queries that specifically target **deep tails with distinctive vocabulary**:
-
-| Metric | Before | After |
+| 问题 | 实现 | 可查证结果 |
 |---|---|---|
-| Deep-tail Recall | 5/7 = 71.4% | **7/7 = 100%** |
-| Deepest note's tail content | `rank 203` | **`rank 1`** |
-| Another tail case | `rank 7` | **`rank 1`** |
+| 文档命中掩盖了缺少答案片段 | 冻结语料、gold 证据区间与 development/heldout；分开测文档召回、上下文覆盖和回答支持性 | 同模型/预算的切片对照：必需区间 **26/42 → 34/42**，保留退化题 |
+| 正文 480 token，拼上标题仍超过 BGE 512 窗口 | 按真实 tokenizer 检查完整 embedding 输入；动态再切片，encode 前再次校验 | 长标题样本 **565 → 512/138 token**，正文完整保留 |
+| SQL 已保存，后台任务退出或旧块仍残留 | 同事务登记索引任务；generation/CAS 租约、有限重试和幂等重放 | 缩短/删除、写成后响应丢失、旧任务完成等故障回归 |
+| 独立 worker 写入后，长驻读进程的 Chroma query 仍陈旧 | API / worker 共享 Chroma HTTP 服务；SQL 再核验 owner 与内容指纹 | 真 SQL + **6 个独立 worker 进程**验证更新/删除；停存储服务后 ready 503 |
 
-> The point: **your eval-set sampling decides which failures you are able to see.**
+当前本地验证（2026-10-15）：**后端 440 项通过**、持久索引相关 **7 个模块 mypy 通过**、前端 Vite 构建通过。命令与范围见[验证记录](docs/project-evidence.md#验证与复现)。
 
-## Known Limitations
+## 系统如何工作
 
-Disclosed on purpose — this is the honest state of the code today:
+```mermaid
+flowchart LR
+    UI[React 笔记 / 图谱 / 问答] --> API[FastAPI · 认证用户]
+    API --> SQL[(SQL 笔记真值)]
+    SQL --> JOB[同事务 index_jobs]
+    JOB --> WORKER[独立 worker · CAS 租约 / 重放]
+    WORKER --> STORE[(Chroma HTTP)]
+    API --> RETRIEVE[检索 · SQL 归属 / 版本核验]
+    STORE --> RETRIEVE
+    RETRIEVE --> ANSWER[自定义 Agent / 严格 RAG / LangChain]
+    ANSWER --> SOURCES[回答状态 · 来源引用 · 检索轨迹]
+```
 
-1. **`92.9%` has hard boundaries and is not the production number.** Three reasons: (a) all 28 queries have their answers **within the first 512 tokens**; (b) the eval applies the bge query instruction while production `rag_service.py` previously did not (now fixed); (c) part of the eval corpus comes from an **old SQLite database, not the production MySQL one**. Deep-tail behaviour has been measured separately, but the overall figure still needs a larger evaluation set.
-2. **Query Rewrite is an offline experiment — production has zero implementation.** The production path is a direct vector search with no rewriting step.
-3. **`run_kb_eval.py` uses brute-force cosine (`embs @ q`), not ChromaDB's ANN index** — so `92.9%` is an **exact-search** number, not a production approximate-search (HNSW) number.
-4. **The evaluation script computes only Recall@3 and MRR — no NDCG.** Both blind spots matter with multiple gold documents: Recall@3 is binary and discards position; MRR only credits the first hit.
-5. **Legacy embedding-cap debt**: `bge-large-zh-v1.5` caps at 512 tokens, so chunks produced before the token cap was added were silently truncated (no warning). The chunking layer now caps tokens and has regression tests, but **already-indexed vectors require re-embedding** for the fix to take effect.
-6. **One SQLAlchemy warning remains** at `nodes.py:56`: `SAWarning: Coercing Subquery object into a select() for use in IN()`. Functionally fine today, but a future SQLAlchemy release may turn it into an error.
-7. **Local tests are sensitive to the host proxy environment.** httpx defaults to `trust_env=True`; if `NO_PROXY` contains an *already-bracketed* IPv6 address (e.g. `[::1]`), httpx builds a malformed pattern `all://*[::1]` and raises `InvalidURL`, which breaks test collection. This is a local-environment issue; Linux CI is unaffected.
-8. **`passlib` is unmaintained and incompatible with `bcrypt >= 4.1`.** On first `hash()`, passlib 1.7.4 (no release since 2020) runs a wraparound-bug self-test whose input exceeds 72 bytes; bcrypt ≥ 4.1 no longer truncates silently and raises `ValueError` instead. `requirements.txt` therefore constrains bcrypt to `>=4.0,<4.1`. **The proper long-term fix is to drop passlib and call `bcrypt.hashpw` / `checkpw` directly** (~10 lines; the bcrypt hash format is unchanged, so existing user passwords keep working) — not done yet.
-9. **The CI branch filter was misconfigured.** The workflow only listened on `push: branches: [main]`, while the actual working branch is `master`, so **CI had never been triggered** (now fixed to `[master, main]`, and the default branch was switched to `master`). `main` is a stale 2026-05 branch with **no common ancestor** with `master`; it has not been merged or deleted yet.
+- **产品入口**：笔记编辑与导入、标签、知识图谱、带来源跳转的聊天。
+- **数据边界**：认证身份决定检索用户；向量 metadata 只是候选，进入模型前再次检查当前 SQL 归属、正文和指纹。
+- **索引一致性**：保存笔记与登记任务共用 SQL 事务；Chroma 副作用可重放，仍是最终一致性，不冒充分布式事务。
+- **回答边界**：严格模式限制可用证据和引用来源；引用 ID 合法与每个事实得到支持分开验收，缺证据可以拒答。
 
-## Features
+## 用实验决定哪些组件值得启用
 
-| Feature | Description |
-|---------|-------------|
-| **Knowledge Graph** | Interactive force-directed graph with drag, zoom, and relationship visualization |
-| **AI Analysis** | Auto-extract summaries, categories, tags, and importance from notes |
-| **RAG Chat** | Chat with your knowledge base using vector search + LLM, with source citations |
-| **Sub-topic Extraction** | Auto-extract `##` headings as graph sub-nodes with cross-note linking |
-| **Markdown Editor** | Side-by-side editing with live preview |
-| **File Import** | Import `.md`, `.txt`, `.docx` files (single or batch) |
-| **Tag System** | Colorful tags, tag filtering, tag cloud |
-| **Topic-level Linking** | Link specific sub-topics across different notes (not just note-to-note) |
+16 篇冻结技术笔记、36 道模拟题（27 正例 / 9 负例）。问题由读过原文的 agent 编写，17 development / 19 heldout；**预留组不是独立盲测**。
 
-## Agent Reliability
+| 对照 | 实测 | 决策与解释 |
+|---|---|---|
+| fixed 480 / heading 480 | 1536 证据 token、20 候选：**26/42 / 34/42**；整题证据齐全 **15/27 / 20/27** | 标题策略净增 8 个区间，也有 3 题退化；不把证据覆盖写成回答正确率 |
+| dense / BM25 / RRF | **34/42 / 33/42 / 35/42**；三者文档 Hit@3 都为 1 | 词法/语义互补，但融合也会挤掉部分证据；保留显式候选 |
+| RRF + reranker | 720 个真实 pair；20-pair CPU 推理中位 **35.197s**，匹配 pool5/20 的 heldout 区间均 **11/17 → 11/17** | 当前收益与成本不匹配，默认关闭；5/10 的分数由 20-pair 派生，不报告独立推理时延 |
+| 1536 预算，邻居 off / on | **35/42 / 33/42** | 邻居挤占其他证据，未作为业务默认 |
+| strict Agent / LangChain | 5 题 × 2 链真实 DeepSeek 对照，识别出“supported + 合法引用”仍缺少事实支持的 CR07 | 流程/提示/工具轮次不同，不归因为框架名称，也不报 100% 语义正确率 |
 
-- ReAct loop with autonomous multi-tool selection; **every tool call is scoped to the authenticated user's knowledge base** (per-user vector collections).
-- **Loop detection**: repeated identical tool calls across consecutive turns are treated as non-convergence and force a wrap-up; a hard `MAX_ITERATIONS` cap backs it up.
-- **Degradation path**: if the first tool call fails, the Agent degrades to plain chat rather than stalling the user.
-- Tool parameters are bounded; **knowledge-base and web content are both treated as untrusted data**.
-- **Only nodes actually returned by Agent tools can be emitted as citations**.
-- User-supplied provider keys are **encrypted at rest**; production startup requires explicit signing and encryption keys.
+切片对照使用真实归一化 BGE 向量与精确内积；实验切片候选和业务切片实现分别验证，不等于生产 ANN 或端到端生成收益。[原始报告、负结果与复现入口 →](docs/project-evidence.md)
 
-## Tech Stack
+## 默认实现与实验候选
 
-- **Backend**: FastAPI, SQLAlchemy 2.x, Alembic
-- **Database**: MySQL (production, `pymysql`) / SQLite (lightweight)
-- **Frontend**: React, Vite, Zustand
-- **AI**: Anthropic Messages API (`base_url` / `model` configurable)
-- **Vector search**: ChromaDB + sentence-transformers (`bge-large-zh-v1.5`)
-- **Also**: `slowapi` rate limiting, `jieba` tokenization, `ddgs` web search, `python-jose` + `passlib` auth
+| 当前入口 | 状态 |
+|---|---|
+| 业务标题切片、完整 embedding 输入保护、SQL owner/版本核验 | 默认实现；旧索引需要显式重建才获得新表示 |
+| 自定义 Agent | 聊天 API 默认 backend；strict `kb_only` 显式启用 |
+| LangChain 固定 RAG | 显式选择 `backend=langchain, kb_only=true` |
+| dense / BM25 / hybrid、query rewrite、rerank | LC 可选；默认 `retrieval_mode=current`，rewrite / rerank 关闭 |
+| 邻居扩展、2048 证据预算 | 离线实验，不替换业务默认 |
+| API 与独立索引 worker | 共用显式 HTTP 存储；production 配置禁止回退本地库 |
 
-## Quick Start
+## 快速复现
 
-```bash
+先运行不依赖 API Key、个人数据库或模型下载的工程回归。以下是 Windows / Python 3.12 的已验证环境约束：
+
+```powershell
 git clone https://github.com/happiness-cheng/knowledge-base.git
-cd knowledge-base/backend
-python -m venv venv
-venv\Scripts\pip install -r requirements.txt
-
-# Configure (see ENVIRONMENT.md) — create backend/.env with at least:
-#   DATABASE_URL=mysql+pymysql://user:password@127.0.0.1:3306/knowledge_base?charset=utf8mb4
-#   AI_API_KEY=...
-#   AI_BASE_URL=https://your-anthropic-compatible-endpoint
-#   AI_MODEL_NAME=...
-venv\Scripts\python -m alembic upgrade head
-
-cd ../frontend && npm install
-cd .. && start.bat
+cd knowledge-base
+py -3.12 -m venv .venv
+.venv/Scripts/python.exe -m pip install -r backend/requirements.txt -c backend/constraints.verified-win-py312.txt
+.venv/Scripts/python.exe -m pip install pytest httpx ruff mypy -c backend/constraints.verified-win-py312.txt
+cd backend
+../.venv/Scripts/python.exe -X utf8 -m eval.offline_tests --verify-isolation
+../.venv/Scripts/python.exe -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short
 ```
 
-See [README_zh.md](./README_zh.md) for the full documentation.
+`eval.offline_tests` 隔离个人配置、使用临时状态，并阻断进程内外网访问。测试中 loopback 服务仍可通信；它不是任意子进程的网络沙箱。
 
-## Verification
+启动笔记应用、配置索引 worker、运行真实缓存模型实验，见[使用与复现](README_zh.md)。安装依赖需要网络；离线回归本身无需在线模型。
 
-```bash
-cd backend && python -m pytest tests -q --tb=short   # 135 passed
-cd ../frontend && npm run build
-```
+## 代码阅读路线
 
-## License
+| 想看什么 | 入口 |
+|---|---|
+| 完整 embedding 输入预算 | [embedding_input.py](backend/app/services/embedding_input.py) / [切片回归](backend/tests/test_embedding_input_budget.py) |
+| 持久索引任务与独立 worker | [index_jobs.py](backend/app/services/index_jobs.py) / [index_worker.py](backend/app/services/index_worker.py) |
+| Chroma 进程边界修复 | [index_store.py](backend/app/services/index_store.py) / [复现与取舍](docs/2026-10-14-chroma-process-boundary.md) |
+| SQL 真值与证据新鲜度 | [evidence_freshness.py](backend/app/services/evidence_freshness.py) / [版本边界测试](backend/tests/test_evidence_version_boundary.py) |
+| 固定 RAG 链与改写保护 | [langchain_rag.py](backend/app/services/langchain_rag.py) / [query_rewrite.py](backend/app/services/query_rewrite.py) |
+| 检索与上下文实验 | [retrieval_candidates.py](backend/eval/retrieval_candidates.py) / [实验记录](docs/project-evidence.md) |
 
-[MIT](./LICENSE)
+## 验证范围
+
+这是具备本地故障验证和可复现评测的项目，尚未宣称线上部署、生产 SLA 或独立人工语义评测通过。原实例迁移与旧索引重建需要单独实施；MySQL 并发、多主机 writer、Chroma RPC deadline 和长期负载不在当前验收范围。旧 28 题召回数字属于历史实验，不能与当前 36 题证据覆盖直接拼接。
+
+历史设计记录保留各自时间点的状态；当前入口与结果以本 README 和[证据页](docs/project-evidence.md)为准。
+
+[MIT License](LICENSE)

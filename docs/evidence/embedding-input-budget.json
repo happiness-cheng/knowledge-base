@@ -1,0 +1,16 @@
+{
+  "before_complete_tokens": 565,
+  "after_complete_tokens": [
+    512,
+    138
+  ],
+  "body_preserved": true,
+  "header_shortened": [
+    false,
+    false
+  ],
+  "tokenizer": "cached-real-BGE",
+  "encoder_called": false,
+  "generation_model_calls": 0,
+  "network_requests": 0
+}

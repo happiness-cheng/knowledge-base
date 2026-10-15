@@ -37,8 +37,12 @@ def _sanitize_no_proxy() -> None:
 class AIClient:
     def __init__(self):
         _sanitize_no_proxy()
-        # Try cc-switch config first
-        cc = _load_cc_switch_config()
+        from app.config import settings
+        # 显式服务配置优先；生产模式不读取个人桌面配置。
+        configured = settings.ai_api_key and settings.ai_api_key != "your_api_key_here"
+        cc = _load_cc_switch_config() if (
+            not configured and settings.app_env == "development" and settings.allow_personal_ai_config
+        ) else None
         if cc:
             self.client = anthropic.Anthropic(
                 api_key=cc["api_key"],
@@ -48,9 +52,7 @@ class AIClient:
             self.source = "cc-switch"
             return
 
-        # Fallback to .env config
-        from app.config import settings
-        if settings.ai_api_key and settings.ai_api_key != "your_api_key_here":
+        if configured:
             self.client = anthropic.Anthropic(
                 api_key=settings.ai_api_key,
                 base_url=settings.ai_base_url,
@@ -91,7 +93,8 @@ class AIClient:
         """带工具调用的对话，返回完整 response 对象（用于 Agent 循环）"""
         if not self.client:
             raise RuntimeError("AI not configured. Check cc-switch or .env settings.")
-        return self.client.messages.create(
+        # 工具循环由应用控制调用预算，SDK 不再额外重试物理请求。
+        return self.client.with_options(max_retries=0, timeout=20).messages.create(
             model=self.model,
             max_tokens=max_tokens,
             system=system,
@@ -110,9 +113,9 @@ def get_client_for_user(user) -> AIClient:
         client = AIClient.__new__(AIClient)
         client.client = anthropic.Anthropic(
             api_key=api_key,
-            base_url=user.ai_base_url or "https://api.deepseek.com/v1",
+            base_url=user.ai_base_url or "https://api.deepseek.com/anthropic",
         )
-        client.model = user.ai_model_name or "deepseek-chat"
+        client.model = user.ai_model_name or "deepseek-flash"
         client.source = "user"
         return client
     return claude_client

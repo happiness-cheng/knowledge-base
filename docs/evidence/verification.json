@@ -1,0 +1,119 @@
+{
+  "verified_at": "2026-10-15",
+  "environment": "Windows / CPython 3.12.15",
+  "scope": "local source regression and build; remote state is the GitHub Actions badge",
+  "commands": {
+    "compile": {
+      "command": [
+        "python",
+        "-m",
+        "compileall",
+        "-q",
+        "app",
+        "eval"
+      ],
+      "exit_code": 0
+    },
+    "isolation": {
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-m",
+        "eval.offline_tests",
+        "--verify-isolation"
+      ],
+      "exit_code": 0,
+      "output": "{\"isolation\": \"PASS\", \"database\": \"memory\", \"chroma\": \"ephemeral\", \"model_client\": \"unconfigured\", \"personal_config\": \"blocked\", \"external_network\": \"blocked\"}"
+    },
+    "artifact_policy": {
+      "command": [
+        "python",
+        "-m",
+        "eval.check_artifact_policy"
+      ],
+      "exit_code": 0,
+      "output": "PASS: credentials/state/eval-data excluded; explicit frontend path; no automatic DDL"
+    },
+    "portable_lint": {
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "--isolated",
+        "--select",
+        "E4,E7,E9,F,B",
+        "--ignore",
+        "E402",
+        "eval/run_slice_comparison.py"
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!"
+    }
+  },
+  "full_tests": {
+    "command": "python -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short",
+    "cwd": "backend",
+    "passed": 440,
+    "warnings": 5,
+    "exit_code": 0,
+    "seconds": 52.39
+  },
+  "typecheck": {
+    "command": "python -m mypy --follow-imports=silent --ignore-missing-imports app/models/index_job.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py",
+    "source_files": 7,
+    "exit_code": 0
+  },
+  "lint": {
+    "command": "python -m ruff check --isolated --select E4,E7,E9,F,B app/models/index_job.py app/routers/index_jobs.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/kb_answer_contract.py app/services/langchain_rag.py app/services/query_rewrite.py app/services/retrieval_pipeline.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py",
+    "exit_code": 0
+  },
+  "frontend": {
+    "cwd": "frontend",
+    "command": "npm run build",
+    "modules": 298,
+    "exit_code": 0
+  },
+  "portable_prepare": {
+    "command": "python -X utf8 -m eval.run_slice_comparison --hf-home <existing-model-cache> --prepare",
+    "chunks": {
+      "fixed_480": 170,
+      "heading_384": 264,
+      "heading_480": 221
+    },
+    "generation_model_calls": 0,
+    "exit_code": 0
+  },
+  "initial_failure": {
+    "passed": 439,
+    "failed": 1,
+    "test": "test_rag_index_updates.py::test_replacing_a_node_preserves_other_nodes_and_users[新首段]",
+    "exception": "chromadb.errors.InternalError: Error executing plan: Internal error: Error finding id",
+    "subsequent_file_repetitions": 8,
+    "subsequent_targeted_passed": 152,
+    "subsequent_full_passed": 440,
+    "production_fix_claimed": false,
+    "status": "not stably reproduced; retained as intermittent storage test risk"
+  },
+  "new_online_generation_requests": 0,
+  "skipped": [
+    "production deployment",
+    "MySQL concurrency",
+    "independent semantic blind review",
+    "full 20-minute BGE/reranker re-encoding; prior real reports retained"
+  ],
+  "clean_staged_tree": {
+    "source": "git checkout-index export; no unstaged/untracked project files",
+    "passed": 440,
+    "exit_code": 0,
+    "frozen_corpus_documents_verified": 16
+  },
+  "clean_frontend_install": {
+    "command": "npm ci --registry=https://registry.npmjs.org --no-audit --fund=false",
+    "packages_added": 171,
+    "subsequent_build_modules": 298,
+    "exit_code": 0,
+    "note": "initial --offline cache miss; public registry URLs normalized with versions/integrity unchanged; npm esbuild allow-scripts warning, actual build passed"
+  }
+}

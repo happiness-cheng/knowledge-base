@@ -1,19 +1,24 @@
 import logging
 import os
 from pathlib import Path
-from chromadb import PersistentClient
+from threading import Lock
+from chromadb.errors import NotFoundError
 from app.env_sanitize import sanitize_no_proxy  # noqa: F401  必须最先执行（净化 NO_PROXY）
 from app.models.node import KnowledgeNode
 from app.database import SessionLocal
-from app.utils.markdown_cleaner import split_by_headings
+from app.utils.markdown_cleaner import split_by_headings, _get_tokenizer
 from app.utils.time_meta import note_date_of
+from app.services.index_jobs import enqueue, fingerprint
+from app.services.evidence_freshness import current_evidence
+from app.services.embedding_input import count_tokens, prepare_chunks
+from app.services.index_store import create_index_client
+from app.config import settings
 
 # Setup paths
-CHROMA_DB_DIR = Path(__file__).parent.parent.parent / "chroma_db"
-CHROMA_DB_DIR.mkdir(parents=True, exist_ok=True)
-
-# Initialize ChromaDB
-chroma_client = PersistentClient(path=str(CHROMA_DB_DIR))
+CHROMA_DB_DIR = Path(os.environ.get("KB_CHROMA_DIR", str(Path(__file__).parent.parent.parent / "chroma_db")))
+# HTTP模式由独立Chroma服务拥有持久索引；不创建本地备用目录。
+chroma_client = create_index_client(CHROMA_DB_DIR, url=settings.kb_chroma_url,
+                                    production=settings.app_env == 'production')
 
 # ---------------------------------------------------------------------------
 # 集合名后缀：让"生产集合"可被外部指定，而不是写死在代码里
@@ -36,15 +41,16 @@ MAX_CHUNKS_PER_NODE = 2
 
 # Lazy-load embedding model
 _embedding_model = None
+_embedding_model_lock = Lock()
 
 def _get_model():
     global _embedding_model
     if _embedding_model is None:
-        # 离线开关已由 app.env_sanitize 在导入期设好（那里才能早于 huggingface_hub 缓存常量）
-        from sentence_transformers import SentenceTransformer
-        # bge-large-zh-v1.5：中文语义（M5-03），1024 维；
-        # 换模型必须全量重嵌入（新旧向量不在同一空间）
-        _embedding_model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
+        with _embedding_model_lock:
+            if _embedding_model is None:
+                # 并发首次检索只加载一份大模型；缓存缺失仍按离线策略失败。
+                from sentence_transformers import SentenceTransformer
+                _embedding_model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
     return _embedding_model
 
 
@@ -68,6 +74,14 @@ def _get_user_collection(user_id: int, suffix: str | None = None):
     return chroma_client.get_or_create_collection(name=get_collection_name(user_id, suffix))
 
 
+def _get_existing_user_collection(user_id: int):
+    """检索只读取集合，创建集合属于索引writer的职责。"""
+    try:
+        return chroma_client.get_collection(name=get_collection_name(user_id))
+    except NotFoundError:
+        return None
+
+
 # bge 查询指令前缀（M5-03：bge 系列检索时 query 必须加指令，否则检索质量明显下降）
 QUERY_PREFIX = "为这个句子生成表示以用于检索相关文章："
 
@@ -87,6 +101,8 @@ def get_embedding(text: str) -> list[float]:
     于是"评测的余弦"和"生产的距离"从不是同一把尺子，且生产写入会污染库内尺度。
     """
     model = _get_model()
+    if count_tokens(model.tokenizer, text) > model.max_seq_length:
+        raise ValueError('complete embedding input exceeds model token budget')
     embeddings = model.encode(text, normalize_embeddings=True)
     return embeddings.tolist()
 
@@ -102,33 +118,41 @@ def _chunk_id(node_id: int, chunk_index: int) -> str:
 
 def add_node_to_index(node_id: int, content: str, title: str = "", user_id: int = 1):
     """父子切割（T2）：内容按 token 封顶切块，每块一个向量，metadata 记 parent node_id + chunk_index。
-    短内容（≤480 token）仍是 1 块，行为等价旧版。"""
-    if not content:
-        return
+    短内容（≤480 token）仍是 1 块。成功返回后清理旧尾块；空正文清理本节点。
+
+    写入与清理不是原子操作：失败向调用者抛出，同一输入串行重放可收敛。
+    同一节点的并发版本更新仍需上层协调，不能据此保证多 worker 安全。
+    """
     collection = _get_user_collection(user_id)
-    chunks = split_by_headings(content)
+    chunks = split_by_headings(content) if content else []
+    prepared = prepare_chunks(chunks, title, _get_tokenizer() if chunks else None)
     ids, embeddings, documents, metadatas = [], [], [], []
-    for i, (heading, chunk_content) in enumerate(chunks):
-        # 标题+小节标题拼进正文再编码（M5-02 contextual chunk headers）
-        embed_text = f"{title}\n{heading}\n{chunk_content}" if title else f"{heading}\n{chunk_content}"
+    for i, chunk in enumerate(prepared):
         ids.append(_chunk_id(node_id, i))
-        embeddings.append(get_embedding(embed_text))
-        documents.append(chunk_content)
-        metadatas.append({"title": title, "node_id": node_id, "chunk_index": i, "heading": heading})
-    collection.upsert(ids=ids, embeddings=embeddings, documents=documents, metadatas=metadatas)
+        embeddings.append(get_embedding(chunk.embedding_text))
+        documents.append(chunk.content)
+        metadatas.append({"title": title, "node_id": node_id, "chunk_index": i, "heading": chunk.heading,
+                          "source_fingerprint": fingerprint(title, content),
+                          "embedding_tokens": chunk.token_count,
+                          "embedding_header_shortened": chunk.header_shortened})
+    # 全部向量准备好后才写入；向量生成失败时保留原索引。
+    if ids:
+        collection.upsert(ids=ids, embeddings=embeddings, documents=documents, metadatas=metadatas)
+
+    # 新块写入成功后再清理，兼容没有 node_id 元数据的旧版单 ID。
+    existing_ids = set(collection.get(where={"node_id": node_id}, include=[])["ids"])
+    existing_ids.update(collection.get(ids=[str(node_id)], include=[])["ids"])
+    stale_ids = existing_ids.difference(ids)
+    if stale_ids:
+        collection.delete(ids=sorted(stale_ids))
 
 
 def remove_node_from_index(node_id: int, user_id: int = 1):
     collection = _get_user_collection(user_id)
-    try:
-        # 删除该 node 的所有 chunk（按 metadata node_id 过滤，覆盖旧版单 id 和新版多 chunk）
-        existing = collection.get(where={"node_id": node_id})
-        if existing and existing['ids']:
-            collection.delete(ids=existing['ids'])
-        # 兜底：旧版 id = str(node_id) 也可能残留
-        collection.delete(ids=[str(node_id)])
-    except Exception as e:
-        logging.getLogger(__name__).warning("Error deleting from chroma: %s", e)
+    existing = collection.get(where={"node_id": node_id})
+    if existing and existing['ids']:
+        collection.delete(ids=existing['ids'])
+    collection.delete(ids=[str(node_id)])
 
 
 def retrieve_relevant_nodes(query: str, top_k: int = 3, user_id: int = 1,
@@ -155,11 +179,19 @@ def retrieve_relevant_nodes(query: str, top_k: int = 3, user_id: int = 1,
     2 块/node × 3 node 估算最坏约 2880 token。这是**用上下文换精度**的显式取舍，
     所以做成可配置参数而非写死。
     """
-    collection = _get_user_collection(user_id)
+    collection = _get_existing_user_collection(user_id)
+    if collection is None or collection.count() == 0:
+        return []
     query_embedding = get_query_embedding(query)
     # 多取：既要有足够不同 node，也要让同一 node 的第 2/3 块有机会浮上来
     n_fetch = max(top_k * 3, top_k * chunks_per_node * 3)
     results = collection.query(query_embeddings=[query_embedding], n_results=n_fetch)
+
+    # 当前 SQL 所有权和正文真值必须在检索结果进入模型前核验；SQL 故障不静默放行。
+    from app.database import SessionLocal as current_sessions
+    with current_sessions() as db:
+        current_nodes = {node.id: node for node in db.query(KnowledgeNode).filter(
+            KnowledgeNode.user_id == user_id).all()}
 
     grouped: dict[int, list[dict]] = {}
     order: list[int] = []          # node 首次出现的顺序，保证返回顺序稳定
@@ -171,6 +203,9 @@ def retrieve_relevant_nodes(query: str, top_k: int = 3, user_id: int = 1,
             distance = (results['distances'][0][i]
                         if 'distances' in results and results['distances'] else None)
             node_id = int(metadata.get("node_id", id_str.split(':')[0]))
+            node = current_nodes.get(node_id)
+            if node is None or not current_evidence({"content": document, **metadata}, node):
+                continue
             if len(grouped.get(node_id, [])) >= chunks_per_node:
                 continue           # 该 node 已取够
             if node_id not in grouped:
@@ -178,11 +213,12 @@ def retrieve_relevant_nodes(query: str, top_k: int = 3, user_id: int = 1,
                 order.append(node_id)
             grouped[node_id].append({
                 "node_id": node_id,
-                "title": metadata.get("title", ""),
+                "title": node.title,
                 "content": document,
                 "chunk_index": metadata.get("chunk_index"),
                 "heading": metadata.get("heading", ""),
                 "distance": distance,
+                "source_fingerprint": metadata.get("source_fingerprint"),
             })
             # 已收集够 top_k 个 node 且每个都达到 chunks_per_node → 提前结束
             if len(order) >= top_k and all(
@@ -223,7 +259,7 @@ def _attach_note_dates(items: list[dict], user_id: int) -> list[dict]:
     try:
         rows = (_db.query(KnowledgeNode.id, KnowledgeNode.title, KnowledgeNode.content,
                           KnowledgeNode.created_at)
-                .filter(KnowledgeNode.id.in_(node_ids)).all())
+                .filter(KnowledgeNode.id.in_(node_ids), KnowledgeNode.user_id == user_id).all())
         for nid, title, content, created in rows:
             meta[nid] = note_date_of(title, content, created)
 
@@ -236,14 +272,10 @@ def _attach_note_dates(items: list[dict], user_id: int) -> list[dict]:
                                   KnowledgeNode.created_at)
                         .filter(KnowledgeNode.user_id == user_id).all())
         except Exception as e:
-            # 旧评测库（2026-05 的 SQLite）**没有 user_id 列**，会在这里抛错。
-            # 之前这里被外层 except 一起吞掉，导致 meta 也变空（连带 note_date 全丢）——
-            # 那是"静默失败"，所以这里显式降级并**打出可见日志**。
-            _log.warning("kb_latest_date: user_id filter failed (%s); "
-                         "falling back to whole table", e)
+            # 日期增强可留空；不能因用户过滤失败而读取其他用户的覆盖范围。
+            _log.warning("scoped latest note date unavailable: %s", type(e).__name__)
             _db.rollback()
-            all_rows = _db.query(KnowledgeNode.title, KnowledgeNode.content,
-                                 KnowledgeNode.created_at).all()
+            all_rows = []
         latest = max((note_date_of(t, c, cr)[0] for t, c, cr in all_rows), default='')
     except Exception as e:
         # 元数据是增强项：失败降级为"无日期"，但不能让检索整体失败
@@ -262,6 +294,7 @@ def reindex_all_nodes(user_id: int = 1):
     try:
         nodes = db.query(KnowledgeNode).filter(KnowledgeNode.user_id == user_id).all()
         for node in nodes:
-            add_node_to_index(node.id, node.content, node.title, user_id)
+            enqueue(db, user_id, node.id, "upsert", fingerprint(node.title, node.content))
+        db.commit()
     finally:
         db.close()

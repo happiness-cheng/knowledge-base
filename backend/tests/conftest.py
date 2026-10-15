@@ -73,10 +73,6 @@ def client():
     app.dependency_overrides[get_db] = override_get_db
 
     patchers = [
-        patch("app.routers.nodes._safe_add_to_index"),
-        patch("app.routers.nodes._safe_remove_from_index"),
-        patch("app.routers.import_files._safe_add_to_index"),
-        patch("app.routers.chat._safe_add_to_index"),
         patch("app.services.agent_service.claude_client"),
     ]
     for p in patchers:

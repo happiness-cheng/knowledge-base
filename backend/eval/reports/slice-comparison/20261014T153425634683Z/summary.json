@@ -1,0 +1,1437 @@
+{
+  "metadata": {
+    "dataset_sha256": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+    "manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+    "model_revision": "79e7739b6ab944e86d6171e44d24c997fc1e0116",
+    "model": "BAAI/bge-large-zh-v1.5",
+    "device": "cpu",
+    "threads": 4,
+    "context_budget": 1536,
+    "candidate_limit": 20,
+    "scorer": "exact normalized dense",
+    "configs": [
+      {
+        "strategy": "fixed",
+        "body_tokens": 480,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      {
+        "strategy": "heading",
+        "body_tokens": 384,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      {
+        "strategy": "heading",
+        "body_tokens": 480,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      }
+    ],
+    "case_ids": [
+      "CR01",
+      "CR02",
+      "CR03",
+      "CR04",
+      "CR05",
+      "CR06",
+      "CR07",
+      "CR08",
+      "CR09",
+      "CR10",
+      "CR11",
+      "CR12",
+      "CR13",
+      "CR14",
+      "CR15",
+      "CR16",
+      "CR17",
+      "CR18",
+      "CR19",
+      "CR20",
+      "CR21",
+      "CR22",
+      "CR23",
+      "CR24",
+      "CR25",
+      "CR26",
+      "CR27",
+      "CR28",
+      "CR29",
+      "CR30",
+      "CR31",
+      "CR32",
+      "CR33",
+      "CR34",
+      "CR35",
+      "CR36"
+    ],
+    "controlled_aliases": {
+      "CR02": " Redis 分布式锁 SETNX 返回值 键存在 加锁",
+      "CR07": " 进程 线程 创建 上下文切换 系统开销",
+      "CR13": " Redis 分布式锁 键过期时间 自动删除 锁超时",
+      "CR19": " 进程 线程 资源分配 独立调度 定义区别",
+      "CR33": " LRU 最近最久未使用 缓存淘汰 最后访问时间",
+      "CR34": " Docker 容器镜像 只读层 可写层"
+    },
+    "alias_selection": "predefined-development-only; no default tuning",
+    "source_hashes": {
+      "eval/retrieval_candidates.py": "ff31052ec747ddcfb8d569b644fa8bcafc393cdaecf94e27ab9b49f493f35e89",
+      "eval/run_retrieval_matrix.py": "aca20de695b2dbca9f4f30c92f07a3b7b6477dc4113f72e82c3e74fdbd349e01"
+    },
+    "harness_sha256": "60ac2f38b427140cdf460d3212a4e1d84779a59b77cdc7edefff05ddc1417b5f",
+    "generation_model_calls": 0,
+    "network_requests": 0,
+    "all_grid_retrieval_complete": false,
+    "blind_test": false,
+    "model_load_ms": 480.4967000018223,
+    "shared_query_batch_ms": 14447.668300002988,
+    "mode": "retrieval",
+    "model_quality_measured": false,
+    "retrieval_quality_measured": true,
+    "postprocess_sha256": "f24276dbcc0e0e16127c3ef97803740f3853a68272209ef00f3820d97bb89b94",
+    "original_summary_sha256": "c1c6bf7e61ecb60d7664a776cde98daa421d38485294da482f600a6a28e99672"
+  },
+  "variants": {
+    "fixed_480": {
+      "chunk_count": 170,
+      "max_complete_tokens": 495,
+      "embedding_ms": 378772.5938000003,
+      "summary": {
+        "total_cases": 36,
+        "valid_cases": 36,
+        "invalid_cases": 0,
+        "execution_errors": 0,
+        "positive_cases": 27,
+        "negative_cases": 9,
+        "hit_at_1": 0.8518518518518519,
+        "hit_at_3": 0.8888888888888888,
+        "mrr": 0.8703703703703703,
+        "evidence_in_context": 0.5555555555555556,
+        "document_recall_at_1": 0.7407407407407407,
+        "document_recall_at_3": 0.8148148148148148,
+        "document_recalled_at_1": 23,
+        "document_recalled_at_3": 26,
+        "document_targets": 33,
+        "evidence_covered": 26,
+        "evidence_targets": 42,
+        "evidence_coverage": 0.6190476190476191,
+        "evidence_all_covered": 0.5555555555555556,
+        "refusal_rate": null,
+        "refusal_detected_rate": null,
+        "refusal_with_citations_rate": null,
+        "citation_valid_rate": null,
+        "latency_p50_ms": 51.987,
+        "latency_p95_ms": 62.395,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "usage_status": "unknown"
+      },
+      "splits": {
+        "development": {
+          "total_cases": 17,
+          "valid_cases": 17,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 15,
+          "negative_cases": 2,
+          "hit_at_1": 0.8666666666666667,
+          "hit_at_3": 0.9333333333333333,
+          "mrr": 0.9,
+          "evidence_in_context": 0.5333333333333333,
+          "document_recall_at_1": 0.7666666666666667,
+          "document_recall_at_3": 0.9,
+          "document_recalled_at_1": 13,
+          "document_recalled_at_3": 16,
+          "document_targets": 18,
+          "evidence_covered": 16,
+          "evidence_targets": 25,
+          "evidence_coverage": 0.64,
+          "evidence_all_covered": 0.5333333333333333,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 52.168,
+          "latency_p95_ms": 63.457,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        },
+        "heldout": {
+          "total_cases": 19,
+          "valid_cases": 19,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 12,
+          "negative_cases": 7,
+          "hit_at_1": 0.8333333333333334,
+          "hit_at_3": 0.8333333333333334,
+          "mrr": 0.8333333333333334,
+          "evidence_in_context": 0.5833333333333334,
+          "document_recall_at_1": 0.7083333333333334,
+          "document_recall_at_3": 0.7083333333333334,
+          "document_recalled_at_1": 10,
+          "document_recalled_at_3": 10,
+          "document_targets": 15,
+          "evidence_covered": 10,
+          "evidence_targets": 17,
+          "evidence_coverage": 0.5882352941176471,
+          "evidence_all_covered": 0.5833333333333334,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 51.807,
+          "latency_p95_ms": 61.276,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        }
+      },
+      "oracle": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    "heading_384": {
+      "chunk_count": 264,
+      "max_complete_tokens": 405,
+      "embedding_ms": 401841.1294999969,
+      "summary": {
+        "total_cases": 36,
+        "valid_cases": 36,
+        "invalid_cases": 0,
+        "execution_errors": 0,
+        "positive_cases": 27,
+        "negative_cases": 9,
+        "hit_at_1": 0.8518518518518519,
+        "hit_at_3": 1.0,
+        "mrr": 0.9259259259259259,
+        "evidence_in_context": 0.8148148148148148,
+        "document_recall_at_1": 0.7407407407407407,
+        "document_recall_at_3": 0.9814814814814815,
+        "document_recalled_at_1": 23,
+        "document_recalled_at_3": 32,
+        "document_targets": 33,
+        "evidence_covered": 36,
+        "evidence_targets": 42,
+        "evidence_coverage": 0.8571428571428571,
+        "evidence_all_covered": 0.8148148148148148,
+        "refusal_rate": null,
+        "refusal_detected_rate": null,
+        "refusal_with_citations_rate": null,
+        "citation_valid_rate": null,
+        "latency_p50_ms": 76.535,
+        "latency_p95_ms": 132.544,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "usage_status": "unknown"
+      },
+      "splits": {
+        "development": {
+          "total_cases": 17,
+          "valid_cases": 17,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 15,
+          "negative_cases": 2,
+          "hit_at_1": 0.8,
+          "hit_at_3": 1.0,
+          "mrr": 0.9,
+          "evidence_in_context": 0.9333333333333333,
+          "document_recall_at_1": 0.7,
+          "document_recall_at_3": 1.0,
+          "document_recalled_at_1": 12,
+          "document_recalled_at_3": 18,
+          "document_targets": 18,
+          "evidence_covered": 24,
+          "evidence_targets": 25,
+          "evidence_coverage": 0.96,
+          "evidence_all_covered": 0.9333333333333333,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 81.921,
+          "latency_p95_ms": 106.189,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        },
+        "heldout": {
+          "total_cases": 19,
+          "valid_cases": 19,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 12,
+          "negative_cases": 7,
+          "hit_at_1": 0.9166666666666666,
+          "hit_at_3": 1.0,
+          "mrr": 0.9583333333333334,
+          "evidence_in_context": 0.6666666666666666,
+          "document_recall_at_1": 0.7916666666666666,
+          "document_recall_at_3": 0.9583333333333334,
+          "document_recalled_at_1": 11,
+          "document_recalled_at_3": 14,
+          "document_targets": 15,
+          "evidence_covered": 12,
+          "evidence_targets": 17,
+          "evidence_coverage": 0.7058823529411765,
+          "evidence_all_covered": 0.6666666666666666,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 68.318,
+          "latency_p95_ms": 152.095,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        }
+      },
+      "oracle": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    "heading_480": {
+      "chunk_count": 221,
+      "max_complete_tokens": 501,
+      "embedding_ms": 381993.7757000007,
+      "summary": {
+        "total_cases": 36,
+        "valid_cases": 36,
+        "invalid_cases": 0,
+        "execution_errors": 0,
+        "positive_cases": 27,
+        "negative_cases": 9,
+        "hit_at_1": 0.8888888888888888,
+        "hit_at_3": 1.0,
+        "mrr": 0.9444444444444444,
+        "evidence_in_context": 0.7407407407407407,
+        "document_recall_at_1": 0.7777777777777778,
+        "document_recall_at_3": 0.9814814814814815,
+        "document_recalled_at_1": 24,
+        "document_recalled_at_3": 32,
+        "document_targets": 33,
+        "evidence_covered": 34,
+        "evidence_targets": 42,
+        "evidence_coverage": 0.8095238095238095,
+        "evidence_all_covered": 0.7407407407407407,
+        "refusal_rate": null,
+        "refusal_detected_rate": null,
+        "refusal_with_citations_rate": null,
+        "citation_valid_rate": null,
+        "latency_p50_ms": 56.438,
+        "latency_p95_ms": 96.816,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "usage_status": "unknown"
+      },
+      "splits": {
+        "development": {
+          "total_cases": 17,
+          "valid_cases": 17,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 15,
+          "negative_cases": 2,
+          "hit_at_1": 0.8666666666666667,
+          "hit_at_3": 1.0,
+          "mrr": 0.9333333333333333,
+          "evidence_in_context": 0.9333333333333333,
+          "document_recall_at_1": 0.7666666666666667,
+          "document_recall_at_3": 1.0,
+          "document_recalled_at_1": 13,
+          "document_recalled_at_3": 18,
+          "document_targets": 18,
+          "evidence_covered": 24,
+          "evidence_targets": 25,
+          "evidence_coverage": 0.96,
+          "evidence_all_covered": 0.9333333333333333,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 57.711,
+          "latency_p95_ms": 89.063,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        },
+        "heldout": {
+          "total_cases": 19,
+          "valid_cases": 19,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 12,
+          "negative_cases": 7,
+          "hit_at_1": 0.9166666666666666,
+          "hit_at_3": 1.0,
+          "mrr": 0.9583333333333334,
+          "evidence_in_context": 0.5,
+          "document_recall_at_1": 0.7916666666666666,
+          "document_recall_at_3": 0.9583333333333334,
+          "document_recalled_at_1": 11,
+          "document_recalled_at_3": 14,
+          "document_targets": 15,
+          "evidence_covered": 10,
+          "evidence_targets": 17,
+          "evidence_coverage": 0.5882352941176471,
+          "evidence_all_covered": 0.5,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 54.447,
+          "latency_p95_ms": 93.886,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        }
+      },
+      "oracle": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    }
+  },
+  "controlled_rewrite": {
+    "original": {
+      "summary": {
+        "total_cases": 6,
+        "valid_cases": 6,
+        "invalid_cases": 0,
+        "execution_errors": 0,
+        "positive_cases": 6,
+        "negative_cases": 0,
+        "hit_at_1": 0.6666666666666666,
+        "hit_at_3": 1.0,
+        "mrr": 0.8333333333333334,
+        "evidence_in_context": 0.8333333333333334,
+        "document_recall_at_1": 0.5833333333333334,
+        "document_recall_at_3": 1.0,
+        "document_recalled_at_1": 4,
+        "document_recalled_at_3": 7,
+        "document_targets": 7,
+        "evidence_covered": 8,
+        "evidence_targets": 9,
+        "evidence_coverage": 0.8888888888888888,
+        "evidence_all_covered": 0.8333333333333334,
+        "refusal_rate": null,
+        "refusal_detected_rate": null,
+        "refusal_with_citations_rate": null,
+        "citation_valid_rate": null,
+        "latency_p50_ms": 48.488,
+        "latency_p95_ms": 52.89,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "usage_status": "unknown"
+      },
+      "splits": {
+        "development": {
+          "total_cases": 6,
+          "valid_cases": 6,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 6,
+          "negative_cases": 0,
+          "hit_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "mrr": 0.8333333333333334,
+          "evidence_in_context": 0.8333333333333334,
+          "document_recall_at_1": 0.5833333333333334,
+          "document_recall_at_3": 1.0,
+          "document_recalled_at_1": 4,
+          "document_recalled_at_3": 7,
+          "document_targets": 7,
+          "evidence_covered": 8,
+          "evidence_targets": 9,
+          "evidence_coverage": 0.8888888888888888,
+          "evidence_all_covered": 0.8333333333333334,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 48.488,
+          "latency_p95_ms": 52.89,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        },
+        "heldout": {
+          "total_cases": 0,
+          "valid_cases": 0,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 0,
+          "negative_cases": 0,
+          "hit_at_1": null,
+          "hit_at_3": null,
+          "mrr": null,
+          "evidence_in_context": null,
+          "document_recall_at_1": null,
+          "document_recall_at_3": null,
+          "document_recalled_at_1": 0,
+          "document_recalled_at_3": 0,
+          "document_targets": 0,
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "evidence_coverage": null,
+          "evidence_all_covered": null,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        }
+      }
+    },
+    "rewrite_only": {
+      "summary": {
+        "total_cases": 6,
+        "valid_cases": 6,
+        "invalid_cases": 0,
+        "execution_errors": 0,
+        "positive_cases": 6,
+        "negative_cases": 0,
+        "hit_at_1": 0.8333333333333334,
+        "hit_at_3": 1.0,
+        "mrr": 0.9166666666666666,
+        "evidence_in_context": 1.0,
+        "document_recall_at_1": 0.75,
+        "document_recall_at_3": 1.0,
+        "document_recalled_at_1": 5,
+        "document_recalled_at_3": 7,
+        "document_targets": 7,
+        "evidence_covered": 9,
+        "evidence_targets": 9,
+        "evidence_coverage": 1.0,
+        "evidence_all_covered": 1.0,
+        "refusal_rate": null,
+        "refusal_detected_rate": null,
+        "refusal_with_citations_rate": null,
+        "citation_valid_rate": null,
+        "latency_p50_ms": 49.008,
+        "latency_p95_ms": 54.792,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "usage_status": "unknown"
+      },
+      "splits": {
+        "development": {
+          "total_cases": 6,
+          "valid_cases": 6,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 6,
+          "negative_cases": 0,
+          "hit_at_1": 0.8333333333333334,
+          "hit_at_3": 1.0,
+          "mrr": 0.9166666666666666,
+          "evidence_in_context": 1.0,
+          "document_recall_at_1": 0.75,
+          "document_recall_at_3": 1.0,
+          "document_recalled_at_1": 5,
+          "document_recalled_at_3": 7,
+          "document_targets": 7,
+          "evidence_covered": 9,
+          "evidence_targets": 9,
+          "evidence_coverage": 1.0,
+          "evidence_all_covered": 1.0,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 49.008,
+          "latency_p95_ms": 54.792,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        },
+        "heldout": {
+          "total_cases": 0,
+          "valid_cases": 0,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 0,
+          "negative_cases": 0,
+          "hit_at_1": null,
+          "hit_at_3": null,
+          "mrr": null,
+          "evidence_in_context": null,
+          "document_recall_at_1": null,
+          "document_recall_at_3": null,
+          "document_recalled_at_1": 0,
+          "document_recalled_at_3": 0,
+          "document_targets": 0,
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "evidence_coverage": null,
+          "evidence_all_covered": null,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        }
+      }
+    },
+    "original_plus_rewrite": {
+      "summary": {
+        "total_cases": 6,
+        "valid_cases": 6,
+        "invalid_cases": 0,
+        "execution_errors": 0,
+        "positive_cases": 6,
+        "negative_cases": 0,
+        "hit_at_1": 0.8333333333333334,
+        "hit_at_3": 1.0,
+        "mrr": 0.9166666666666666,
+        "evidence_in_context": 1.0,
+        "document_recall_at_1": 0.75,
+        "document_recall_at_3": 1.0,
+        "document_recalled_at_1": 5,
+        "document_recalled_at_3": 7,
+        "document_targets": 7,
+        "evidence_covered": 9,
+        "evidence_targets": 9,
+        "evidence_coverage": 1.0,
+        "evidence_all_covered": 1.0,
+        "refusal_rate": null,
+        "refusal_detected_rate": null,
+        "refusal_with_citations_rate": null,
+        "citation_valid_rate": null,
+        "latency_p50_ms": 46.464,
+        "latency_p95_ms": 50.243,
+        "total_input_tokens": null,
+        "total_output_tokens": null,
+        "usage_status": "unknown"
+      },
+      "splits": {
+        "development": {
+          "total_cases": 6,
+          "valid_cases": 6,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 6,
+          "negative_cases": 0,
+          "hit_at_1": 0.8333333333333334,
+          "hit_at_3": 1.0,
+          "mrr": 0.9166666666666666,
+          "evidence_in_context": 1.0,
+          "document_recall_at_1": 0.75,
+          "document_recall_at_3": 1.0,
+          "document_recalled_at_1": 5,
+          "document_recalled_at_3": 7,
+          "document_targets": 7,
+          "evidence_covered": 9,
+          "evidence_targets": 9,
+          "evidence_coverage": 1.0,
+          "evidence_all_covered": 1.0,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": 46.464,
+          "latency_p95_ms": 50.243,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        },
+        "heldout": {
+          "total_cases": 0,
+          "valid_cases": 0,
+          "invalid_cases": 0,
+          "execution_errors": 0,
+          "positive_cases": 0,
+          "negative_cases": 0,
+          "hit_at_1": null,
+          "hit_at_3": null,
+          "mrr": null,
+          "evidence_in_context": null,
+          "document_recall_at_1": null,
+          "document_recall_at_3": null,
+          "document_recalled_at_1": 0,
+          "document_recalled_at_3": 0,
+          "document_targets": 0,
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "evidence_coverage": null,
+          "evidence_all_covered": null,
+          "refusal_rate": null,
+          "refusal_detected_rate": null,
+          "refusal_with_citations_rate": null,
+          "citation_valid_rate": null,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null,
+          "total_input_tokens": null,
+          "total_output_tokens": null,
+          "usage_status": "unknown"
+        }
+      }
+    }
+  },
+  "completed": true,
+  "postprocess_reason": "missing mode led to meaningless answer metrics; observations unchanged"
+}

@@ -1,0 +1,3216 @@
+{
+  "metadata": {
+    "mode": "retrieval",
+    "frozen_at": "2026-10-13",
+    "measured_at_utc": "2026-10-14T04:49:42.417804+00:00",
+    "dataset_hash": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+    "corpus_manifest_hash": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+    "device": "cpu",
+    "threads": 4,
+    "llm_called": false,
+    "model_quality_measured": false,
+    "retrieval_quality_measured": true,
+    "network": "socket connections blocked; cached snapshots only",
+    "context_budget_bge_tokens": 1536,
+    "user_id": 1,
+    "evaluation_stage": "packed_context; candidate-pool Recall retained separately in steps",
+    "latency_basis": "query encoding + context packing + shared real20-pair inference when reranked; excludes load/index; pool5/10 cache time is not inference",
+    "code_hashes": {
+      "eval/benchmark.py": "5265eb0f9774e0233f7a87c128b855897dbb5b7ac9adb885994885f5fb9890b2",
+      "eval/core_corpus.py": "8cdbc9db44d934dce0749ecf8b7ebe74a2beae7bb04292eb5f019bf7d6403674",
+      "eval/retrieval_candidates.py": "ff31052ec747ddcfb8d569b644fa8bcafc393cdaecf94e27ab9b49f493f35e89",
+      "eval/run_retrieval_matrix.py": "af7f62345bf8de062435e01080a45b14fb05ac42c166444046b728f2c3ab7ee1",
+      "app/utils/markdown_cleaner.py": "1109053d4e27caeb23eb12449e9fff6204c48fcd0173ce21d7eecc82bc034bc0"
+    },
+    "runtime_versions": {
+      "torch": "2.14.1",
+      "sentence-transformers": "6.1.0",
+      "transformers": "5.19.0",
+      "numpy": "2.5.4",
+      "rank-bm25": "0.2.2",
+      "jieba": "0.42.1"
+    },
+    "embedding_revision": "79e7739b6ab944e86d6171e44d24c997fc1e0116",
+    "reranker_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+  },
+  "status": "partial_K1_oracle_only",
+  "selection_rule": "development all-covered, coverage, fewer chunks; heldout never selects",
+  "selected_config": {
+    "strategy": "heading",
+    "body_tokens": 480,
+    "overlap_tokens": 0,
+    "model_limit": 512
+  },
+  "schemes": [
+    {
+      "config": {
+        "strategy": "fixed",
+        "body_tokens": 256,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      "chunk_count": 307,
+      "max_full_input_tokens": 270,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "fixed",
+        "body_tokens": 256,
+        "overlap_tokens": 32,
+        "model_limit": 512
+      },
+      "chunk_count": 348,
+      "max_full_input_tokens": 270,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "fixed",
+        "body_tokens": 384,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      "chunk_count": 208,
+      "max_full_input_tokens": 398,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "fixed",
+        "body_tokens": 384,
+        "overlap_tokens": 32,
+        "model_limit": 512
+      },
+      "chunk_count": 225,
+      "max_full_input_tokens": 399,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "fixed",
+        "body_tokens": 480,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      "chunk_count": 170,
+      "max_full_input_tokens": 495,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "fixed",
+        "body_tokens": 480,
+        "overlap_tokens": 32,
+        "model_limit": 512
+      },
+      "chunk_count": 177,
+      "max_full_input_tokens": 494,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "heading",
+        "body_tokens": 256,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      "chunk_count": 359,
+      "max_full_input_tokens": 278,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "heading",
+        "body_tokens": 256,
+        "overlap_tokens": 32,
+        "model_limit": 512
+      },
+      "chunk_count": 386,
+      "max_full_input_tokens": 278,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "heading",
+        "body_tokens": 384,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      "chunk_count": 264,
+      "max_full_input_tokens": 405,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "heading",
+        "body_tokens": 384,
+        "overlap_tokens": 32,
+        "model_limit": 512
+      },
+      "chunk_count": 272,
+      "max_full_input_tokens": 405,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "heading",
+        "body_tokens": 480,
+        "overlap_tokens": 0,
+        "model_limit": 512
+      },
+      "chunk_count": 221,
+      "max_full_input_tokens": 501,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 2,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    },
+    {
+      "config": {
+        "strategy": "heading",
+        "body_tokens": 480,
+        "overlap_tokens": 32,
+        "model_limit": 512
+      },
+      "chunk_count": 223,
+      "max_full_input_tokens": 501,
+      "cases": [
+        {
+          "case_id": "CR01",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR02",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR03",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR04",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR05",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR06",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR07",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR08",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR09",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 1,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR10",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR11",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR12",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR13",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR14",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR15",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR16",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR17",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR18",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR19",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR20",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR21",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR22",
+          "split": "heldout",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR23",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR24",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR25",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR26",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR27",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR28",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR29",
+          "split": "development",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR30",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR31",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR32",
+          "split": "heldout",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR33",
+          "split": "development",
+          "evidence_covered": 1,
+          "evidence_targets": 1,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR34",
+          "split": "development",
+          "evidence_covered": 2,
+          "evidence_targets": 2,
+          "all_covered": 1
+        },
+        {
+          "case_id": "CR35",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        },
+        {
+          "case_id": "CR36",
+          "split": "heldout",
+          "evidence_covered": 0,
+          "evidence_targets": 0,
+          "all_covered": 0
+        }
+      ]
+    }
+  ],
+  "elapsed_ms": 3340.8503000000564,
+  "not_measured": "12 schemes have no complete embedding/retrieval A/B; oracle is not Recall"
+}

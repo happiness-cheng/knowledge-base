@@ -4,7 +4,7 @@ import json
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from app.services import agent_service
+from app.services import agent_service, agent_tools
 from app.services.agent_tools import _handle_search, execute_tool
 
 
@@ -63,9 +63,9 @@ def test_tool_timeout_returns_error(monkeypatch):
     monkeypatch.setattr("app.services.agent_tools.TOOL_TIMEOUT_SECONDS", 0.001)
 
     def slow(*args, **kwargs):
-        time.sleep(10)
+        time.sleep(0.1)
 
-    monkeypatch.setattr("app.services.agent_tools._handle_search", slow)
+    monkeypatch.setitem(agent_tools.TOOL_HANDLERS, "search_knowledge_base", slow)
     result = execute_tool("search_knowledge_base", {"query": "t"}, MagicMock(), user_id=1)
     assert "timed out" in json.loads(result).get("error", "")
 

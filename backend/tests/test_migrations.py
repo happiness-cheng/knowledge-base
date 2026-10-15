@@ -53,11 +53,12 @@ def test_upgrade_creates_schema_and_records_head(tmp_path):
         "messages",
         "node_tags",
         "message_sources",
+        "index_jobs",
     } <= tables
     with engine.connect() as connection:
         assert (
             connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
-            == "20260712_01"
+            == "20261014_02"
         )
 
 
@@ -82,3 +83,20 @@ def test_stamp_preserves_existing_data(tmp_path):
             connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
             == "20260712_01"
         )
+
+
+def test_baseline_validation_allows_old_schema_before_additive_upgrade(tmp_path):
+    url = f"sqlite:///{tmp_path / 'old-baseline.db'}"
+    config = alembic_config(url)
+    command.upgrade(config, "20260712_01")
+    engine = create_engine(url)
+    with engine.begin() as connection:
+        connection.execute(text("INSERT INTO users (id, username, hashed_password) VALUES (1, 'existing', 'hash')"))
+        connection.execute(node.KnowledgeNode.__table__.insert().values(
+            id=1, user_id=1, title="original", content="USER_BODY"))
+    validate_existing_schema(engine, baseline_only=True)
+    command.upgrade(config, "head")
+    with engine.connect() as connection:
+        assert connection.execute(text("SELECT content FROM knowledge_nodes WHERE id=1")).scalar_one() == "USER_BODY"
+    assert "index_jobs" in inspect(engine).get_table_names()
+    engine.dispose()

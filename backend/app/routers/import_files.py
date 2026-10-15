@@ -1,6 +1,5 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
-import logging
 import hashlib
 from app.database import get_db
 from app.models.node import KnowledgeNode
@@ -9,20 +8,12 @@ from app.models.user import User
 from app.auth import get_current_user
 from app.services.file_importer import import_file
 from app.utils.markdown_cleaner import clean_markdown, split_by_headings
-from app.services.rag_service import add_node_to_index
+from app.services.index_jobs import enqueue, fingerprint
 
 router = APIRouter(prefix="/import", tags=["import"])
-logger = logging.getLogger(__name__)
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
 MAX_BATCH_FILES = 20
-
-
-def _safe_add_to_index(node_id: int, content: str, title: str, user_id: int):
-    try:
-        add_node_to_index(node_id, content, title, user_id)
-    except Exception:
-        logger.warning("Failed to add node %s to index", node_id, exc_info=True)
 
 
 @router.post("/file")
@@ -45,8 +36,7 @@ async def import_single_file(file: UploadFile = File(...), background: Backgroun
         db.add(node)
         db.flush()
         node_ids.append(node.id)
-        if background:
-            background.add_task(_safe_add_to_index, node.id, text, title, current_user.id)
+        enqueue(db, current_user.id, node.id, "upsert", fingerprint(title, text))
     db.commit()
     return {"source_id": source.id, "node_count": len(node_ids), "node_ids": node_ids}
 
@@ -75,8 +65,7 @@ async def import_batch_files(files: list[UploadFile] = File(...), background: Ba
             db.add(node)
             db.flush()
             node_ids.append(node.id)
-            if background:
-                background.add_task(_safe_add_to_index, node.id, text, title, current_user.id)
+            enqueue(db, current_user.id, node.id, "upsert", fingerprint(title, text))
         results.append({"filename": file.filename, "source_id": source.id, "node_count": len(node_ids)})
     db.commit()
     return {"imported": results}
@@ -103,7 +92,6 @@ async def import_text(body: dict, background: BackgroundTasks = None,
         db.add(node)
         db.flush()
         node_ids.append(node.id)
-        if background:
-            background.add_task(_safe_add_to_index, node.id, text, section_title, current_user.id)
+        enqueue(db, current_user.id, node.id, "upsert", fingerprint(section_title, text))
     db.commit()
     return {"source_id": source.id, "node_count": len(node_ids), "node_ids": node_ids}

@@ -221,7 +221,7 @@ function SimpleMarkdown({ text }) {
 }
 
 // Agent 推理步骤展示（可折叠）
-function AgentSteps({ steps }) {
+function AgentSteps({ steps, answerStatus }) {
   const [expanded, setExpanded] = React.useState(false);
 
   if (!steps || steps.length === 0) return null;
@@ -273,8 +273,8 @@ function AgentSteps({ steps }) {
                 </div>
               )}
               {step.type === 'final_answer' && (
-                <div style={{ color: '#16a34a', fontWeight: 600, fontSize: 11 }}>
-                  ✓ 生成最终回答
+                <div style={{ color: answerStatus === 'error' ? '#dc2626' : '#64748b', fontWeight: 600, fontSize: 11 }}>
+                  {answerStatus === 'error' ? '回答未完成' : answerStatus === 'not_found' ? '检索结束：未找到证据' : '✓ 生成最终回答'}
                 </div>
               )}
             </div>
@@ -290,10 +290,23 @@ function MessageItem({ message, onSaveToKB }) {
   const isAssistant = message.role === 'assistant';
   const isFromKB = message.is_from_kb !== false;
   const hasWebSources = message.web_sources && message.web_sources.length > 0;
-  const canSaveToKB = isAssistant && (!isFromKB || hasWebSources);
+  const answerStatus = message.answer_status;
+  const answerLabel = answerStatus === 'supported' ? '知识库回答'
+    : answerStatus === 'not_found' ? '未找到证据'
+    : answerStatus === 'error' ? '回答失败'
+    : message.ui_answer_mode === 'auto' ? '自动扩展回答'
+    : message.ui_answer_mode === 'general' ? '通用AI回答'
+    : message.ui_answer_mode === 'strict' ? '回答状态未返回'
+    : '历史回答（状态未记录）';
+  // 历史状态未持久化，已知的固定拒答/错误正文也不能作为新知识保存。
+  const isFixedFailure = message.content?.startsWith('NOT_FOUND_IN_KB:')
+    || message.content === '回答生成或证据校验失败，请重试；这不代表知识库没有相关资料。';
+  const canSaveToKB = isAssistant && !isFixedFailure
+    && answerStatus !== 'not_found' && answerStatus !== 'error'
+    && message.ui_answer_mode !== 'strict' && (!isFromKB || hasWebSources);
 
   return (
-    <div style={{
+    <div role="article" aria-label={isAssistant ? `助手回答：${answerLabel}` : '用户消息'} style={{
       display: 'flex',
       width: '100%',
       marginBottom: 12,
@@ -302,22 +315,17 @@ function MessageItem({ message, onSaveToKB }) {
       <div style={{ maxWidth: '85%' }}>
         {/* Agent 推理步骤 */}
         {isAssistant && message.agent_steps && message.agent_steps.length > 0 && (
-          <AgentSteps steps={message.agent_steps} />
+          <AgentSteps steps={message.agent_steps} answerStatus={answerStatus} />
         )}
         {/* Source indicator for assistant messages */}
         {isAssistant && (
           <div style={{
             fontSize: 11, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap',
           }}>
-            {isFromKB ? (
-              <span style={{ color: '#16a34a', fontWeight: 600 }}>
-                <span style={{ marginRight: 4 }}>●</span>知识库
-              </span>
-            ) : (
-              <span style={{ color: '#d97706', fontWeight: 600 }}>
-                <span style={{ marginRight: 4 }}>●</span>AI搜索
-              </span>
-            )}
+            <span style={{ color: answerStatus === 'error' ? '#dc2626'
+              : answerStatus === 'supported' ? '#15803d' : '#64748b', fontWeight: 600 }}>
+              <span style={{ marginRight: 4 }}>●</span>{answerLabel}
+            </span>
             {message.source_node_ids && message.source_node_ids.length > 0 && (
               <span style={{ color: '#94a3b8' }}>
                 {message.source_node_ids.map(id => <SourceBadge key={id} nodeId={id} />)}
@@ -344,7 +352,8 @@ function MessageItem({ message, onSaveToKB }) {
           fontSize: 14,
           lineHeight: 1.6,
         }}>
-          <SimpleMarkdown text={message.content} />
+          <SimpleMarkdown text={answerStatus === 'not_found'
+            ? message.content.replace(/^NOT_FOUND_IN_KB:\s*/, '') : message.content} />
         </div>
         {/* "添加到知识库" button for AI search / web search responses */}
         {canSaveToKB && (
@@ -375,13 +384,14 @@ export default function ChatPanel() {
   const [loading, setLoading] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [error, setError] = useState(null);
+  const [answerMode, setAnswerMode] = useState('strict');
 
   // API Key settings
   const [showSettings, setShowSettings] = useState(false);
   const [hasApiKey, setHasApiKey] = useState(false);
   const [apiKey, setApiKey] = useState('');
-  const [baseUrl, setBaseUrl] = useState('https://api.deepseek.com/v1');
-  const [modelName, setModelName] = useState('deepseek-chat');
+  const [baseUrl, setBaseUrl] = useState('https://api.deepseek.com/anthropic');
+  const [modelName, setModelName] = useState('deepseek-flash');
   const [savingKey, setSavingKey] = useState(false);
   const [modelDisplay, setModelDisplay] = useState('');
   const [configSource, setConfigSource] = useState('unknown');
@@ -500,8 +510,10 @@ export default function ChatPanel() {
     scrollToBottom();
 
     try {
-      const response = await api.sendMessage(convId, inputValue);
-      setMessages(prev => [...prev, response]);
+      const response = await api.sendMessage(convId, inputValue,
+        answerMode === 'general', answerMode === 'strict');
+      // 仅标记本次请求范围；不根据旧消息的布尔字段臆造历史状态。
+      setMessages(prev => [...prev, { ...response, ui_answer_mode: answerMode }]);
       if (messages.length === 0) loadConversations();
       scrollToBottom();
     } catch (error) {
@@ -594,15 +606,15 @@ export default function ChatPanel() {
             <input type="text" value={baseUrl} onChange={e => setBaseUrl(e.target.value)}
               style={inputStyle} />
             <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
-              DeepSeek: https://api.deepseek.com/v1 | Kimi: https://api.moonshot.cn/v1
+              使用 Anthropic 兼容接口。DeepSeek: https://api.deepseek.com/anthropic
             </div>
           </div>
           <div style={{ marginBottom: 12 }}>
             <label style={labelStyle}>Model</label>
             <input type="text" value={modelName} onChange={e => setModelName(e.target.value)}
-              placeholder="deepseek-chat" style={inputStyle} />
+              placeholder="deepseek-flash" style={inputStyle} />
             <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 2 }}>
-              常用: deepseek-chat, moonshot-v1-8k, glm-4, qwen-turbo
+              DeepSeek 4.1 Flash 的模型 ID：deepseek-flash
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -733,12 +745,24 @@ export default function ChatPanel() {
 
       {/* Input */}
       <div style={{ padding: 16, background: '#fff', borderTop: '1px solid #e2e8f0' }}>
+        <label htmlFor="chat-answer-mode" style={{ ...labelStyle, marginBottom: 6 }}>回答范围</label>
+        <select id="chat-answer-mode" value={answerMode} disabled={loading}
+          onChange={e => setAnswerMode(e.target.value)} style={{ ...inputStyle, marginBottom: 6 }}>
+          <option value="strict">严格知识库</option>
+          <option value="auto">自动扩展</option>
+          <option value="general">通用AI</option>
+        </select>
+        <p style={{ fontSize: 12, lineHeight: 1.5, color: '#64748b', margin: '0 0 10px' }}>
+          {answerMode === 'strict' ? '仅依据笔记；缺少证据时明确说明。'
+            : answerMode === 'auto' ? '先查笔记，可联网或补充通用知识。'
+            : '使用通用知识作答，不检索笔记。'}
+        </p>
         <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask about your notes..."
+            placeholder={answerMode === 'strict' ? '只询问笔记中的记录…' : '输入问题…'}
             disabled={loading}
             style={{
               width: '100%', padding: '10px 44px 10px 16px', borderRadius: 20,

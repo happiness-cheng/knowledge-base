@@ -1,0 +1,13 @@
+{
+  "approved_batch_total_before_probe": 2,
+  "physical_requests": 1,
+  "selected_model": "Qwen3.8-Flash",
+  "error_type": "APITimeoutError",
+  "http_status": null,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/models"
+    }
+  ]
+}

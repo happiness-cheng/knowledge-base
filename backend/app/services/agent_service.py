@@ -3,8 +3,12 @@
 import json
 import re
 import logging
+from sqlalchemy.exc import SQLAlchemyError
 from app.services.claude_client import claude_client
 from app.services.agent_tools import TOOL_DEFINITIONS, execute_tool
+from app.models.node import KnowledgeNode
+from app.services.kb_answer_contract import KB_SYSTEM_PROMPT, finalize_kb_answer
+from app.services.evidence_freshness import current_evidence
 
 logger = logging.getLogger(__name__)
 
@@ -160,6 +164,11 @@ def run_agent(
     ai_search: bool = False,
     user_id: int = 1,
     ai_client=None,
+    observe_tool_result=None,
+    kb_only: bool = False,
+    max_input_chars: int = 24000,
+    max_output_tokens: int = 1200,
+    max_model_calls: int = 5,
 ) -> dict:
     """
     运行 Agent 循环。
@@ -174,6 +183,8 @@ def run_agent(
         }
     """
     client = ai_client or claude_client
+    if kb_only and ai_search:
+        raise ValueError("kb_only and ai_search cannot both be enabled")
 
     # AI 搜索模式：不走 Agent，直接通用知识回答
     if ai_search:
@@ -195,15 +206,55 @@ def run_agent(
     steps = []
     used_node_ids = set()
     web_sources = []  # 追踪联网搜索来源 [{title, url}]
+    system_prompt = KB_SYSTEM_PROMPT + DATA_FRESHNESS_RULES if kb_only else AGENT_SYSTEM_PROMPT
+    tools = [t for t in TOOL_DEFINITIONS if t["name"] in (
+        "search_knowledge_base", "get_node_details"
+    )] if kb_only else TOOL_DEFINITIONS
+    kb_searched = False
+    model_calls = 0
+
+    def finish(text, failure=None):
+        if kb_only:
+            result = finalize_kb_answer(
+                text, used_node_ids, steps,
+                failure=failure or (None if kb_searched else "search_required"),
+            )
+            result["model_calls"] = model_calls
+            return result
+        return _finalize_agent_result(text, used_node_ids, steps, web_sources)
+
+    if kb_only and any(type(value) is not int or not 1 <= value <= cap for value, cap in (
+        (max_input_chars, 24000), (max_output_tokens, 1200), (max_model_calls, 10),
+    )):
+        return finish("", failure="invalid_budget_configuration")
+
+    def serialize(value):
+        if hasattr(value, "model_dump"):
+            return value.model_dump(mode="json")
+        return vars(value)
 
     for iteration in range(MAX_ITERATIONS):
+        if kb_only:
+            if model_calls >= max_model_calls:
+                return finish("", failure="model_call_budget_exceeded")
+            try:
+                chars = len(json.dumps({"system": system_prompt, "messages": messages, "tools": tools},
+                                      ensure_ascii=False, default=serialize))
+            except (TypeError, ValueError):
+                return finish("", failure="invalid_prompt")
+            if chars > max_input_chars:
+                return finish("", failure="input_budget_exceeded")
         try:
+            model_calls += 1
             resp = client.chat_with_tools(
-                system=AGENT_SYSTEM_PROMPT,
+                system=system_prompt,
                 messages=messages,
-                tools=TOOL_DEFINITIONS,
+                tools=tools,
+                **({"max_tokens": max_output_tokens} if kb_only else {}),
             )
         except Exception as e:
+            if kb_only:
+                return finish("", failure="provider_error")
             # 模型不支持 tools 参数时的降级处理
             logger.warning("Agent call failed (iteration %d): %s", iteration, e)
             if iteration == 0:
@@ -220,6 +271,9 @@ def run_agent(
                     )
             break
 
+        if kb_only and getattr(resp, "stop_reason", None) == "max_tokens":
+            return finish("", failure="output_truncated")
+
         # 分析响应内容
         text_blocks = []
         tool_use_blocks = []
@@ -232,9 +286,7 @@ def run_agent(
         # 没有工具调用 → 最终回答
         if not tool_use_blocks:
             final_text = "\n".join(text_blocks) if text_blocks else "[No response]"
-            return _finalize_agent_result(
-                final_text, used_node_ids, steps, web_sources
-            )
+            return finish(final_text)
 
         # 有工具调用 → 执行工具
         messages.append({"role": "assistant", "content": resp.content})
@@ -254,7 +306,51 @@ def run_agent(
             })
 
             # 执行工具
+            if kb_only and (not isinstance(tool_input, dict) or
+                tool_name not in {t["name"] for t in tools} or (
+                tool_name == "get_node_details" and (
+                    type(tool_input.get("node_id")) is not int or
+                    tool_input.get("node_id") not in used_node_ids
+                )
+            )):
+                return finish("", failure="tool_not_allowed")
             result = _execute_tool_with_retry(tool_name, tool_input, db, user_id=user_id)
+            if kb_only:
+                # 索引可能含旧节点；在送模型及观察器前按当前用户再次过滤。
+                try:
+                    data = json.loads(result)
+                    rows = data if tool_name == "search_knowledge_base" else [data]
+                    if not isinstance(rows, list) or any(
+                        not isinstance(row, dict) or "error" in row for row in rows
+                    ):
+                        raise ValueError("invalid_tool_result")
+                    id_key = "node_id" if tool_name == "search_knowledge_base" else "id"
+                    if any(type(row.get(id_key)) is not int or not isinstance(
+                        row.get("content"), str
+                    ) for row in rows):
+                        raise ValueError("invalid_evidence")
+                    ids = [row[id_key] for row in rows]
+                    owned = {node.id: node for node in db.query(KnowledgeNode).populate_existing().filter(
+                        KnowledgeNode.id.in_(ids), KnowledgeNode.user_id == user_id
+                    ).all()} if ids else set()
+                    rows = [row for row in rows if row[id_key] in owned
+                            and current_evidence(row, owned[row[id_key]])]
+                    if any(len(row["content"]) > 6000 for row in rows):
+                        return finish("", failure="evidence_budget_exceeded")
+                    for row in rows:
+                        row["title"] = owned[row[id_key]].title
+                    if tool_name == "search_knowledge_base":
+                        kb_searched = True
+                        result = json.dumps(rows, ensure_ascii=False)
+                    elif rows:
+                        result = json.dumps(rows[0], ensure_ascii=False)
+                    else:
+                        raise ValueError("missing_node")
+                except (ValueError, TypeError, SQLAlchemyError):
+                    return finish("", failure="tool_error")
+            # 评测接点只观察实际执行结果，不参与工具选择或评分真值。
+            if observe_tool_result is not None:
+                observe_tool_result(tool_name, tool_input, result)
 
             # 追踪搜索到的节点 ID
             if tool_name in ("search_knowledge_base", "get_node_details"):
@@ -300,6 +396,8 @@ def run_agent(
 
         # 死循环检测
         if _detect_loop(steps):
+            if kb_only:
+                return finish("", failure="tool_loop")
             logger.warning("Agent loop detected at iteration %d, forcing final answer", iteration)
             messages.append({
                 "role": "user",
@@ -307,27 +405,31 @@ def run_agent(
             })
             try:
                 final_text = client.chat(
-                    system=AGENT_SYSTEM_PROMPT,
+                    system=system_prompt,
                     messages=messages,
                 )
             except Exception as e:
+                if kb_only:
+                    return finish("", failure="provider_error")
                 final_text = f"Agent encountered an error: {str(e)}"
 
-            return _finalize_agent_result(
-                final_text, used_node_ids, steps, web_sources
-            )
+            return finish(final_text)
 
     # 达到最大迭代次数 → 强制输出最终回答
+    if kb_only:
+        return finish("", failure="model_call_budget_exceeded")
     messages.append({
         "role": "user",
         "content": "Maximum tool calls reached. Please provide your best answer now.",
     })
     try:
         final_text = client.chat(
-            system=AGENT_SYSTEM_PROMPT,
+            system=system_prompt,
             messages=messages,
         )
     except Exception as e:
+        if kb_only:
+            return finish("", failure="provider_error")
         final_text = f"Agent encountered an error: {str(e)}"
 
-    return _finalize_agent_result(final_text, used_node_ids, steps, web_sources)
+    return finish(final_text)

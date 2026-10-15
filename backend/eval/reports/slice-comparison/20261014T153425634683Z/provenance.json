@@ -1,0 +1,26 @@
+{
+  "measurement": "2026-10-14 cached-real-BGE, no generation requests",
+  "original_measurement_harness_sha256": "60ac2f38b427140cdf460d3212a4e1d84779a59b77cdc7edefff05ddc1417b5f",
+  "portable_harness": "backend/eval/run_slice_comparison.py",
+  "portable_harness_sha256": "8ed1a32683c2b749c1b2645665833d4dfdfa1b6abc9d00d7cc09d436a4a8d036",
+  "adaptations": [
+    "repository-relative paths",
+    "explicit --hf-home",
+    "retrieval-only metadata",
+    "strict query/vector zip"
+  ],
+  "portable_harness_validation": "prepare-only; original full measurement retained in reports",
+  "report_correction": "same retrieved/steps/latency; missing mode corrected; aggregate answer metrics null",
+  "copied_file_sha256": {
+    "controlled-original.json": "217d352e1a1dcd1deb107cb132836a080cf73f16fe474a16aba40c32130490ee",
+    "controlled-original_plus_rewrite.json": "c6dc997c112ee48debb359fee4e64f83e243967bb4e870e62944bfbb2036a5f9",
+    "controlled-rewrite_only.json": "08859c2ab2a9e8788bfe29a88d6a7dc686197481a9d5fcc3f13d5a8127e93896",
+    "fixed_480.json": "5add59145807f9daec62586912b50ae862e3a2dc67de53f643f8cc3e511adfac",
+    "heading_384.json": "bac3d567af2f0cb7fb7cc76734f7a16f810a9aabf04c677d7a9c4bbdc88e0fe9",
+    "heading_480.json": "c4f22f52ef53bdfb025f99f7401fb670ec184629874f9c81ebda062e88f67dcb",
+    "summary.json": "ab8fb3812ef5a3dd7f8f85506bd77f1ba6e1a5df04b8737d1d1e036d2b08155d",
+    "fixed_480-vectors.npz": "c8df3fa246314274e4bf0ab06aa2e435c10aa3b4537f321a600fb3431b16584c",
+    "heading_384-vectors.npz": "cd03ecfacec796a025fe0d39841764dd4ffd8f61d90f9d643f9ab159d931839e",
+    "heading_480-vectors.npz": "7ece6861ecd217f922b9d73f074d753b2bd87b8cc643751e47567621a306521e"
+  }
+}

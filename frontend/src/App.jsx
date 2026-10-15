@@ -8,8 +8,10 @@ import LoginPage from './components/Auth/LoginPage'
 import useAppStore from './stores/appStore'
 import { api } from './api/client'
 import { auth } from './api/auth'
+import PublicDemo from './components/Chat/PublicDemo'
 
 export default function App() {
+  if (window.location.pathname === '/public-demo') return <PublicDemo />
   // 未登录 → 显示登录页
   if (!auth.isLoggedIn()) {
     return <LoginPage />

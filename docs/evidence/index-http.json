@@ -1,0 +1,77 @@
+{
+  "mode": "actual-SQL-outbox-worker-RAG-over-HTTP",
+  "steps": [
+    {
+      "operation": "seed",
+      "count": 2,
+      "rag_contents": [
+        "OLD_BODY",
+        "OLD_TAIL"
+      ],
+      "query_ids": [
+        "42:0",
+        "42:1"
+      ],
+      "query_distances": [
+        2.0,
+        2.0
+      ]
+    },
+    {
+      "operation": "shorten_update",
+      "count": 1,
+      "rag_contents": [
+        "NEW_BODY"
+      ],
+      "query_ids": [
+        "42:0"
+      ],
+      "query_distances": [
+        0.0
+      ]
+    },
+    {
+      "operation": "add_with_other_owner",
+      "count": 2,
+      "rag_contents": [
+        "NEW_BODY",
+        "NEW_NODE"
+      ],
+      "query_ids": [
+        "42:0",
+        "43:0"
+      ],
+      "query_distances": [
+        0.0,
+        2.0
+      ]
+    },
+    {
+      "operation": "delete_first",
+      "count": 1,
+      "rag_contents": [
+        "NEW_NODE"
+      ],
+      "query_ids": [
+        "43:0"
+      ],
+      "query_distances": [
+        2.0
+      ]
+    },
+    {
+      "operation": "delete_all_owned",
+      "count": 0,
+      "rag_contents": [],
+      "query_ids": [],
+      "query_distances": []
+    }
+  ],
+  "workers": 6,
+  "other_owner_untouched": true,
+  "wall_seconds": 21.234,
+  "embedding": "fixed-3D-fixture",
+  "external_model_calls": 0,
+  "pass": true,
+  "ready_after_server_stop": 503
+}

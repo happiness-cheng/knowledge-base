@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-10-13",
+  "source_kind": "repository_external_technical_notes",
+  "source_originals_modified": false,
+  "privacy_scan": {
+    "performed_at": "2026-10-13",
+    "scope": "suspected credentials and identity patterns only",
+    "checks": [
+      "private_key",
+      "provider_key",
+      "email_identity",
+      "git_identity",
+      "assigned_credential"
+    ],
+    "selected_files_flagged": 0,
+    "local_only": true,
+    "online_external_transfer_authorized": false
+  },
+  "excluded_documents": [
+    {
+      "source_path": "backend/eval/corpus/external/Git多用户配置.md",
+      "reason": "identity-specific document excluded before reading"
+    }
+  ],
+  "documents": [
+    {
+      "node_id": 1001,
+      "title": "计算机操作系统 - 进程管理",
+      "topic": "operating_system",
+      "source_path": "backend/eval/corpus/external/计算机操作系统 - 进程管理.md",
+      "source_sha256": "81bd8a81bb1055b6663bbf4e853a50cba4b34c802ca393da9feb66f455f89300",
+      "byte_size": 23598,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1002,
+      "title": "计算机操作系统 - 死锁",
+      "topic": "operating_system",
+      "source_path": "backend/eval/corpus/external/计算机操作系统 - 死锁.md",
+      "source_sha256": "87a42f25f08e4a301a4ce8a7519089606fc77f6cd352cb544b6dabd9e96537a0",
+      "byte_size": 7695,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1003,
+      "title": "计算机操作系统 - 内存管理",
+      "topic": "operating_system",
+      "source_path": "backend/eval/corpus/external/计算机操作系统 - 内存管理.md",
+      "source_sha256": "8f9bd33ec0604c1a913cfbc098dd63566cc7780752d9c3961fc7aae8490b7a32",
+      "byte_size": 8139,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1004,
+      "title": "计算机网络 - 传输层",
+      "topic": "network",
+      "source_path": "backend/eval/corpus/external/计算机网络 - 传输层.md",
+      "source_sha256": "e5825d7e4dd94556ce040970057ebfe7a63adaad2d6ec6b6022696ebb608452c",
+      "byte_size": 11726,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1005,
+      "title": "计算机网络 - 应用层",
+      "topic": "network",
+      "source_path": "backend/eval/corpus/external/计算机网络 - 应用层.md",
+      "source_sha256": "0bf0a7d12f9590d3bb07c6fe3df16f9cf29609a9146217ccb9f4012c4df4826e",
+      "byte_size": 10773,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1006,
+      "title": "计算机网络 - 网络层",
+      "topic": "network",
+      "source_path": "backend/eval/corpus/external/计算机网络 - 网络层.md",
+      "source_sha256": "5e54865e07cbe176c144a711e0e22894ab19de6a48d0cbb0b6d215b42fe641f2",
+      "byte_size": 15489,
+      "role": "distractor_only"
+    },
+    {
+      "node_id": 1007,
+      "title": "SQL优化",
+      "topic": "database",
+      "source_path": "backend/eval/corpus/external/SQL优化.md",
+      "source_sha256": "a7ba76f04513e5dcd548915ad356caef806568e66a7fd25c5fddc3d9c845cdf5",
+      "byte_size": 1826,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1008,
+      "title": "Redis",
+      "topic": "cache",
+      "source_path": "backend/eval/corpus/external/Redis.md",
+      "source_sha256": "23faa226b377bbb997daf22af95302d0ff2842d9a0f4f0167f37d261ed984001",
+      "byte_size": 24970,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1009,
+      "title": "MySQL",
+      "topic": "database",
+      "source_path": "backend/eval/corpus/external/MySQL.md",
+      "source_sha256": "9bb762abdaa7bec4cec9f81b070ee3c7166696d43e53ea7b76f967a46cf7b981",
+      "byte_size": 21243,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1010,
+      "title": "数据库系统原理",
+      "topic": "database",
+      "source_path": "backend/eval/corpus/external/数据库系统原理.md",
+      "source_sha256": "34aa3bf502064d0c53d6a130891f2d20609d17771fb62eadb00f946b9282b1d8",
+      "byte_size": 25752,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1011,
+      "title": "Socket",
+      "topic": "io",
+      "source_path": "backend/eval/corpus/external/Socket.md",
+      "source_sha256": "02dbf18d6b038e17f3eef0483003e222ff0c063575d01942013dd551771b49a3",
+      "byte_size": 14506,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1012,
+      "title": "Docker",
+      "topic": "container",
+      "source_path": "backend/eval/corpus/external/Docker.md",
+      "source_sha256": "d34637bf2dd4a477d8c4a3bbe060922a14f13e255836863f0e0c17642b01951a",
+      "byte_size": 4621,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1013,
+      "title": "分布式",
+      "topic": "distributed",
+      "source_path": "backend/eval/corpus/external/分布式.md",
+      "source_sha256": "7c523c492d44d141e3df4f95225a19f99de338943ffabf5907ee99fb358dacd0",
+      "byte_size": 20269,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1014,
+      "title": "缓存",
+      "topic": "cache",
+      "source_path": "backend/eval/corpus/external/缓存.md",
+      "source_sha256": "f311fc2ba7b04d638398992f177cd8380d7d148df94ed79b9f24dec9a65a0572",
+      "byte_size": 12013,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1015,
+      "title": "消息队列",
+      "topic": "messaging",
+      "source_path": "backend/eval/corpus/external/消息队列.md",
+      "source_sha256": "28b0238e43ff193a5bb2dd73a65d5180897dcf6c166a2fdb18e42a23a01341e1",
+      "byte_size": 4200,
+      "role": "evidence_and_related_distractor"
+    },
+    {
+      "node_id": 1016,
+      "title": "系统设计基础",
+      "topic": "system_design",
+      "source_path": "backend/eval/corpus/external/系统设计基础.md",
+      "source_sha256": "c474e2f11587641ab8d1c9cc5bb841e1dbf5e986de403c016563e55937c767b2",
+      "byte_size": 4617,
+      "role": "evidence_and_related_distractor"
+    }
+  ]
+}

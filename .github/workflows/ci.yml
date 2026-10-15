@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-backend:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 20
 
     steps:
@@ -22,13 +22,30 @@ jobs:
       - name: Install dependencies
         working-directory: backend
         run: |
-          pip install -r requirements.txt
-          pip install pytest
+          pip install -r requirements.txt -c constraints.verified-win-py312.txt
+          pip install pytest ruff mypy -c constraints.verified-win-py312.txt
+
+      - name: Compile
+        working-directory: backend
+        run: python -m compileall -q app eval
+
+      - name: Type check durable indexing
+        working-directory: backend
+        run: python -m mypy --follow-imports=silent --ignore-missing-imports app/models/index_job.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py
+
+      - name: Lint production additions
+        working-directory: backend
+        run: python -m ruff check --isolated --select E4,E7,E9,F,B app/models/index_job.py app/routers/index_jobs.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/kb_answer_contract.py app/services/langchain_rag.py app/services/query_rewrite.py app/services/retrieval_pipeline.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py
+
+      - name: Artifact inputs
+        working-directory: backend
+        run: python -m eval.check_artifact_policy
 
       - name: Run tests
         working-directory: backend
         run: |
-          python -m pytest tests/ -v --tb=short
+          python -m eval.offline_tests --verify-isolation
+          python -m eval.offline_tests --empty-model-cache tests -q --tb=short
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -40,11 +57,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm install
+        run: npm ci
 
       - name: Build
         working-directory: frontend

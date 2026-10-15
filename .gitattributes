@@ -1,0 +1,25 @@
+# 冻结JSON/报告保留字节；公开技术原文固定现有换行，确保克隆后hash一致。
+backend/eval/fixtures/** -text whitespace=cr-at-eol
+backend/eval/reports/** -text whitespace=cr-at-eol
+docs/evidence/*.json -text whitespace=cr-at-eol
+backend/eval/benchmark.py -text whitespace=cr-at-eol
+backend/eval/core_corpus.py -text whitespace=cr-at-eol
+backend/eval/retrieval_candidates.py -text whitespace=cr-at-eol
+backend/eval/run_retrieval_matrix.py -text whitespace=cr-at-eol
+backend/eval/run_slice_comparison.py -text whitespace=cr-at-eol
+"backend/eval/corpus/external/计算机操作系统 - 进程管理.md" text eol=crlf
+"backend/eval/corpus/external/计算机操作系统 - 死锁.md" text eol=crlf
+"backend/eval/corpus/external/计算机操作系统 - 内存管理.md" text eol=crlf
+"backend/eval/corpus/external/计算机网络 - 传输层.md" text eol=crlf
+"backend/eval/corpus/external/计算机网络 - 应用层.md" text eol=crlf
+"backend/eval/corpus/external/计算机网络 - 网络层.md" text eol=crlf
+"backend/eval/corpus/external/SQL优化.md" text eol=crlf
+"backend/eval/corpus/external/Redis.md" text eol=crlf
+"backend/eval/corpus/external/MySQL.md" text eol=crlf
+"backend/eval/corpus/external/数据库系统原理.md" text eol=crlf
+"backend/eval/corpus/external/Socket.md" text eol=crlf
+"backend/eval/corpus/external/Docker.md" text eol=crlf
+"backend/eval/corpus/external/分布式.md" text eol=crlf
+"backend/eval/corpus/external/缓存.md" text eol=crlf
+"backend/eval/corpus/external/消息队列.md" text eol=crlf
+"backend/eval/corpus/external/系统设计基础.md" text eol=crlf

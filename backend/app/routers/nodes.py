@@ -1,7 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_, case, func
-import logging
 import hashlib
 from app.database import get_db, nocase
 from app.models.node import KnowledgeNode
@@ -10,24 +9,9 @@ from app.models.relationship import Relationship
 from app.models.user import User
 from app.auth import get_current_user
 from app.schemas.node import NodeCreate, NodeUpdate, NodeDetail, NodeSummary
-from app.services.rag_service import add_node_to_index, remove_node_from_index
+from app.services.index_jobs import enqueue, fingerprint
 
-logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/nodes", tags=["nodes"])
-
-
-def _safe_add_to_index(node_id: int, content: str, title: str, user_id: int):
-    try:
-        add_node_to_index(node_id, content, title, user_id)
-    except Exception:
-        logger.warning("Failed to add node %s to index", node_id, exc_info=True)
-
-
-def _safe_remove_from_index(node_id: int, user_id: int):
-    try:
-        remove_node_from_index(node_id, user_id)
-    except Exception:
-        logger.warning("Failed to remove node %s from index", node_id, exc_info=True)
 
 
 @router.get("", response_model=list[NodeSummary])
@@ -90,9 +74,10 @@ def create_node(body: NodeCreate, background: BackgroundTasks,
             db.add(tag)
         node.tags.append(tag)
     db.add(node)
+    db.flush()
+    enqueue(db, current_user.id, node.id, "upsert", fingerprint(node.title, node.content))
     db.commit()
     db.refresh(node)
-    background.add_task(_safe_add_to_index, node.id, node.content, node.title, current_user.id)
     return NodeDetail(id=node.id, title=node.title, content=node.content, summary=node.summary,
         category=node.category, tags=[t.name for t in node.tags], importance=node.importance,
         source_id=node.source_id, created_at=node.created_at, updated_at=node.updated_at, ai_analyzed=node.ai_analyzed)
@@ -120,9 +105,9 @@ def update_node(node_id: int, body: NodeUpdate, background: BackgroundTasks,
                 tag = Tag(name=tag_name, user_id=current_user.id)
                 db.add(tag)
             node.tags.append(tag)
+    enqueue(db, current_user.id, node.id, "upsert", fingerprint(node.title, node.content))
     db.commit()
     db.refresh(node)
-    background.add_task(_safe_add_to_index, node.id, node.content, node.title, current_user.id)
     return NodeDetail(id=node.id, title=node.title, content=node.content, summary=node.summary,
         category=node.category, tags=[t.name for t in node.tags], importance=node.importance,
         source_id=node.source_id, created_at=node.created_at, updated_at=node.updated_at, ai_analyzed=node.ai_analyzed)
@@ -140,8 +125,8 @@ def delete_node(node_id: int, background: BackgroundTasks,
     ).delete(synchronize_session=False)
     node.tags.clear()
     db.delete(node)
+    enqueue(db, current_user.id, node_id, "delete", "")
     db.commit()
-    background.add_task(_safe_remove_from_index, node_id, current_user.id)
     return {"ok": True}
 
 

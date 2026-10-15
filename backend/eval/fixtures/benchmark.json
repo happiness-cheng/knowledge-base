@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "source": "artificial mechanism fixture; not independent holdout",
+  "nodes": [
+    {
+      "node_id": 7,
+      "title": "Agent runtime",
+      "content": "Agent tool permissions bound external actions. Approval is required before execution. Idempotency protects repeated submissions."
+    },
+    {
+      "node_id": 8,
+      "title": "RAG evidence",
+      "content": "RAG retrieval returns chunks. Document hit does not guarantee evidence coverage. Evaluate actual context and citations separately."
+    },
+    {
+      "node_id": 9,
+      "title": "Data freshness",
+      "content": "Freshness requires matching the date requested by the user. Historical quotes cannot answer current market questions."
+    }
+  ],
+  "cases": [
+    [
+      "F01",
+      7,
+      "fixture",
+      "authored",
+      "Agent tool permissions",
+      "Approval is required before execution.",
+      ""
+    ],
+    [
+      "F02",
+      7,
+      "fixture",
+      "authored",
+      "Approval before execution",
+      "Approval is required before execution.",
+      ""
+    ],
+    [
+      "F03",
+      7,
+      "fixture",
+      "authored",
+      "Idempotency repeated submissions",
+      "Approval is required before execution.",
+      ""
+    ],
+    [
+      "F04",
+      8,
+      "fixture",
+      "authored",
+      "RAG retrieval chunks",
+      "Document hit does not guarantee evidence coverage.",
+      ""
+    ],
+    [
+      "F05",
+      8,
+      "fixture",
+      "authored",
+      "Document evidence coverage",
+      "Document hit does not guarantee evidence coverage.",
+      ""
+    ],
+    [
+      "F06",
+      8,
+      "fixture",
+      "authored",
+      "Evaluate context citations",
+      "Document hit does not guarantee evidence coverage.",
+      ""
+    ],
+    [
+      "F07",
+      9,
+      "fixture",
+      "authored",
+      "Freshness matching date",
+      "Historical quotes cannot answer current market questions.",
+      ""
+    ],
+    [
+      "F08",
+      9,
+      "fixture",
+      "authored",
+      "Historical quotes current",
+      "Historical quotes cannot answer current market questions.",
+      ""
+    ],
+    [
+      "F09",
+      7,
+      "fixture",
+      "authored",
+      "Agent permissions actions",
+      "Approval is required before execution.",
+      ""
+    ],
+    [
+      "F10",
+      7,
+      "fixture",
+      "authored",
+      "Approval required execution",
+      "Approval is required before execution.",
+      ""
+    ],
+    [
+      "F11",
+      7,
+      "fixture",
+      "authored",
+      "Idempotency submissions",
+      "Approval is required before execution.",
+      ""
+    ],
+    [
+      "F12",
+      8,
+      "fixture",
+      "authored",
+      "retrieval chunks evidence",
+      "Document hit does not guarantee evidence coverage.",
+      ""
+    ],
+    [
+      "F13",
+      8,
+      "fixture",
+      "authored",
+      "Document hit guarantee",
+      "Document hit does not guarantee evidence coverage.",
+      ""
+    ],
+    [
+      "F14",
+      8,
+      "fixture",
+      "authored",
+      "actual context citations",
+      "Document hit does not guarantee evidence coverage.",
+      ""
+    ],
+    [
+      "F15",
+      9,
+      "fixture",
+      "authored",
+      "Freshness date requested",
+      "Historical quotes cannot answer current market questions.",
+      ""
+    ],
+    [
+      "F16",
+      9,
+      "fixture",
+      "authored",
+      "Historical market questions",
+      "Historical quotes cannot answer current market questions.",
+      ""
+    ],
+    [
+      "FN01",
+      null,
+      "N",
+      "authored",
+      "quasar banana",
+      null,
+      null
+    ],
+    [
+      "FN02",
+      null,
+      "N",
+      "authored",
+      "unicorn volcano",
+      null,
+      null
+    ],
+    [
+      "FN03",
+      null,
+      "N",
+      "authored",
+      "turquoise galaxy",
+      null,
+      null
+    ],
+    [
+      "FN04",
+      null,
+      "N",
+      "authored",
+      "orchid cosmos",
+      null,
+      null
+    ]
+  ]
+}

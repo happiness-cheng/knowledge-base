@@ -2,7 +2,6 @@
 
 import json
 import logging
-import concurrent.futures
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from app.database import nocase
@@ -10,6 +9,9 @@ from app.services.rag_service import retrieve_relevant_nodes
 from app.models.node import KnowledgeNode
 from app.models.tag import Tag
 from app.models.relationship import Relationship
+from app.services.tool_executor import (
+    ToolCapacityUnavailable, ToolWaitTimeout, close_tool_executor, run_read_tool,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -142,6 +144,7 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
             "title": r.get("title", ""),
             "content": content,
             "distance": r.get("distance"),
+            "source_fingerprint": r.get("source_fingerprint"),
             # ↓ 数据新鲜度（M5-35）：没有这两个字段，模型无法判断"用户问的时间段库里覆盖没覆盖"，
             #   只能按语义相似度硬答 —— 实测负例「今天上证指数收盘多少」被答成"今天收盘 4166.29"，
             #   而那个数字来自 2026-05-20 的交易日志（时效性幻觉，且 faithfulness 满分）。
@@ -163,7 +166,7 @@ def _handle_node_details(input_dict: dict, db: Session, **kwargs) -> str:
         return json.dumps({"error": "node_id is required"})
 
     user_id = kwargs.get("user_id", 1)
-    node = db.query(KnowledgeNode).filter(KnowledgeNode.id == node_id, KnowledgeNode.user_id == user_id).first()
+    node = db.query(KnowledgeNode).populate_existing().filter(KnowledgeNode.id == node_id, KnowledgeNode.user_id == user_id).first()
     if not node:
         return json.dumps({"error": f"Node {node_id} not found"})
 
@@ -333,13 +336,19 @@ def execute_tool(name: str, input_dict: dict, db: Session, user_id: int = 1) -> 
     handler = TOOL_HANDLERS.get(name)
     if not handler:
         return json.dumps({"error": f"Unknown tool: {name}"})
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(handler, input_dict, db, user_id=user_id)
-        try:
-            return future.result(timeout=TOOL_TIMEOUT_SECONDS)
-        except concurrent.futures.TimeoutError:
-            logger.warning("Tool timed out: %s", name)
-            return json.dumps({"error": f"tool {name} timed out after {TOOL_TIMEOUT_SECONDS}s"})
-        except Exception:
-            logger.exception("Agent tool execution failed: %s", name)
-            return json.dumps({"error": "tool execution failed"})
+    if not isinstance(input_dict, dict):
+        return json.dumps({"error": "tool input must be an object"})
+    try:
+        return run_read_tool(handler, input_dict, db, user_id=user_id, timeout=TOOL_TIMEOUT_SECONDS)
+    except ToolWaitTimeout:
+        logger.warning("Tool timed out: %s", name)
+        return json.dumps({"error": f"tool {name} timed out after {TOOL_TIMEOUT_SECONDS}s"})
+    except ToolCapacityUnavailable:
+        return json.dumps({"error": "tool capacity unavailable"})
+    except ValueError as exc:
+        if str(exc) == 'tool requires committed database state':
+            return json.dumps({"error": str(exc)})
+        return json.dumps({"error": "tool execution failed"})
+    except Exception as exc:  # noqa: BLE001  工具边界返回稳定错误，不输出异常原文。
+        logger.warning("Agent tool failed: %s (%s)", name, type(exc).__name__)
+        return json.dumps({"error": "tool execution failed"})

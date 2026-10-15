@@ -1,0 +1,887 @@
+{
+  "schema_version": 1,
+  "metadata": {
+    "frozen_at": "2026-10-13",
+    "generator": "agent authored after reading selected source notes",
+    "query_provenance": "all agent_simulated; no verified verbatim user questions available in this batch",
+    "blind_test": false,
+    "heldout_meaning": "template groups separated before retrieval comparison; source-aware authored, not independent blind test",
+    "corpus_manifest": "core-rag-corpus-20261013.json",
+    "corpus_manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+    "evidence_semantics": "all required, ordered anchors within corresponding original source",
+    "case_count": 36,
+    "positive_cases": 27,
+    "negative_cases": 9,
+    "category_counts": {
+      "concrete_api_error": 6,
+      "semantic_rephrase": 6,
+      "multi_document": 6,
+      "confusable_concepts": 6,
+      "missing_evidence": 6,
+      "typo_pronoun": 6
+    },
+    "split_counts": {
+      "heldout": 19,
+      "development": 17
+    },
+    "local_only": true,
+    "online_external_transfer_authorized": false,
+    "limitations": [
+      "authored by reading source; not blind or natural query frequency",
+      "educational external notes may be old or inaccurate; source matching is not factual validation",
+      "image and linked source content are not downloaded",
+      "negative cases identify missing coverage or unresolved context; no invented positive gold",
+      "six multi-document cases deliberately require distinct source evidence; complexity is not representative of live traffic"
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "CR01",
+      "question": "按 SQL 优化笔记，desc like '%XX' 和 desc like 'XX%' 哪个属于前导模糊查询，应该怎样改？",
+      "note_type": "concrete_api_error",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1007,
+          "head": "#### 2.2 前导模糊查询不能使用索引",
+          "tail": "select * from order where desc like 'XX%'"
+        }
+      ]
+    },
+    {
+      "case_id": "CR02",
+      "question": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？",
+      "note_type": "concrete_api_error",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1013,
+          "head": "使用 SETNX（set if not exist）指令插入一个键值对",
+          "tail": "判断是否存于锁定状态。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR03",
+      "question": "Redis LIST 示例先 rpush item、item2、item，执行 lpop 后再 lrange 还剩哪两项？",
+      "note_type": "concrete_api_error",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1008,
+          "head": "> rpush list-key item",
+          "tail": "> lpop list-key"
+        },
+        {
+          "node_id": 1008,
+          "head": "> lpop list-key",
+          "tail": "2) \"item\""
+        }
+      ]
+    },
+    {
+      "case_id": "CR04",
+      "question": "select 的 readfds/writefds/exceptfds 各监视什么，timeout 到达前调用会如何等待？",
+      "note_type": "concrete_api_error",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1011,
+          "head": "- fd_set 使用数组实现",
+          "tail": "等待的时间超过 timeout。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR05",
+      "question": "WHERE YEAR(date) <= '2020' 为什么在这份慢 SQL 笔记里是不好的示例，给出的替代写法是什么？",
+      "note_type": "concrete_api_error",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1007,
+          "head": "#### 2.3 在属性上进行计算不能命中索引",
+          "tail": "select * from order where date < = CURDATE()"
+        }
+      ]
+    },
+    {
+      "case_id": "CR06",
+      "question": "bind() 报 EADDRINUSE 后，该笔记给出的端口排查命令和 SO_REUSEADDR 修复代码是什么？",
+      "note_type": "concrete_api_error",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR07",
+      "question": "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？",
+      "note_type": "semantic_rephrase",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1001,
+          "head": "由于创建或撤销进程时",
+          "tail": "开销很小。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR08",
+      "question": "程序比机器的物理内存还大，却仍然可以跑起来，笔记用哪种地址空间机制解释它？",
+      "note_type": "semantic_rephrase",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1003,
+          "head": "虚拟内存允许程序不用将地址空间中的每一页都映射到物理内存",
+          "tail": "这使得有限的内存运行大程序成为可能。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR09",
+      "question": "客户端旧的建连请求在路上拖了很久才到服务器，第三步确认为什么能避免错误地再次打开连接？",
+      "note_type": "semantic_rephrase",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1004,
+          "head": "第三次握手是为了防止失效的连接请求到达服务器",
+          "tail": "因此就不会再次打开连接。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR10",
+      "question": "应用在开发机能运行，换一台机器就要重新配库和组件；Docker 如何解决这个部署痛点？",
+      "note_type": "semantic_rephrase",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1012,
+          "head": "Docker 主要解决环境配置问题",
+          "tail": "就能够将现有的应用程序部署在其它机器上。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR11",
+      "question": "另一个事务改了数据但还没提交，我希望这次读取看不到它的修改，笔记里哪个隔离级别直接描述这个要求？",
+      "note_type": "semantic_rephrase",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1010,
+          "head": "### 提交读（READ COMMITTED）",
+          "tail": "在提交之前对其它事务是不可见的。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR12",
+      "question": "注册流程中的发邮件操作不想阻塞用户返回，消息队列怎么安排它，又有哪些业务前提？",
+      "note_type": "semantic_rephrase",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1015,
+          "head": "发送者将消息发送给消息队列之后",
+          "tail": "消息接收者从消息队列中订阅消息之后异步处理。"
+        },
+        {
+          "node_id": 1015,
+          "head": "只有在业务流程允许异步处理的情况下才能这么做",
+          "tail": "就不能再使用消息队列。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR13",
+      "question": "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？",
+      "note_type": "multi_document",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1013,
+          "head": "EXPIRE 指令可以为一个键值对设置一个过期时间",
+          "tail": "释放锁失败的问题。"
+        },
+        {
+          "node_id": 1008,
+          "head": "Redis 可以为每个键设置过期时间",
+          "tail": "会自动删除该键。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR14",
+      "question": "操作系统死锁的四个必要条件是什么？数据库笔记的 S 锁与 X 锁分别允许其他事务再加哪些锁？",
+      "note_type": "multi_document",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1002,
+          "head": "- 互斥：每个资源",
+          "tail": "等待下一个进程所占有的资源。"
+        },
+        {
+          "node_id": 1010,
+          "head": "- 一个事务对数据对象 A 加了 X 锁",
+          "tail": "但是不能加 X 锁。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR15",
+      "question": "内存管理笔记的 LRU 为什么每次访问要付出维护成本？缓存笔记的 LFU 与 LRU 淘汰依据有何不同？",
+      "note_type": "multi_document",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1003,
+          "head": "为了实现 LRU，需要在内存中维护一个所有页面的链表",
+          "tail": "这种方式实现的 LRU 代价很高。"
+        },
+        {
+          "node_id": 1014,
+          "head": "- LRU（Least Recently Used）",
+          "tail": "优先淘汰一段时间内使用次数最少的数据。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR16",
+      "question": "应用层笔记描述 DNS 在哪些情况下采用 TCP？传输层笔记又为什么要求 TCP 的第三次握手？",
+      "note_type": "multi_document",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1005,
+          "head": "DNS 可以使用 UDP 或者 TCP 进行传输",
+          "tail": "传送变化的那部分数据）。"
+        },
+        {
+          "node_id": 1004,
+          "head": "第三次握手是为了防止失效的连接请求到达服务器",
+          "tail": "让服务器错误打开连接。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR17",
+      "question": "结合 MySQL 与 SQL 优化笔记，B+ 树为何适合磁盘读取？LIKE 前面带通配符的查询为什么被列为 bad case？",
+      "note_type": "multi_document",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1009,
+          "head": "红黑树等平衡树也可以用来实现索引",
+          "tail": "B+ 树更适合磁盘数据的读取。"
+        },
+        {
+          "node_id": 1007,
+          "head": "#### 2.2 前导模糊查询不能使用索引",
+          "tail": "select * from order where desc like 'XX%'"
+        }
+      ]
+    },
+    {
+      "case_id": "CR18",
+      "question": "高并发连接时 I/O 复用为什么能减少线程开销？系统设计笔记怎样解释利用 I/O 等待提升 CPU 利用率？",
+      "note_type": "multi_document",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1011,
+          "head": "如果一个 Web 服务器没有 I/O 复用",
+          "tail": "系统开销更小。"
+        },
+        {
+          "node_id": 1016,
+          "head": "使用 IO 多路复用等方式",
+          "tail": "使得 CPU 利用率大大提高。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR19",
+      "question": "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。",
+      "note_type": "confusable_concepts",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1001,
+          "head": "进程是资源分配的基本单位。",
+          "tail": null
+        },
+        {
+          "node_id": 1001,
+          "head": "线程是独立调度的基本单位。",
+          "tail": null
+        }
+      ]
+    },
+    {
+      "case_id": "CR20",
+      "question": "TCP 流量控制与拥塞控制都限制发送速率，它们分别是在保护接收方还是整个网络？",
+      "note_type": "confusable_concepts",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1004,
+          "head": "流量控制是为了控制发送方发送速率",
+          "tail": "保证接收方来得及接收。"
+        },
+        {
+          "node_id": 1004,
+          "head": "流量控制是为了让接收方能来得及接收",
+          "tail": "拥塞控制是为了降低整个网络的拥塞程度。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR21",
+      "question": "一个事务两次读到同一行值不同，和第二次范围查询多出新行，笔记分别把它们叫什么问题？",
+      "note_type": "confusable_concepts",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1010,
+          "head": "不可重复读指在一个事务内多次读取同一数据集合",
+          "tail": "此时读取的结果和第一次读取的结果不同。"
+        },
+        {
+          "node_id": 1010,
+          "head": "幻读本质上也属于不可重复读的情况",
+          "tail": "此时读取的结果和和第一次读取的结果不同。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR22",
+      "question": "RDB 快照与 AOF 日志分别保存什么，为什么 RDB 故障恢复会丢失快照后的修改？",
+      "note_type": "confusable_concepts",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1008,
+          "head": "将某个时间点的所有数据都存放到硬盘上。",
+          "tail": "将会丢失最后一次创建快照之后的数据。"
+        },
+        {
+          "node_id": 1008,
+          "head": "将写命令添加到 AOF 文件（Append Only File）的末尾。",
+          "tail": null
+        }
+      ]
+    },
+    {
+      "case_id": "CR23",
+      "question": "一直请求不存在的 key，和大量缓存同一时刻失效，分别是缓存穿透还是缓存雪崩？",
+      "note_type": "confusable_concepts",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1014,
+          "head": "指的是对某个一定不存在的数据进行请求",
+          "tail": "该请求将会穿透缓存到达数据库。"
+        },
+        {
+          "node_id": 1014,
+          "head": "指的是由于数据没有被加载到缓存中",
+          "tail": "导致大量的请求都到达数据库。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR24",
+      "question": "Docker 镜像和容器分别是什么，镜像只读层与容器可写层如何区分？",
+      "note_type": "confusable_concepts",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1012,
+          "head": "镜像是一种静态的结构",
+          "tail": "每一层都是只读的（read-only layers）。"
+        },
+        {
+          "node_id": 1012,
+          "head": "构建容器时，通过在镜像的基础上添加一个可写层",
+          "tail": "用来保存着容器运行过程中的修改。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR25",
+      "question": "CUDA 报 no kernel image is available for execution，该语料给出的 GPU 架构编译参数是什么？",
+      "note_type": "missing_evidence",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR26",
+      "question": "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？",
+      "note_type": "missing_evidence",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR27",
+      "question": "PyTorch torch.compile 的 graph break 应该怎样定位，语料里列出了哪些诊断开关？",
+      "note_type": "missing_evidence",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR28",
+      "question": "K8s Pod 的 CrashLoopBackOff 应该怎样从 kubectl 日志定位，笔记有对应排查步骤吗？",
+      "note_type": "missing_evidence",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR29",
+      "question": "我这个知识库项目当前 Redis maxmemory-policy 的实际配置值是多少？",
+      "note_type": "missing_evidence",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR30",
+      "question": "这个知识库线上最近七天 p95 延迟和真实用户数分别是多少？",
+      "note_type": "missing_evidence",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR31",
+      "question": "Rdeis 的 AOF everysec 选项是每次写就落盘，还是每秒同步一次？",
+      "note_type": "typo_pronoun",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1008,
+          "head": "| everysec | 每秒同步一次 |",
+          "tail": null
+        }
+      ]
+    },
+    {
+      "case_id": "CR32",
+      "question": "TCP 断开时最后那个确认没到，对方还会重发；那个 2MSL 等待是为了处理这事吗？",
+      "note_type": "typo_pronoun",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1004,
+          "head": "确保最后一个确认报文能够到达",
+          "tail": "A 等待一段时间就是为了处理这种情况的发生。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR33",
+      "question": "LRU 这个最近最少使用，是数访问次数，还是看上次被访问离现在有多久？",
+      "note_type": "typo_pronoun",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1014,
+          "head": "- LRU（Least Recently Used）",
+          "tail": "从而保证缓存命中率。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR34",
+      "question": "Doker 运行时改文件写到哪层，那些镜像层本身能写吗？",
+      "note_type": "typo_pronoun",
+      "query_source": "agent_simulated",
+      "gold_evidence": [
+        {
+          "node_id": 1012,
+          "head": "镜像包含着容器运行时所需要的代码以及其它组件",
+          "tail": "每一层都是只读的（read-only layers）。"
+        },
+        {
+          "node_id": 1012,
+          "head": "构建容器时，通过在镜像的基础上添加一个可写层",
+          "tail": "用来保存着容器运行过程中的修改。"
+        }
+      ]
+    },
+    {
+      "case_id": "CR35",
+      "question": "它为什么会这样，那个应该怎么改？",
+      "note_type": "typo_pronoun",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    },
+    {
+      "case_id": "CR36",
+      "question": "pytroch 的 DataLoader 卡住了，这些笔记说 num_workers 应该怎样排查？",
+      "note_type": "typo_pronoun",
+      "query_source": "agent_simulated",
+      "gold_evidence": []
+    }
+  ],
+  "case_metadata": {
+    "CR01": {
+      "topic": "database",
+      "template_group": "sql_index",
+      "split": "heldout",
+      "query_category": "concrete_api_error",
+      "evidence_ranges": [
+        "SQL优化.md §2.2 前导模糊查询 L28–L39"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR02": {
+      "topic": "distributed",
+      "template_group": "distributed_lock",
+      "split": "development",
+      "query_category": "concrete_api_error",
+      "evidence_ranges": [
+        "分布式.md §一、分布式锁 / Redis 的 SETNX 指令 L55–L57"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR03": {
+      "topic": "cache",
+      "template_group": "redis_list",
+      "split": "development",
+      "query_category": "concrete_api_error",
+      "evidence_ranges": [
+        "Redis.md §二、数据类型 / LIST L90–L105",
+        "Redis.md §二、数据类型 / LIST 输出 L105–L110"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR04": {
+      "topic": "io",
+      "template_group": "io_concurrency",
+      "split": "development",
+      "query_category": "concrete_api_error",
+      "evidence_ranges": [
+        "Socket.md §二、I/O 复用 / select L110–L112"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR05": {
+      "topic": "database",
+      "template_group": "sql_index",
+      "split": "heldout",
+      "query_category": "concrete_api_error",
+      "evidence_ranges": [
+        "SQL优化.md §2.3 在属性上进行计算 L42–L51"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR06": {
+      "topic": "io",
+      "template_group": "socket_errors",
+      "split": "heldout",
+      "query_category": "concrete_api_error",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR07": {
+      "topic": "operating_system",
+      "template_group": "process_thread",
+      "split": "development",
+      "query_category": "semantic_rephrase",
+      "evidence_ranges": [
+        "计算机操作系统 - 进程管理.md §进程与线程 / 区别 / 系统开销 L65–L65"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR08": {
+      "topic": "operating_system",
+      "template_group": "virtual_memory",
+      "split": "heldout",
+      "query_category": "semantic_rephrase",
+      "evidence_ranges": [
+        "计算机操作系统 - 内存管理.md §虚拟内存 L25–L25"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR09": {
+      "topic": "network",
+      "template_group": "tcp_session",
+      "split": "heldout",
+      "query_category": "semantic_rephrase",
+      "evidence_ranges": [
+        "计算机网络 - 传输层.md §TCP 的三次握手 / 三次握手的原因 L68–L70"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR10": {
+      "topic": "container",
+      "template_group": "container_layers",
+      "split": "development",
+      "query_category": "semantic_rephrase",
+      "evidence_ranges": [
+        "Docker.md §一、解决的问题 L17–L17"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR11": {
+      "topic": "database",
+      "template_group": "db_isolation",
+      "split": "heldout",
+      "query_category": "semantic_rephrase",
+      "evidence_ranges": [
+        "数据库系统原理.md §四、隔离级别 / 提交读 L237–L239"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR12": {
+      "topic": "messaging",
+      "template_group": "message_async",
+      "split": "development",
+      "query_category": "semantic_rephrase",
+      "evidence_ranges": [
+        "消息队列.md §二、使用场景 / 异步处理 L43–L43",
+        "消息队列.md §二、使用场景 / 业务条件 L47–L47"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR13": {
+      "topic": "distributed_cache",
+      "template_group": "distributed_lock",
+      "split": "development",
+      "query_category": "multi_document",
+      "evidence_ranges": [
+        "分布式.md §一、分布式锁 / Redis 的 SETNX 指令 L59–L59",
+        "Redis.md §六、键的过期时间 L402–L402"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR14": {
+      "topic": "os_database",
+      "template_group": "lock_conditions",
+      "split": "heldout",
+      "query_category": "multi_document",
+      "evidence_ranges": [
+        "计算机操作系统 - 死锁.md §必要条件 L27–L30",
+        "数据库系统原理.md §三、封锁 / 读写锁 L145–L146"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR15": {
+      "topic": "os_cache",
+      "template_group": "cache_policy",
+      "split": "development",
+      "query_category": "multi_document",
+      "evidence_ranges": [
+        "计算机操作系统 - 内存管理.md §页面置换算法 / 最近最久未使用 L69–L71",
+        "缓存.md §一、缓存特征 / 淘汰策略 L33–L35"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR16": {
+      "topic": "network",
+      "template_group": "tcp_session",
+      "split": "heldout",
+      "query_category": "multi_document",
+      "evidence_ranges": [
+        "计算机网络 - 应用层.md §域名系统 L29–L32",
+        "计算机网络 - 传输层.md §TCP 的三次握手 / 三次握手的原因 L68–L68"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR17": {
+      "topic": "database",
+      "template_group": "sql_index",
+      "split": "heldout",
+      "query_category": "multi_document",
+      "evidence_ranges": [
+        "MySQL.md §一、索引 / B+ Tree 与红黑树的比较 L57–L67",
+        "SQL优化.md §2.2 前导模糊查询 L28–L39"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR18": {
+      "topic": "io_system_design",
+      "template_group": "io_concurrency",
+      "split": "development",
+      "query_category": "multi_document",
+      "evidence_ranges": [
+        "Socket.md §一、I/O 模型 / I/O 复用 L67–L67",
+        "系统设计基础.md §一、性能 / 性能指标 L38–L38"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR19": {
+      "topic": "operating_system",
+      "template_group": "process_thread",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "evidence_ranges": [
+        "计算机操作系统 - 进程管理.md §进程与线程 / 进程 L35–L35",
+        "计算机操作系统 - 进程管理.md §进程与线程 / 线程 L45–L45"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR20": {
+      "topic": "network",
+      "template_group": "tcp_rate_control",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "evidence_ranges": [
+        "计算机网络 - 传输层.md §TCP 流量控制 L126–L126",
+        "计算机网络 - 传输层.md §TCP 拥塞控制 L132–L132"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR21": {
+      "topic": "database",
+      "template_group": "db_isolation",
+      "split": "heldout",
+      "query_category": "confusable_concepts",
+      "evidence_ranges": [
+        "数据库系统原理.md §二、并发一致性问题 / 不可重复读 L109–L109",
+        "数据库系统原理.md §二、并发一致性问题 / 幻影读 L115–L115"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR22": {
+      "topic": "cache",
+      "template_group": "redis_persistence",
+      "split": "heldout",
+      "query_category": "confusable_concepts",
+      "evidence_ranges": [
+        "Redis.md §八、持久化 / RDB L433–L437",
+        "Redis.md §八、持久化 / AOF L443–L443"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR23": {
+      "topic": "cache",
+      "template_group": "cache_failures",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "evidence_ranges": [
+        "缓存.md §四、缓存问题 / 缓存穿透 L89–L89",
+        "缓存.md §四、缓存问题 / 缓存雪崩 L98–L98"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR24": {
+      "topic": "container",
+      "template_group": "container_layers",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "evidence_ranges": [
+        "Docker.md §五、镜像与容器 L73–L75",
+        "Docker.md §五、镜像与容器 / 可写层 L77–L77"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR25": {
+      "topic": "cuda",
+      "template_group": "cuda_runtime",
+      "split": "heldout",
+      "query_category": "missing_evidence",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR26": {
+      "topic": "python",
+      "template_group": "python_yield",
+      "split": "development",
+      "query_category": "missing_evidence",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR27": {
+      "topic": "pytorch",
+      "template_group": "pytorch_compile",
+      "split": "heldout",
+      "query_category": "missing_evidence",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR28": {
+      "topic": "kubernetes",
+      "template_group": "k8s_workload",
+      "split": "heldout",
+      "query_category": "missing_evidence",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR29": {
+      "topic": "project_configuration",
+      "template_group": "project_redis_config",
+      "split": "development",
+      "query_category": "missing_evidence",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR30": {
+      "topic": "project_metrics",
+      "template_group": "project_benchmark_data",
+      "split": "heldout",
+      "query_category": "missing_evidence",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    },
+    "CR31": {
+      "topic": "cache",
+      "template_group": "redis_persistence",
+      "split": "heldout",
+      "query_category": "typo_pronoun",
+      "evidence_ranges": [
+        "Redis.md §八、持久化 / AOF 同步选项 L450–L450"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR32": {
+      "topic": "network",
+      "template_group": "tcp_session",
+      "split": "heldout",
+      "query_category": "typo_pronoun",
+      "evidence_ranges": [
+        "计算机网络 - 传输层.md §TCP 的四次挥手 / TIME_WAIT L96–L96"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR33": {
+      "topic": "cache",
+      "template_group": "cache_policy",
+      "split": "development",
+      "query_category": "typo_pronoun",
+      "evidence_ranges": [
+        "缓存.md §一、缓存特征 / 淘汰策略 L33–L33"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR34": {
+      "topic": "container",
+      "template_group": "container_layers",
+      "split": "development",
+      "query_category": "typo_pronoun",
+      "evidence_ranges": [
+        "Docker.md §五、镜像与容器 / 只读层 L75–L75",
+        "Docker.md §五、镜像与容器 / 可写层 L77–L77"
+      ],
+      "coverage_status": "supported"
+    },
+    "CR35": {
+      "topic": "unresolved_reference",
+      "template_group": "unresolved_reference",
+      "split": "heldout",
+      "query_category": "typo_pronoun",
+      "evidence_ranges": [],
+      "coverage_status": "ambiguous_query"
+    },
+    "CR36": {
+      "topic": "pytorch",
+      "template_group": "pytorch_dataloader",
+      "split": "heldout",
+      "query_category": "typo_pronoun",
+      "evidence_ranges": [],
+      "coverage_status": "missing_coverage"
+    }
+  }
+}

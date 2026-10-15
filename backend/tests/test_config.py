@@ -24,3 +24,16 @@ def test_production_rejects_default_secret_and_invalid_fernet_key():
         insecure.validate_runtime()
     with pytest.raises(RuntimeError, match="AI_KEY_ENCRYPTION_KEY"):
         invalid_key.validate_runtime()
+
+
+def test_production_requires_explicit_index_service():
+    config = Settings(_env_file=None, app_env='production', secret_key='a'*32,
+                      ai_key_encryption_key=Fernet.generate_key().decode(), kb_chroma_url='')
+    with pytest.raises(RuntimeError, match='KB_CHROMA_URL'):
+        config.validate_runtime()
+
+
+def test_production_with_valid_explicit_index_origin_passes_without_connecting():
+    config = Settings(_env_file=None, app_env='production', secret_key='a'*32,
+                      ai_key_encryption_key=Fernet.generate_key().decode(), kb_chroma_url='http://127.0.0.1:8000')
+    config.validate_runtime()

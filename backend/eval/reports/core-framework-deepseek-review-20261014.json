@@ -1,0 +1,86 @@
+{
+  "report_sha256": "c92250425127b9fab3d156a332ea1f3df3caeb98255e56c4c7c816553f63eeae",
+  "reviewer": "root_source_aware_assistant",
+  "independent_blind_review": false,
+  "human_fact_review": "pending",
+  "semantic_accuracy_reported": false,
+  "online_judge_used": false,
+  "reviews": [
+    {
+      "case_id": "CR02",
+      "backend": "strict_agent",
+      "mechanical_answer_status": "supported",
+      "source_review": "core_supported_by_frozen_fragments",
+      "concerns": []
+    },
+    {
+      "case_id": "CR02",
+      "backend": "langchain",
+      "mechanical_answer_status": "supported",
+      "source_review": "core_supported_by_frozen_fragments",
+      "concerns": []
+    },
+    {
+      "case_id": "CR07",
+      "backend": "strict_agent",
+      "mechanical_answer_status": "supported",
+      "source_review": "incomplete_answer_and_retrieval_miss",
+      "concerns": [
+        "required creation/resource-allocation gold interval absent from selected context",
+        "whole-KB absence claim exceeds this retrieval observation"
+      ]
+    },
+    {
+      "case_id": "CR07",
+      "backend": "langchain",
+      "mechanical_answer_status": "supported",
+      "source_review": "unsupported_claim_with_legal_citation",
+      "concerns": [
+        "required creation/resource-allocation gold interval absent from selected context",
+        "thread shared address space claim not supported by cited visible fragment"
+      ]
+    },
+    {
+      "case_id": "CR13",
+      "backend": "strict_agent",
+      "mechanical_answer_status": "supported",
+      "source_review": "core_supported_by_frozen_fragments",
+      "concerns": []
+    },
+    {
+      "case_id": "CR13",
+      "backend": "langchain",
+      "mechanical_answer_status": "supported",
+      "source_review": "core_supported_by_frozen_fragments",
+      "concerns": []
+    },
+    {
+      "case_id": "CR19",
+      "backend": "strict_agent",
+      "mechanical_answer_status": "supported",
+      "source_review": "core_supported_by_frozen_fragments",
+      "concerns": []
+    },
+    {
+      "case_id": "CR19",
+      "backend": "langchain",
+      "mechanical_answer_status": "supported",
+      "source_review": "core_supported_by_frozen_fragments",
+      "concerns": []
+    },
+    {
+      "case_id": "CR26",
+      "backend": "strict_agent",
+      "mechanical_answer_status": "not_found",
+      "source_review": "appropriate_missing_evidence_refusal",
+      "concerns": []
+    },
+    {
+      "case_id": "CR26",
+      "backend": "langchain",
+      "mechanical_answer_status": "not_found",
+      "source_review": "appropriate_missing_evidence_refusal",
+      "concerns": []
+    }
+  ]
+}

@@ -100,6 +100,6 @@ export const api = {
   getConversations: () => apiFetch('/chat/conversations'),
   getConversation: (id) => apiFetch(`/chat/conversations/${id}`),
   createConversation: (data = {}) => apiFetch('/chat/conversations', { method: 'POST', body: JSON.stringify(data) }),
-  sendMessage: (conversationId, content, aiSearch = false) => apiFetch(`/chat/conversations/${conversationId}/messages`, { method: 'POST', body: JSON.stringify({ content, ai_search: aiSearch }) }),
+  sendMessage: (conversationId, content, aiSearch = false, kbOnly = false) => apiFetch(`/chat/conversations/${conversationId}/messages`, { method: 'POST', body: JSON.stringify({ content, ai_search: aiSearch, kb_only: kbOnly }) }),
   saveToKB: (data) => apiFetch('/chat/save-to-kb', { method: 'POST', body: JSON.stringify(data) }),
 }
