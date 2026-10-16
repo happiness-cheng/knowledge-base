@@ -77,6 +77,6 @@ npm run build
 
 公开语料回放辅助类与页面保留为实验候选，当前主API没有挂载`/api/demo/public`，不作为已开通的公开演示入口。当前可运行入口以README的笔记应用和离线实验命令为准。
 
-发布前首次全回归曾出现439通过/1失败：Chroma1.5.9在`test_replacing_a_node_preserves_other_nodes_and_users[新首段]`的`get(include=embeddings)`抛出内部`Error finding id`。未改业务代码，针对该文件8次重复共152项通过，再次完整440项通过。尚未稳定复现或定位根因，保留为间歇性存储测试风险，不称为已修复；没有加入自动重试来隐藏失败。
+发布前全回归曾出现439通过/1失败，10/16再次发生。10/16—17已抽离业务代码复现：EphemeralClient在集合缓存压力下保留metadata但向量不可读。实际索引测试现改用生产同款临时HTTP服务，并新增先失败的512集合回归；当前441项通过、5条既有warnings，78.51s。没有改业务写入、添加自动重试或宣布第三方内存模式已修复。[复现、负结果及边界](2026-10-17-index-test-storage-boundary.md)。
 
 冻结输入的SHA256按原字节校验。`.gitattributes`保留这16篇公开技术语料、题集及测量报告的字节，避免克隆时LF/CRLF转换使gold/报告hash不符；未改问题、gold或原文语义。

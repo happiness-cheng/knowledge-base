@@ -1,13 +1,18 @@
 """Shared test fixtures for all test modules."""
-import sys
 import os
+import socket
+import subprocess
+import sys
+import time
 from contextlib import asynccontextmanager
+from pathlib import Path
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -30,6 +35,66 @@ def _set_sqlite_nocase(dbapi_conn, connection_record):
 
 TestSession = sessionmaker(bind=TEST_ENGINE)
 TEST_USER_PASSWORD = "correct-horse-battery-staple"
+
+
+@pytest.fixture(scope="session")
+def chroma_server_port(tmp_path_factory):
+    """真实索引测试使用生产同款 HTTP 边界，仅启动本机临时服务。"""
+    import chromadb
+
+    root = tmp_path_factory.mktemp("chroma-http")
+    with socket.socket() as reserved:
+        reserved.bind(("127.0.0.1", 0))
+        port = reserved.getsockname()[1]
+    executable = Path(sys.executable).parent / ("chroma.exe" if sys.platform == "win32" else "chroma")
+    env = os.environ.copy()
+    env.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", ANONYMIZED_TELEMETRY="False",
+               NO_PROXY="*", PYTHONUTF8="1")
+    for key in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"):
+        env[key] = ""
+    with (root / "server.log").open("w", encoding="utf-8") as log:
+        process = subprocess.Popen(
+            [str(executable), "run", "--path", str(root / "index"), "--host", "127.0.0.1", "--port", str(port)],
+            cwd=root, env=env, stdout=log, stderr=log,
+            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
+        )
+        try:
+            deadline = time.monotonic() + 30
+            while True:
+                if process.poll() is not None:
+                    raise RuntimeError(f"temporary Chroma exited ({process.returncode}); log: {root / 'server.log'}")
+                try:
+                    probe = chromadb.HttpClient(host="127.0.0.1", port=port,
+                        settings=chromadb.Settings(anonymized_telemetry=False))
+                    try:
+                        probe.heartbeat()
+                    finally:
+                        probe.close()
+                    break
+                except (OSError, ValueError):
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError(f"temporary Chroma did not start; log: {root / 'server.log'}") from None
+                    time.sleep(.1)
+            yield port
+        finally:
+            process.terminate()
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=10)
+
+
+@pytest.fixture
+def chroma_server_client(chroma_server_port):
+    import chromadb
+
+    client = chromadb.HttpClient(host="127.0.0.1", port=chroma_server_port,
+                                settings=chromadb.Settings(anonymized_telemetry=False))
+    try:
+        yield client
+    finally:
+        client.close()
 
 
 @pytest.fixture(autouse=True)

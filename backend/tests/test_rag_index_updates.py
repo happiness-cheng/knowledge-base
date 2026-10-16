@@ -4,7 +4,6 @@ import hashlib
 import math
 from uuid import uuid4
 
-import chromadb
 import pytest
 
 from app.services import rag_service
@@ -27,10 +26,9 @@ class _CountingTokenizer:
 
 
 @pytest.fixture
-def index(monkeypatch):
-    # Chroma 内存客户端共享进程内系统；唯一集合名保证各测试的数据独立。
-    client = chromadb.EphemeralClient(settings=chromadb.Settings(anonymized_telemetry=False))
-    monkeypatch.setattr(rag_service, "chroma_client", client)
+def index(monkeypatch, chroma_server_client):
+    # 与 production 同样通过服务访问索引；唯一集合名隔离测试数据。
+    monkeypatch.setattr(rag_service, "chroma_client", chroma_server_client)
     monkeypatch.setattr(rag_service, "_SUFFIX", f"_index_update_{uuid4().hex}")
     monkeypatch.setattr(rag_service, "split_by_headings", _fixed_chunks)
     monkeypatch.setattr(rag_service, "get_embedding", _offline_embedding)
@@ -102,6 +100,19 @@ def test_replacing_a_node_preserves_other_nodes_and_users(index, replacement):
     assert {key: row for key, row in rows.items() if row["metadata"]["node_id"] == 8} == other_node_before
     assert _rows(index._get_user_collection(5)) == other_user_before
     assert {key for key, row in rows.items() if row["metadata"]["node_id"] == 7} == ({"7:0"} if replacement else set())
+
+
+def test_other_collections_do_not_make_an_existing_nodes_vectors_unreadable(index):
+    """覆盖原故障：元数据还在，但内存向量索引淘汰后 get 报错、query 为空。"""
+    index.add_node_to_index(7, "旧首段|旧中段|旧尾段", user_id=4)
+    anchor = index._get_user_collection(4)
+    before = _rows(anchor)
+    for i in range(512):
+        collection = index.chroma_client.create_collection(f"pressure_{uuid4().hex}_{i}")
+        collection.upsert(ids=["8:0"], documents=["其他内容"], embeddings=[_offline_embedding("其他内容")])
+    assert _rows(anchor) == before
+    result = anchor.query(query_embeddings=[_offline_embedding("旧首段")], n_results=3)
+    assert set(result["ids"][0]) == set(before)
 
 
 @pytest.mark.parametrize("legacy_metadata", [{"title": "旧标题"}, {"title": "旧标题", "node_id": 7}])

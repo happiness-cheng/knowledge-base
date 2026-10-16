@@ -2,7 +2,6 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 from uuid import uuid4
 
-import chromadb
 import pytest
 
 from app.services import rag_service
@@ -55,10 +54,9 @@ def test_empty_content_needs_no_tokenizer():
     assert prepare_chunks([], 'title', None) == []
 
 
-def test_actual_index_prepares_full_input_before_upsert(monkeypatch):
+def test_actual_index_prepares_full_input_before_upsert(monkeypatch, chroma_server_client):
     tokenizer = CharacterTokenizer()
-    client = chromadb.EphemeralClient(settings=chromadb.Settings(anonymized_telemetry=False))
-    monkeypatch.setattr(rag_service, 'chroma_client', client)
+    monkeypatch.setattr(rag_service, 'chroma_client', chroma_server_client)
     monkeypatch.setattr(rag_service, '_SUFFIX', f'_budget_{uuid4().hex}')
     monkeypatch.setattr(rag_service, 'split_by_headings', lambda content: [('小节', content)])
     monkeypatch.setattr(rag_service, '_get_tokenizer', lambda: tokenizer, raising=False)

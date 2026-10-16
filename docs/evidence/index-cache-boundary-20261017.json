@@ -1,0 +1,629 @@
+{
+  "scope": "synthetic vectors only; no model calls or original data",
+  "version": "chromadb 1.5.9; CPython 3.12.15; Windows",
+  "observations": {
+    "ephemeral_eviction": {
+      "persistent": false,
+      "collections": 512,
+      "before": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "query": {
+          "ids": [
+            [
+              "7:0",
+              "7:2",
+              "7:1"
+            ]
+          ]
+        }
+      },
+      "after": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+        },
+        "query": {
+          "ids": [
+            []
+          ]
+        }
+      }
+    },
+    "persistent_default_eviction": {
+      "persistent": true,
+      "collections": 512,
+      "before": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "query": {
+          "ids": [
+            [
+              "7:0",
+              "7:2",
+              "7:1"
+            ]
+          ]
+        }
+      },
+      "after": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "error": "InternalError('Error executing plan: Internal error: Error creating hnsw segment reader: Nothing found on disk')"
+        },
+        "query": {
+          "error": "InternalError('Error executing plan: Internal error: Error creating hnsw segment reader: Nothing found on disk')"
+        }
+      }
+    },
+    "persistent_sync1_eviction": {
+      "persistent": true,
+      "collections": 512,
+      "sync_threshold": 1,
+      "before": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "query": {
+          "ids": [
+            [
+              "7:0",
+              "7:2",
+              "7:1"
+            ]
+          ]
+        }
+      },
+      "after": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "error": "InternalError('Error executing plan: Internal error: Error creating hnsw segment reader: Error loading hnsw index')"
+        },
+        "query": {
+          "error": "InternalError('Error executing plan: Internal error: Error creating hnsw segment reader: Error loading hnsw index')"
+        }
+      }
+    },
+    "http_eviction": {
+      "backend": "HTTP",
+      "collections": 512,
+      "before": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "query": {
+          "ids": [
+            [
+              "7:0",
+              "7:2",
+              "7:1"
+            ]
+          ]
+        }
+      },
+      "after": {
+        "metadata": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "vectors": {
+          "ids": [
+            "7:0",
+            "7:1",
+            "7:2"
+          ]
+        },
+        "query": {
+          "ids": [
+            [
+              "7:0",
+              "7:2",
+              "7:1"
+            ]
+          ]
+        }
+      }
+    },
+    "small_cache_repeated": {
+      "iterations": 500,
+      "failures": 18,
+      "cache_capacity_override": 1,
+      "persistent": false,
+      "observations": [
+        {
+          "iteration": 19,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 19,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 64,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 64,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 75,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 75,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 145,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 145,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 237,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 237,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 255,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 255,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 336,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 336,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 351,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 351,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 395,
+          "owner": 4,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1",
+                "7:2",
+                "8:0",
+                "8:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 395,
+          "owner": 5,
+          "error": "InternalError('Error executing plan: Internal error: Error finding id')",
+          "observations": {
+            "metadata": {
+              "ids": [
+                "7:0",
+                "7:1"
+              ]
+            },
+            "vectors": {
+              "error": "InternalError('Error executing plan: Internal error: Error finding id')"
+            },
+            "query": {
+              "ids": [
+                []
+              ]
+            }
+          }
+        }
+      ],
+      "seconds": 9.67200000000048
+    },
+    "large_cache_repeated": {
+      "iterations": 500,
+      "failures": 0,
+      "cache_capacity_override": 65536,
+      "persistent": false,
+      "sync_threshold": null,
+      "observations": [],
+      "seconds": 9.671000000000276
+    }
+  },
+  "verification": {
+    "regression_before": "1 failed, 3.80s, Error finding id",
+    "related_after": "30 passed, 22.37s",
+    "full_after": "441 passed, 5 warnings, 78.51s",
+    "lint": "3 changed Python files passed",
+    "types": "7 existing engineering modules passed",
+    "production_code_changed": false,
+    "third_party_bug_fixed": false,
+    "online_model_requests": 0,
+    "deployment": false
+  }
+}
