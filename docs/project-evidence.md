@@ -44,7 +44,9 @@
 
 每链机器状态4 supported/1 not_found。CR07中Agent声称整库没记录，超出当前检索观察；LC补充共享地址空间，但可见引用片段没有支持这个事实。两者都可以通过引用ID检查，仍不满足完整事实支持。[源感知审查](../backend/eval/reports/core-framework-deepseek-review-20261014.json)不是独立人工盲审，人工语义验收pending。
 
-因此把检索、证据进入上下文、格式/引用契约与逐事实支持分层，而不宣布“支持状态=答案正确”。Agent/LC提示与轮次不同，不把usage差异归因为框架本身。唯一真实改写CR02没有变化，其他4题未调用。此轮发布未新增生成请求。
+因此把检索、证据进入上下文、格式/引用契约与逐事实支持分层，而不宣布“支持状态=答案正确”。Agent/LC提示与轮次不同，不把usage差异归因为框架本身。唯一真实改写CR02没有变化，其他4题未调用。10/15的发布没有新增生成请求。
+
+10/17另获5次授权，补上[原生BGE检索到真实回答](2026-10-17-native-rag-validation.md)：业务切片写229块，Chroma HTTP与SQL版本/归属核验后直接调用LC业务函数，5次HTTP200，4 supported/1 not_found。主代理逐事实复核，关键解释有可见证据；CR13最后一句明确记录为基本锁模型下的组合推论。实际提示hash逐条对应transport记录，输入10023/输出456 token；查询链路P50为1468ms（n=5，不含285.063s建索引）。同样5道源感知开发题，仍非独立盲测，也不验证默认Agent、全栈HTTP或线上SLA。
 
 ## 4. 为什么索引需要持久任务和HTTP进程边界
 
@@ -60,7 +62,9 @@
 
 ## 验证与复现
 
-2026-10-15在Windows / CPython3.12.15按仓库CI同范围验证：后端440项、7模块mypy、指定新增模块ruff与前端build。当前命令输出与首次失败记录见[verification.json](evidence/verification.json)。安装与显式存储/worker步骤见[README_zh](../README_zh.md)。
+2026-10-15的历史验证：Windows / CPython3.12.15，后端440项、7模块mypy、指定新增模块ruff与前端build。当轮命令输出与首次失败记录见[verification.json](evidence/verification.json)。安装与显式存储/worker步骤见[README_zh](../README_zh.md)。
+
+2026-10-17加入原生回答验收入口的9个离线检查后，当前完整回归450 passed、5条既有warnings、86.17s；[本轮审计](evidence/native-rag-audit-20261017.json)区分真实请求、离线检查与尚未覆盖项。存储边界修正时的441项记录保留其原时间点。
 
 ```text
 # backend目录，已有依赖的Python3.12环境
@@ -77,6 +81,6 @@ npm run build
 
 公开语料回放辅助类与页面保留为实验候选，当前主API没有挂载`/api/demo/public`，不作为已开通的公开演示入口。当前可运行入口以README的笔记应用和离线实验命令为准。
 
-发布前全回归曾出现439通过/1失败，10/16再次发生。10/16—17已抽离业务代码复现：EphemeralClient在集合缓存压力下保留metadata但向量不可读。实际索引测试现改用生产同款临时HTTP服务，并新增先失败的512集合回归；当前441项通过、5条既有warnings，78.51s。没有改业务写入、添加自动重试或宣布第三方内存模式已修复。[复现、负结果及边界](2026-10-17-index-test-storage-boundary.md)。
+发布前全回归曾出现439通过/1失败，10/16再次发生。10/16—17已抽离业务代码复现：EphemeralClient在集合缓存压力下保留metadata但向量不可读。实际索引测试现改用生产同款临时HTTP服务，并新增先失败的512集合回归；修正当时441项通过、5条既有warnings，78.51s。没有改业务写入、添加自动重试或宣布第三方内存模式已修复。[复现、负结果及边界](2026-10-17-index-test-storage-boundary.md)。
 
 冻结输入的SHA256按原字节校验。`.gitattributes`保留这16篇公开技术语料、题集及测量报告的字节，避免克隆时LF/CRLF转换使gold/报告hash不符；未改问题、gold或原文语义。

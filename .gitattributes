@@ -7,6 +7,7 @@ backend/eval/core_corpus.py -text whitespace=cr-at-eol
 backend/eval/retrieval_candidates.py -text whitespace=cr-at-eol
 backend/eval/run_retrieval_matrix.py -text whitespace=cr-at-eol
 backend/eval/run_slice_comparison.py -text whitespace=cr-at-eol
+backend/eval/run_native_rag_validation.py -text whitespace=cr-at-eol
 "backend/eval/corpus/external/计算机操作系统 - 进程管理.md" text eol=crlf
 "backend/eval/corpus/external/计算机操作系统 - 死锁.md" text eol=crlf
 "backend/eval/corpus/external/计算机操作系统 - 内存管理.md" text eol=crlf

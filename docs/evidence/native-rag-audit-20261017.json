@@ -1,0 +1,102 @@
+{
+  "raw_report_sha256": "9c9a030a4f66dd560558b352eb94f0058074075ddea14d7be64dc124abdb9731",
+  "physical_requests": 5,
+  "request_budget": 5,
+  "all_recorded_prompts_match": true,
+  "states": {
+    "supported": 4,
+    "not_found": 1
+  },
+  "usage_subtotals": {
+    "input_tokens": 10023,
+    "output_tokens": 456,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "usage_totals": {
+    "input_tokens": 10023,
+    "output_tokens": 456
+  },
+  "indexing_seconds": 285.063,
+  "latency_p50_ms": 1468.0,
+  "latency_p95_ms": 1678.4,
+  "latency_scope": "native query embedding + Chroma + SQL filtering + LC + real provider + contract; excludes corpus indexing",
+  "semantic_accuracy": null,
+  "independent_human_review": "pending",
+  "blind_test": false,
+  "cases": [
+    {
+      "case_id": "CR02",
+      "answer_status": "supported",
+      "answer_error": null,
+      "source_ids": [
+        1013
+      ],
+      "prompt_hash_matches_actual_transport": true,
+      "input_chars": 6055,
+      "http_status": 200,
+      "latency_ms": 1516.0
+    },
+    {
+      "case_id": "CR07",
+      "answer_status": "supported",
+      "answer_error": null,
+      "source_ids": [
+        1001
+      ],
+      "prompt_hash_matches_actual_transport": true,
+      "input_chars": 5007,
+      "http_status": 200,
+      "latency_ms": 1719.0
+    },
+    {
+      "case_id": "CR13",
+      "answer_status": "supported",
+      "answer_error": null,
+      "source_ids": [
+        1008,
+        1013
+      ],
+      "prompt_hash_matches_actual_transport": true,
+      "input_chars": 5324,
+      "http_status": 200,
+      "latency_ms": 1468.0
+    },
+    {
+      "case_id": "CR19",
+      "answer_status": "supported",
+      "answer_error": null,
+      "source_ids": [
+        1001
+      ],
+      "prompt_hash_matches_actual_transport": true,
+      "input_chars": 3988,
+      "http_status": 200,
+      "latency_ms": 1391.0
+    },
+    {
+      "case_id": "CR26",
+      "answer_status": "not_found",
+      "answer_error": null,
+      "source_ids": [],
+      "prompt_hash_matches_actual_transport": true,
+      "input_chars": 7851,
+      "http_status": 200,
+      "latency_ms": 1062.0
+    }
+  ],
+  "public_report_sha256": "ebd467f5aa3edfa0a46f03c1e13b8f99b00bc0048f7664e88794be161829bb75",
+  "verification": {
+    "related_tests": "19 passed, 1 warning, 4.83s",
+    "full_tests": "450 passed, 5 warnings, 86.17s",
+    "compile": "2 new Python files passed",
+    "ruff": "2 new Python files passed",
+    "new_request_budget_used": 5,
+    "new_request_budget_remaining": 0,
+    "model_judge_calls": 0,
+    "original_db_or_index_changed": false,
+    "deployment": false,
+    "portable_source_diff_verified": true,
+    "non_overwrite_regression": "1 failed before fix; related 19 passed after fix"
+  }
+}

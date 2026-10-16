@@ -1,0 +1,1088 @@
+{
+  "profile": "native-bge-http-langchain-5-development-cases",
+  "cases": [
+    {
+      "case_id": "CR02",
+      "question": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？",
+      "split": "development",
+      "query_category": "concrete_api_error",
+      "gold_sha256": "ec30acc878a76471045f399d4f05170ba837930edef61747318b03b7c306dbbc"
+    },
+    {
+      "case_id": "CR07",
+      "question": "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？",
+      "split": "development",
+      "query_category": "semantic_rephrase",
+      "gold_sha256": "efc0d822ffd2b4cb16d5ab94011e99f55560de3b49e627a44ff32e7c267efd4c"
+    },
+    {
+      "case_id": "CR13",
+      "question": "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？",
+      "split": "development",
+      "query_category": "multi_document",
+      "gold_sha256": "2a78b66d2f81123b0d5f577de811455876db8931ca4be1e4e8b7ed61c40ca039"
+    },
+    {
+      "case_id": "CR19",
+      "question": "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。",
+      "split": "development",
+      "query_category": "confusable_concepts",
+      "gold_sha256": "a3af82f950eb0085c8b36d5e28217fb92dc49332f01795eb1ddd1c372dea62b1"
+    },
+    {
+      "case_id": "CR26",
+      "question": "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？",
+      "split": "development",
+      "query_category": "missing_evidence",
+      "gold_sha256": "3c6507f1be154fc04900731d20fb0e10baf3a7ae7917b060d3f9606c57fdf852"
+    }
+  ],
+  "dataset_sha256": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+  "manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+  "source_hashes": {
+    "1001": "81bd8a81bb1055b6663bbf4e853a50cba4b34c802ca393da9feb66f455f89300",
+    "1002": "87a42f25f08e4a301a4ce8a7519089606fc77f6cd352cb544b6dabd9e96537a0",
+    "1003": "8f9bd33ec0604c1a913cfbc098dd63566cc7780752d9c3961fc7aae8490b7a32",
+    "1004": "e5825d7e4dd94556ce040970057ebfe7a63adaad2d6ec6b6022696ebb608452c",
+    "1005": "0bf0a7d12f9590d3bb07c6fe3df16f9cf29609a9146217ccb9f4012c4df4826e",
+    "1006": "5e54865e07cbe176c144a711e0e22894ab19de6a48d0cbb0b6d215b42fe641f2",
+    "1007": "a7ba76f04513e5dcd548915ad356caef806568e66a7fd25c5fddc3d9c845cdf5",
+    "1008": "23faa226b377bbb997daf22af95302d0ff2842d9a0f4f0167f37d261ed984001",
+    "1009": "9bb762abdaa7bec4cec9f81b070ee3c7166696d43e53ea7b76f967a46cf7b981",
+    "1010": "34aa3bf502064d0c53d6a130891f2d20609d17771fb62eadb00f946b9282b1d8",
+    "1011": "02dbf18d6b038e17f3eef0483003e222ff0c063575d01942013dd551771b49a3",
+    "1012": "d34637bf2dd4a477d8c4a3bbe060922a14f13e255836863f0e0c17642b01951a",
+    "1013": "7c523c492d44d141e3df4f95225a19f99de338943ffabf5907ee99fb358dacd0",
+    "1014": "f311fc2ba7b04d638398992f177cd8380d7d148df94ed79b9f24dec9a65a0572",
+    "1015": "28b0238e43ff193a5bb2dd73a65d5180897dcf6c166a2fdb18e42a23a01341e1",
+    "1016": "c474e2f11587641ab8d1c9cc5bb841e1dbf5e986de403c016563e55937c767b2"
+  },
+  "physical_request_limit": 5,
+  "input_chars_limit": 16000,
+  "output_tokens_limit": 600,
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/anthropic",
+  "retrieval": "native writer/chunker -> normalized BGE -> Chroma HTTP -> SQL freshness -> actual LC prompt",
+  "blind_test": false,
+  "query_provenance": "source-aware agent authored; all development",
+  "semantic_accuracy": null,
+  "human_fact_review": "pending",
+  "physical_requests": 5,
+  "external_transfer_authorization": "new explicit invocation",
+  "does_not_evaluate": [
+    "default Agent backend",
+    "reranker",
+    "rewrite",
+    "independent question generalization"
+  ],
+  "mode": "online",
+  "results": [
+    {
+      "case_id": "CR02",
+      "question": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？",
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "arguments": {
+            "query": "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？"
+          },
+          "result": [
+            {
+              "content": "在单机场景下，可以使用语言的内置锁来实现进程同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。阻塞锁通常使用互斥量来实现：- 互斥量为 0 表示有其它进程在使用锁，此时处于锁定状态；- 互斥量为 1 表示未锁定状态。1 和 0 可以用一个整型值表示，也可以用某个数据是否存在表示。### 数据库的唯一索引获得锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否处于锁定状态。存在以下几个问题：- 锁没有失效时间，解锁失败的话其它进程无法再获得该锁；- 只能是非阻塞锁，插入失败直接就报错了，无法重试；- 不可重入，已经获得锁的进程也必须重新获取锁。### Redis 的 SETNX 指令使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。",
+              "node_id": 1013,
+              "title": "分布式",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "- 倪超. 从 Paxos 到 ZooKeeper : 分布式一致性原理与实践 [M]. 电子工业出版社, 2015.\r\n- [Distributed locks with Redis](https://redis.io/topics/distlock)\r\n- [浅谈分布式锁](http://www.linkedkeeper.com/detail/blog.action?bid=1023)\r\n- [基于 Zookeeper 的分布式锁](http://www.dengshenyu.com/java/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/2017/10/23/zookeeper-distributed-lock.html)\r\n- [聊聊分布式事务，再说说解决方案](https://www.cnblogs.com/savorboard/p/distributed-system-transaction-consistency.html)\r\n- [分布式系统的事务处理](https://coolshell.cn/articles/10910.html)\r\n- [深入理解分布式事务](https://juejin.im/entry/577c6f220a2b5800573492be)\r\n- [What is CAP theorem in distributed database system?](http://www.colooshiki.com/index.php/2017/04/20/what-is-cap-theorem-in-distributed-database-system/)\r\n- [NEAT ALGORITHMS - PAXOS](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/)\r\n- [Paxos By Example](https://angus.nyc/2012/paxos-by-example/)",
+              "node_id": 1013,
+              "title": "分布式",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "- C 矩阵：每个进程所拥有的资源数量，每一行都代表一个进程拥有资源的数量\r- R 矩阵：每个进程请求的资源数量进程 P<sub>1</sub> 和 P<sub>2</sub> 所请求的资源都得不到满足，只有进程 P<sub>3</sub> 可以，让 P<sub>3</sub> 执行，之后释放 P<sub>3</sub> 拥有的资源，此时 A = (2 2 2 0)。P<sub>2</sub> 可以执行，执行后释放 P<sub>2</sub> 拥有的资源，A = (4 2 2 1) 。P<sub>1</sub> 也可以执行。所有进程都可以顺利执行，没有死锁。算法总结如下：每个进程最开始时都不被标记，执行过程有可能被标记。当算法结束时，任何没有被标记的进程都是死锁进程。1. 寻找一个没有标记的进程 P<sub>i</sub>，它所请求的资源小于等于 A。2. 如果找到了这样一个进程，那么将 C 矩阵的第 i 行向量加到 A 中，标记该进程，并转回 1。3. 如果没有这样一个进程，算法终止。### 3. 死锁恢复- 利用抢占恢复- 利用回滚恢复- 通过杀死进程恢复",
+              "node_id": 1002,
+              "title": "计算机操作系统 - 死锁",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "不试图阻止死锁，而是当检测到死锁发生时，采取措施进行恢复。### 1. 每种类型一个资源的死锁检测<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/b1fa0453-a4b0-4eae-a352-48acca8fff74.png\"/> </div><br>上图为资源分配图，其中方框表示资源，圆圈表示进程。资源指向进程表示该资源已经分配给该进程，进程指向资源表示进程请求获取该资源。图 a 可以抽取出环，如图 b，它满足了环路等待条件，因此会发生死锁。每种类型一个资源的死锁检测算法是通过检测有向图是否存在环来实现，从一个节点出发进行深度优先搜索，对访问过的节点进行标记，如果访问了已经标记的节点，就表示有向图存在环，也就是检测到死锁的发生。### 2. 每种类型多个资源的死锁检测<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/e1eda3d5-5ec8-4708-8e25-1a04c5e11f48.png\"/> </div><br>上图中，有三个进程四个资源，每个数据代表的含义如下：- E 向量：资源总量- A 向量：资源剩余量",
+              "node_id": 1002,
+              "title": "计算机操作系统 - 死锁",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "Next-Key Locks 是 MySQL 的 InnoDB 存储引擎的一种锁实现。\r\n\r\nMVCC 不能解决幻影读问题，Next-Key Locks 就是为了解决这个问题而存在的。在可重复读（REPEATABLE READ）隔离级别下，使用 MVCC + Next-Key Locks 可以解决幻读问题。\r\n\r\n### Record Locks\r\n\r\n锁定一个记录上的索引，而不是记录本身。\r\n\r\n如果表没有设置索引，InnoDB 会自动在主键上创建隐藏的聚簇索引，因此 Record Locks 依然可以使用。\r\n\r\n### Gap Locks\r\n\r\n锁定索引之间的间隙，但是不包含索引本身。例如当一个事务执行以下语句，其它事务就不能在 t.c 中插入 15。\r\n\r\n```sql\r\nSELECT c FROM t WHERE c BETWEEN 10 and 20 FOR UPDATE;\r\n```\r\n\r\n### Next-Key Locks\r\n\r\n它是 Record Locks 和 Gap Locks 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。它锁定一个前开后闭区间，例如一个索引包含以下值：10, 11, 13, and 20，那么就需要锁定以下区间：\r\n\r\n```sql\r\n(-∞, 10]\r\n(10, 11]\r\n(11, 13]\r\n(13, 20]\r\n(20, +∞)\r\n```",
+              "node_id": 1010,
+              "title": "数据库系统原理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/image-20191207220831843.png\"/> </div><br>\r**三级封锁协议**在二级的基础上，要求读取数据 A 时必须加 S 锁，直到事务结束了才能释放 S 锁。可以解决不可重复读的问题，因为读 A 时，其它事务不能对 A 加 X 锁，从而避免了在读的期间数据发生改变。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/image-20191207221313819.png\"/> </div><br>#### 2. 两段锁协议加锁和解锁分为两个阶段进行。可串行化调度是指，通过并发控制，使得并发执行的事务结果与某个串行执行的事务结果相同。串行执行的事务互不干扰，不会出现并发一致性问题。事务遵循两段锁协议是保证可串行化调度的充分条件。例如以下操作满足两段锁协议，它是可串行化调度。```html\r\nlock-x(A)...lock-s(B)...lock-s(C)...unlock(A)...unlock(C)...unlock(B)\r\n```但不是必要条件，例如以下操作不满足两段锁协议，但它还是可串行化调度。",
+              "node_id": 1010,
+              "title": "数据库系统原理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            }
+          ]
+        }
+      ],
+      "result": {
+        "content": "SETNX（set if not exist）在 Key 已经存在时返回 False；Key 不存在时插入成功并返回 True。[doc:1013] 笔记利用这一点实现分布式锁：SETNX 与数据库唯一索引类似，保证只存在一个 Key 的键值对，因此可以用一个 Key 的键值对是否存在来判断是否处于锁定状态。[doc:1013] 此外，EXPIRE 指令可以为键值对设置过期时间，从而避免数据库唯一索引实现方式中释放锁失败的问题。[doc:1013]",
+        "source_ids": [
+          1013
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 6,
+            "chunk_count": 6,
+            "selected": [
+              {
+                "node_id": 1013,
+                "content_sha256": "a8806e75125c45a448f3dee5e26cb2e0742e646268de388cb43925205a1aa547"
+              },
+              {
+                "node_id": 1013,
+                "content_sha256": "b5c50a3f682b4f0627897a8cb6cc8dbf0bff1cbe83278f9c8a7971018bd803fc"
+              },
+              {
+                "node_id": 1002,
+                "content_sha256": "d0ab1fdaebf222d48da0d3c7c619347b50dee58303ef45459a8146f2faac4e04"
+              },
+              {
+                "node_id": 1002,
+                "content_sha256": "8bce47e4edfdffbfa5d67a98769a5b5d70d306c1700e9a02335cd9c0317c02a6"
+              },
+              {
+                "node_id": 1010,
+                "content_sha256": "764b07e68f02ec2526d6b74931ca1a53062040b1495447f68aa373147e897b89"
+              },
+              {
+                "node_id": 1010,
+                "content_sha256": "0afd2120e49ea7a8724231f82d7601bffb64a2ba59c19ef161fc9cadc147666c"
+              }
+            ],
+            "parent_limit": 3,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1002,
+              1010,
+              1013
+            ],
+            "chunk_count": 6
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "SETNX（set if not exist）在 Key 已经存在时返回 False；Key 不存在时插入成功并返回 True。[doc:1013] 笔记利用这一点实现分布式锁：SETNX 与数据库唯一索引类似，保证只存在一个 Key 的键值对，因此可以用一个 Key 的键值对是否存在来判断是否处于锁定状态。[doc:1013] 此外，EXPIRE 指令可以为键值对设置过期时间，从而避免数据库唯一索引实现方式中释放锁失败的问题。[doc:1013]"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 2428,
+          "output_tokens": 129,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 2428
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 2428,
+          "output_tokens": 129,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 2428
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "SETNX 在 Key 已存在和不存在时分别返回什么，笔记怎样利用它做分布式锁？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 5982,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "latency_ms": 1516.0,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR07",
+      "question": "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？",
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "arguments": {
+            "query": "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？"
+          },
+          "result": [
+            {
+              "content": "线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。Ⅲ 系统开销由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。Ⅳ 通信方面线程间可以通过直接读写同一进程中的数据进行通信，但是进程通信需要借助 IPC。",
+              "node_id": 1001,
+              "title": "计算机操作系统 - 进程管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "```c\r\n#define N 100\r\ntypedef int semaphore;\r\nsemaphore mutex = 1;\r\nsemaphore empty = N;\r\nsemaphore full = 0;\r\n\r\nvoid producer() {\r\n    while(TRUE) {\r\n        int item = produce_item();\r\n        down(&empty);\r\n        down(&mutex);\r\n        insert_item(item);\r\n        up(&mutex);\r\n        up(&full);\r\n    }\r\n}\r\n\r\nvoid consumer() {\r\n    while(TRUE) {\r\n        down(&full);\r\n        down(&mutex);\r\n        int item = remove_item();\r\n        consume_item(item);\r\n        up(&mutex);\r\n        up(&empty);\r\n    }\r\n}\r\n```\r\n### 4. 管程使用信号量机制实现的生产者消费者问题需要客户端代码做很多控制，而管程把控制的代码独立出来，不仅不容易出错，也使得客户端代码调用更容易。c 语言不支持管程，下面的示例代码使用了类 Pascal 语言来描述管程。示例代码的管程提供了 insert() 和 remove() 方法，客户端代码通过调用这两个方法来解决生产者-消费者问题。```pascal\r\nmonitor ProducerConsumer\r\n    integer i;\r\n    condition c;\r\n\r\n    procedure insert();\r\n    begin\r\n        // ...\r\n    end;\r\n\r\n    procedure remove();\r\n    begin\r\n        // ...\r\n    end;\r\nend monitor;\r\n```管程有一个重要特性：在一个时刻只能有一个进程使用管程。进程在无法继续执行的时候不能一直占用管程，否则其它进程永远不能使用管程。",
+              "node_id": 1001,
+              "title": "计算机操作系统 - 进程管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "- 对程序员的透明性：分页透明，但是分段需要程序员显式划分每个段。\r\n\r\n- 地址空间的维度：分页是一维地址空间，分段是二维的。\r\n\r\n- 大小是否可以改变：页的大小不可变，段的大小可以动态改变。\r\n\r\n- 出现的原因：分页主要用于实现虚拟内存，从而获得更大的地址空间；分段主要是为了使程序和数据可以被划分为逻辑上独立的地址空间并且有助于共享和保护。",
+              "node_id": 1003,
+              "title": "计算机操作系统 - 内存管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "虚拟内存采用的是分页技术，也就是将地址空间划分成固定大小的页，每一页再与内存进行映射。\r\n\r\n下图为一个编译器在编译过程中建立的多个表，有 4 个表是动态增长的，如果使用分页系统的一维地址空间，动态增长的特点会导致覆盖问题的出现。\r\n\r\n<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/22de0538-7c6e-4365-bd3b-8ce3c5900216.png\"/> </div><br>\r\n\r\n分段的做法是把每个表分成段，一个段构成一个独立的地址空间。每个段的长度可以不同，并且可以动态增长。\r\n\r\n<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/e0900bb2-220a-43b7-9aa9-1d5cd55ff56e.png\"/> </div><br>",
+              "node_id": 1003,
+              "title": "计算机操作系统 - 内存管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1492928416812_4.png\"/> </div><br>\r### 非阻塞式 I/O应用进程执行系统调用之后，内核返回一个错误码。应用进程可以继续执行，但是需要不断的执行系统调用来获知 I/O 是否完成，这种方式称为轮询（polling）。由于 CPU 要处理更多的系统调用，因此这种模型的 CPU 利用率比较低。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1492929000361_5.png\"/> </div><br>### I/O 复用使用 select 或者 poll 等待数据，并且可以等待多个套接字中的任何一个变为可读。这一过程会被阻塞，当某一个套接字可读时返回，之后再使用 recvfrom 把数据从内核复制到进程中。它可以让单个进程具有处理多个 I/O 事件的能力。又被称为 Event Driven I/O，即事件驱动 I/O。如果一个 Web 服务器没有 I/O 复用，那么每一个 Socket 连接都需要创建一个线程去处理。如果同时有几万个连接，那么就需要创建相同数量的线程。相比于多进程和多线程技术，I/O 复用不需要进程线程创建和切换的开销，系统开销更小。",
+              "node_id": 1011,
+              "title": "Socket",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "epoll 对多线程编程更有友好，一个线程调用了 epoll_wait() 另一个线程关闭了同一个描述符也不会产生像 select 和 poll 的不确定情况。",
+              "node_id": 1011,
+              "title": "Socket",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            }
+          ]
+        }
+      ],
+      "result": {
+        "content": "因为线程是独立调度的基本单位，在同一进程中线程的切换不会引起进程切换；而创建或撤销进程时，系统都要为之分配或回收资源（如内存空间、I/O 设备等），其开销远大于创建或撤销线程时的开销。类似地，进程切换时涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。此外，线程间可以通过直接读写同一进程中的数据进行通信，而进程通信需要借助 IPC。[doc:1001]",
+        "source_ids": [
+          1001
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 6,
+            "chunk_count": 6,
+            "selected": [
+              {
+                "node_id": 1001,
+                "content_sha256": "6679f97dcb7964c42889f2117dc6881f91de577b9496c68066ee50f57e0ac97f"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "152c4c149f05100240382aa85e157d59e492fb82544bf22103eb3bd38eb833be"
+              },
+              {
+                "node_id": 1003,
+                "content_sha256": "37a8d91236dd7db4a2f84fe13c027067307c2edc5718f95dcd5ad10c9177f597"
+              },
+              {
+                "node_id": 1003,
+                "content_sha256": "96940388a28c0c0eb8430436d8a71f1e954e15c7295b5f389cb37fb60de723ab"
+              },
+              {
+                "node_id": 1011,
+                "content_sha256": "a4469af4f7450cf671bacc2f20334d299440014061d0673f26e9cb09c501ef38"
+              },
+              {
+                "node_id": 1011,
+                "content_sha256": "c80943bed7f9d9e1229562dd2e90af5edd3346fc41d87aae1d0ef2a3a5803235"
+              }
+            ],
+            "parent_limit": 3,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1001,
+              1003,
+              1011
+            ],
+            "chunk_count": 6
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "因为线程是独立调度的基本单位，在同一进程中线程的切换不会引起进程切换；而创建或撤销进程时，系统都要为之分配或回收资源（如内存空间、I/O 设备等），其开销远大于创建或撤销线程时的开销。类似地，进程切换时涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。此外，线程间可以通过直接读写同一进程中的数据进行通信，而进程通信需要借助 IPC。[doc:1001]"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 1784,
+          "output_tokens": 132,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 1784
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 1784,
+          "output_tokens": 132,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 1784
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "同一程序里拆成多个执行单元，为什么通常比为每个单元创建独立进程的系统开销小？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 4934,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "latency_ms": 1719.0,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR13",
+      "question": "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？",
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "arguments": {
+            "query": "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？"
+          },
+          "result": [
+            {
+              "content": "Redis 可以为每个键设置过期时间，当键过期时，会自动删除该键。\r\n\r\n对于散列表这种容器，只能为整个键设置过期时间（整个散列表），而不能为键里面的单个元素设置过期时间。",
+              "node_id": 1008,
+              "title": "Redis",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "Redis 是内存型数据库，为了保证数据在断电后不会丢失，需要将内存中的数据持久化到硬盘上。### RDB 持久化将某个时间点的所有数据都存放到硬盘上。可以将快照复制到其它服务器从而创建具有相同数据的服务器副本。如果系统发生故障，将会丢失最后一次创建快照之后的数据。如果数据量很大，保存快照的时间会很长。### AOF 持久化将写命令添加到 AOF 文件（Append Only File）的末尾。使用 AOF 持久化需要设置同步选项，从而确保写命令同步到磁盘文件上的时机。这是因为对文件进行写入并不会马上将内容同步到磁盘上，而是先存储到缓冲区，然后由操作系统决定什么时候同步到磁盘。有以下同步选项：| 选项 | 同步频率 || :--: | :--: || always | 每个写命令都同步 || everysec | 每秒同步一次 || no | 让操作系统来决定何时同步 |- always 选项会严重减低服务器的性能；- everysec 选项比较合适，可以保证系统崩溃时只会丢失一秒左右的数据，并且 Redis 每秒执行一次同步对服务器性能几乎没有任何影响；- no 选项并不能给服务器性能带来多大的提升，而且也会增加系统崩溃时数据丢失的数量。随着服务器写请求的增多，AOF 文件会越来越大。",
+              "node_id": 1008,
+              "title": "Redis",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "在单机场景下，可以使用语言的内置锁来实现进程同步。但是在分布式场景下，需要同步的进程可能位于不同的节点上，那么就需要使用分布式锁。阻塞锁通常使用互斥量来实现：- 互斥量为 0 表示有其它进程在使用锁，此时处于锁定状态；- 互斥量为 1 表示未锁定状态。1 和 0 可以用一个整型值表示，也可以用某个数据是否存在表示。### 数据库的唯一索引获得锁时向表中插入一条记录，释放锁时删除这条记录。唯一索引可以保证该记录只被插入一次，那么就可以用这个记录是否存在来判断是否处于锁定状态。存在以下几个问题：- 锁没有失效时间，解锁失败的话其它进程无法再获得该锁；- 只能是非阻塞锁，插入失败直接就报错了，无法重试；- 不可重入，已经获得锁的进程也必须重新获取锁。### Redis 的 SETNX 指令使用 SETNX（set if not exist）指令插入一个键值对，如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True。SETNX 指令和数据库的唯一索引类似，保证了只存在一个 Key 的键值对，那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态。EXPIRE 指令可以为一个键值对设置一个过期时间，从而避免了数据库唯一索引实现方式中释放锁失败的问题。",
+              "node_id": 1013,
+              "title": "分布式",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "### Redis 的 RedLock 算法\r使用了多个 Redis 实例来实现分布式锁，这是为了保证在发生单点故障时仍然可用。- 尝试从 N 个互相独立 Redis 实例获取锁；- 计算获取锁消耗的时间，只有时间小于锁的过期时间，并且从大多数（N / 2 + 1）实例上获取了锁，才认为获取锁成功；- 如果获取锁失败，就到每个实例上释放锁。### Zookeeper 的有序节点#### 1. Zookeeper 抽象模型Zookeeper 提供了一种树形结构的命名空间，/app1/p_1 节点的父节点为 /app1。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/aefa8042-15fa-4e8b-9f50-20b282a2c624.png\" width=\"320px\"> </div><br>#### 2. 节点类型- 永久节点：不会因为会话结束或者超时而消失；- 临时节点：如果会话结束或者超时就会消失；- 有序节点：会在节点名的后面加一个数字后缀，并且是有序的，例如生成的有序节点为 /lock/node-0000000000，它的下一个有序节点则为 /lock/node-0000000001，以此类推。#### 3. 监听器为一个节点注册监听器，在节点状态发生改变时，会给客户端发送消息。#### 4. 分布式锁实现",
+              "node_id": 1013,
+              "title": "分布式",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "Next-Key Locks 是 MySQL 的 InnoDB 存储引擎的一种锁实现。\r\n\r\nMVCC 不能解决幻影读问题，Next-Key Locks 就是为了解决这个问题而存在的。在可重复读（REPEATABLE READ）隔离级别下，使用 MVCC + Next-Key Locks 可以解决幻读问题。\r\n\r\n### Record Locks\r\n\r\n锁定一个记录上的索引，而不是记录本身。\r\n\r\n如果表没有设置索引，InnoDB 会自动在主键上创建隐藏的聚簇索引，因此 Record Locks 依然可以使用。\r\n\r\n### Gap Locks\r\n\r\n锁定索引之间的间隙，但是不包含索引本身。例如当一个事务执行以下语句，其它事务就不能在 t.c 中插入 15。\r\n\r\n```sql\r\nSELECT c FROM t WHERE c BETWEEN 10 and 20 FOR UPDATE;\r\n```\r\n\r\n### Next-Key Locks\r\n\r\n它是 Record Locks 和 Gap Locks 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。它锁定一个前开后闭区间，例如一个索引包含以下值：10, 11, 13, and 20，那么就需要锁定以下区间：\r\n\r\n```sql\r\n(-∞, 10]\r\n(10, 11]\r\n(11, 13]\r\n(13, 20]\r\n(20, +∞)\r\n```",
+              "node_id": 1010,
+              "title": "数据库系统原理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/image-20191207220831843.png\"/> </div><br>\r**三级封锁协议**在二级的基础上，要求读取数据 A 时必须加 S 锁，直到事务结束了才能释放 S 锁。可以解决不可重复读的问题，因为读 A 时，其它事务不能对 A 加 X 锁，从而避免了在读的期间数据发生改变。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/image-20191207221313819.png\"/> </div><br>#### 2. 两段锁协议加锁和解锁分为两个阶段进行。可串行化调度是指，通过并发控制，使得并发执行的事务结果与某个串行执行的事务结果相同。串行执行的事务互不干扰，不会出现并发一致性问题。事务遵循两段锁协议是保证可串行化调度的充分条件。例如以下操作满足两段锁协议，它是可串行化调度。```html\r\nlock-x(A)...lock-s(B)...lock-s(C)...unlock(A)...unlock(C)...unlock(B)\r\n```但不是必要条件，例如以下操作不满足两段锁协议，但它还是可串行化调度。",
+              "node_id": 1010,
+              "title": "数据库系统原理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            }
+          ]
+        }
+      ],
+      "result": {
+        "content": "在分布式锁的实现中，如果锁没有失效时间，解锁失败的话其它进程就无法再获得该锁。使用 Redis 的 SETNX 指令插入键值对来表示锁定状态时，可以用 EXPIRE 指令为这个键值对设置过期时间，从而避免数据库唯一索引实现方式中释放锁失败的问题 [doc:1013]。当键过期时，Redis 会自动删除该键 [doc:1008]，因此锁会被自动释放，其它进程可以重新获得该锁。",
+        "source_ids": [
+          1008,
+          1013
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 6,
+            "chunk_count": 6,
+            "selected": [
+              {
+                "node_id": 1008,
+                "content_sha256": "b939b487ac8e2e577f127e388926d2233efbe0406f21825a4dea63e2a13e4d1b"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "aed5e162203f80c0b87a4a6df91c385af5a6c3dcb3e1159b89ed2c7961c52aa7"
+              },
+              {
+                "node_id": 1013,
+                "content_sha256": "a8806e75125c45a448f3dee5e26cb2e0742e646268de388cb43925205a1aa547"
+              },
+              {
+                "node_id": 1013,
+                "content_sha256": "6c6e4fad5d66851314eb5e68bcced7bd7dee03fc2b7103d56d6482362f6a9280"
+              },
+              {
+                "node_id": 1010,
+                "content_sha256": "764b07e68f02ec2526d6b74931ca1a53062040b1495447f68aa373147e897b89"
+              },
+              {
+                "node_id": 1010,
+                "content_sha256": "0afd2120e49ea7a8724231f82d7601bffb64a2ba59c19ef161fc9cadc147666c"
+              }
+            ],
+            "parent_limit": 3,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1008,
+              1010,
+              1013
+            ],
+            "chunk_count": 6
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "在分布式锁的实现中，如果锁没有失效时间，解锁失败的话其它进程就无法再获得该锁。使用 Redis 的 SETNX 指令插入键值对来表示锁定状态时，可以用 EXPIRE 指令为这个键值对设置过期时间，从而避免数据库唯一索引实现方式中释放锁失败的问题 [doc:1013]。当键过期时，Redis 会自动删除该键 [doc:1008]，因此锁会被自动释放，其它进程可以重新获得该锁。"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 2138,
+          "output_tokens": 121,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 2138
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 2138,
+          "output_tokens": 121,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 2138
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "结合分布式锁与 Redis 笔记，锁持有者释放失败时为什么要给键设置过期时间，过期后键会怎样？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 5251,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "latency_ms": 1468.0,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR19",
+      "question": "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。",
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "arguments": {
+            "query": "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。"
+          },
+          "result": [
+            {
+              "content": "### 1. 进程进程是资源分配的基本单位。进程控制块 (Process Control Block, PCB) 描述进程的基本信息和运行状态，所谓的创建进程和撤销进程，都是指对 PCB 的操作。下图显示了 4 个程序创建了 4 个进程，这 4 个进程可以并发地执行。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/a6ac2b08-3861-4e85-baa8-382287bfee9f.png\"/> </div><br>### 2. 线程线程是独立调度的基本单位。一个进程中可以有多个线程，它们共享进程资源。QQ 和浏览器是两个进程，浏览器进程里面有很多线程，例如 HTTP 请求线程、事件响应线程、渲染线程等等，线程的并发执行使得在浏览器中点击一个新链接从而发起 HTTP 请求时，浏览器还可以响应用户的其它事件。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/3cd630ea-017c-488d-ad1d-732b4efeddf5.png\"/> </div><br>### 3. 区别Ⅰ 拥有资源进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。Ⅱ 调度",
+              "node_id": 1001,
+              "title": "计算机操作系统 - 进程管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。Ⅲ 系统开销由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小。Ⅳ 通信方面线程间可以通过直接读写同一进程中的数据进行通信，但是进程通信需要借助 IPC。",
+              "node_id": 1001,
+              "title": "计算机操作系统 - 进程管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1492929444818_6.png\"/> </div><br>\r### 信号驱动 I/O应用进程使用 sigaction 系统调用，内核立即返回，应用进程可以继续执行，也就是说等待数据阶段应用进程是非阻塞的。内核在数据到达时向应用进程发送 SIGIO 信号，应用进程收到之后在信号处理程序中调用 recvfrom 将数据从内核复制到应用进程中。相比于非阻塞式 I/O 的轮询方式，信号驱动 I/O 的 CPU 利用率更高。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1492929553651_7.png\"/> </div><br>### 异步 I/O应用进程执行 aio_read 系统调用会立即返回，应用进程可以继续执行，不会被阻塞，内核会在所有操作完成之后向应用进程发送信号。异步 I/O 与信号驱动 I/O 的区别在于，异步 I/O 的信号是通知应用进程 I/O 完成，而信号驱动 I/O 的信号是通知应用进程可以开始 I/O。",
+              "node_id": 1011,
+              "title": "Socket",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1492930243286_8.png\"/> </div><br>\r### 五大 I/O 模型比较- 同步 I/O：将数据从内核缓冲区复制到应用进程缓冲区的阶段（第二阶段），应用进程会阻塞。- 异步 I/O：第二阶段应用进程不会阻塞。同步 I/O 包括阻塞式 I/O、非阻塞式 I/O、I/O 复用和信号驱动 I/O ，它们的主要区别在第一个阶段。非阻塞式 I/O 、信号驱动 I/O 和异步 I/O 在第一阶段不会阻塞。<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/1492928105791_3.png\"/> </div><br>",
+              "node_id": 1011,
+              "title": "Socket",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。",
+              "node_id": 1003,
+              "title": "计算机操作系统 - 内存管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            }
+          ]
+        }
+      ],
+      "result": {
+        "content": "资源分配的基本单位是进程；独立调度的基本单位是线程。两者是不同的定义。进程是资源分配的基本单位[doc:1001]；线程是独立调度的基本单位[doc:1001]。",
+        "source_ids": [
+          1001
+        ],
+        "is_from_kb": true,
+        "found_in_kb": true,
+        "answer_status": "supported",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 5,
+            "chunk_count": 5,
+            "selected": [
+              {
+                "node_id": 1001,
+                "content_sha256": "f873f745acf74dba22be607f7127b693b95b3dc6b846822b16a5d20ff96aee6e"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "6679f97dcb7964c42889f2117dc6881f91de577b9496c68066ee50f57e0ac97f"
+              },
+              {
+                "node_id": 1011,
+                "content_sha256": "b23eea777d052ccd11af77724fe5dbecf6bbee502c4867ec8b205bd7fd360bda"
+              },
+              {
+                "node_id": 1011,
+                "content_sha256": "aaa863b4f9de2a558cb41575031c56660a97c03159fe65a7a63fc68aa5de51bc"
+              },
+              {
+                "node_id": 1003,
+                "content_sha256": "6ce1984d71b2445ac747b247120b1f1709f0ea3edd2369235c369d7616f7badd"
+              }
+            ],
+            "parent_limit": 3,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1001,
+              1003,
+              1011
+            ],
+            "chunk_count": 5
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "资源分配的基本单位是进程；独立调度的基本单位是线程。两者是不同的定义。进程是资源分配的基本单位[doc:1001]；线程是独立调度的基本单位[doc:1001]。"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 1444,
+          "output_tokens": 59,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 1444
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 1444,
+          "output_tokens": 59,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 1444
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "资源分配基本单位和独立调度基本单位分别是进程还是线程？请避免把两个定义混成一个。"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 3915,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "latency_ms": 1391.0,
+      "human_fact_review": "pending"
+    },
+    {
+      "case_id": "CR26",
+      "question": "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？",
+      "observed": [
+        {
+          "tool": "search_knowledge_base",
+          "arguments": {
+            "query": "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？"
+          },
+          "result": [
+            {
+              "content": "return node;\r\n    }\n    @Override\n    public Iterator<K> iterator() {\n        return new Iterator<K>() {\n            private Node cur = head.next;\n            @Override\n            public boolean hasNext() {\n                return cur != tail;\n            }\n            @Override\n            public K next() {\n                Node node = cur;\n                cur = cur.next;\n                return node.k;\n            }\n        };\n    }\n}\n```",
+              "node_id": 1014,
+              "title": "缓存",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "```java\r\npublic class LRU<K, V> implements Iterable<K> {\n    private Node head;\n    private Node tail;\n    private HashMap<K, Node> map;\n    private int maxSize;\n    private class Node {\n        Node pre;\n        Node next;\n        K k;\n        V v;\n        public Node(K k, V v) {\n            this.k = k;\n            this.v = v;\n        }\n    }\n    public LRU(int maxSize) {\n        this.maxSize = maxSize;\n        this.map = new HashMap<>(maxSize * 4 / 3);\n        head = new Node(null, null);\n        tail = new Node(null, null);\n        head.next = tail;\n        tail.pre = head;\n    }\n    public V get(K key) {\n        if (!map.containsKey(key)) {\n            return null;\n        }\n        Node node = map.get(key);\n        unlink(node);\n        appendHead(node);\n        return node.v;\n    }\n    public void put(K key, V value) {\n        if (map.containsKey(key)) {\n            Node node = map.get(key);\n            unlink(node);\n        }\n        Node node = new Node(key, value);\n        map.put(key, node);\n        appendHead(node);\n        if (map.size() > maxSize) {\n            Node toRemove = removeTail();\n            map.remove(toRemove.k);\n        }\n    }\n    private void unlink(Node node) {\n        Node pre = node.pre;\n        Node next = node.next;\n        pre.next = next;\n        next.pre = pre;\n        node.pre = null;\n        node.next = null;\n    }\n    private void appendHead(Node node) {\n        Node next = head.next;\n        node.next = next;\n        next.pre = node;\n        node.pre = head;\n        head.next = node;\n    }\n    private Node removeTail() {\n        Node node = tail.pre;\n        Node pre = node.pre;\n        tail.pre = pre;\n        pre.next = tail;\n        node.pre = null;\n        node.next = null;",
+              "node_id": 1014,
+              "title": "缓存",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "```c\r\n/* Performs N steps of incremental rehashing. Returns 1 if there are still\n * keys to move from the old to the new hash table, otherwise 0 is returned.\n *\n * Note that a rehashing step consists in moving a bucket (that may have more\n * than one key as we use chaining) from the old to the new hash table, however\n * since part of the hash table may be composed of empty spaces, it is not\n * guaranteed that this function will rehash even a single bucket, since it\n * will visit at max N*10 empty buckets in total, otherwise the amount of\n * work it does would be unbound and the function may block for a long time. */\nint dictRehash(dict *d, int n) {\n    int empty_visits = n * 10; /* Max number of empty buckets to visit. */\n    if (!dictIsRehashing(d)) return 0;\n    while (n-- && d->ht[0].used != 0) {\n        dictEntry *de, *nextde;\n        /* Note that rehashidx can't overflow as we are sure there are more\n         * elements because ht[0].used != 0 */\n        assert(d->ht[0].size > (unsigned long) d->rehashidx);\n        while (d->ht[0].table[d->rehashidx] == NULL) {\n            d->rehashidx++;\n            if (--empty_visits == 0) return 1;\n        }\n        de = d->ht[0].table[d->rehashidx];",
+              "node_id": 1008,
+              "title": "Redis",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "```python\r\ndef main():\r\n    # 初始化服务器\r\n    init_server()\r\n    # 一直处理事件，直到服务器关闭为止\r\n    while server_is_not_shutdown():\r\n        aeProcessEvents()\r\n    # 服务器关闭，执行清理操作\r\n    clean_server()\r\n```\r\n从事件处理的角度来看，服务器运行流程如下：<div align=\"center\"> <img src=\"https://cs-notes-1256109796.cos.ap-guangzhou.myqcloud.com/c0a9fa91-da2e-4892-8c9f-80206a6f7047.png\" width=\"350\"/> </div><br>",
+              "node_id": 1008,
+              "title": "Redis",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "```c\r\n#define N 5\n#define LEFT (i + N - 1) % N // 左邻居\n#define RIGHT (i + 1) % N    // 右邻居\n#define THINKING 0\n#define HUNGRY   1\n#define EATING   2\ntypedef int semaphore;\nint state[N];                // 跟踪每个哲学家的状态\nsemaphore mutex = 1;         // 临界区的互斥，临界区是 state 数组，对其修改需要互斥\nsemaphore s[N];              // 每个哲学家一个信号量\nvoid philosopher(int i) {\n    while(TRUE) {\n        think(i);\n        take_two(i);\n        eat(i);\n        put_two(i);\n    }\n}\nvoid take_two(int i) {\n    down(&mutex);\n    state[i] = HUNGRY;\n    check(i);\n    up(&mutex);\n    down(&s[i]); // 只有收到通知之后才可以开始吃，否则会一直等下去\n}\nvoid put_two(i) {\n    down(&mutex);\n    state[i] = THINKING;\n    check(LEFT); // 尝试通知左右邻居，自己吃完了，你们可以开始吃了\n    check(RIGHT);\n    up(&mutex);\n}\nvoid eat(int i) {\n    down(&mutex);\n    state[i] = EATING;\n    up(&mutex);\n}\n// 检查两个邻居是否都没有用餐，如果是的话，就 up(&s[i])，使得 down(&s[i]) 能够得到通知并继续执行\nvoid check(i) {\n    if(state[i] == HUNGRY && state[LEFT] != EATING && state[RIGHT] !=EATING) {\n        state[i] = EATING;",
+              "node_id": 1001,
+              "title": "计算机操作系统 - 进程管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            },
+            {
+              "content": "down(&resource);                //reserve the resource for yourself - prevents other writers from simultaneously editing the shared resource\r\n  //writing is performed\n up(&resource);                //release file\n<EXIT Section>\n  down(&wmutex);                  //reserve exit section\n  writecount--;                //indicate you're leaving\n  if (writecount == 0)         //checks if you're the last writer\n   up(&readLock);               //if you're last writer, you must unlock the readers. Allows them to try enter CS for reading\n  up(&wmutex);                  //release exit section\n}\n```",
+              "node_id": 1001,
+              "title": "计算机操作系统 - 进程管理",
+              "note_date": "2026-10-16",
+              "date_source": "created_at",
+              "kb_latest_date": "2026-10-16"
+            }
+          ]
+        }
+      ],
+      "result": {
+        "content": "NOT_FOUND_IN_KB: 本次检索未找到支持该问题的证据。",
+        "source_ids": [],
+        "is_from_kb": false,
+        "found_in_kb": false,
+        "answer_status": "not_found",
+        "answer_error": null,
+        "steps": [
+          {
+            "type": "evidence_selection",
+            "branch_count": 1,
+            "merge": "unchanged",
+            "candidate_chunk_count": 6,
+            "chunk_count": 6,
+            "selected": [
+              {
+                "node_id": 1014,
+                "content_sha256": "666a0742688d54a3432c9bd11b7b161866e3e421b7e058b815c52ffeecd5051e"
+              },
+              {
+                "node_id": 1014,
+                "content_sha256": "a6d31cbffce34c2a92071f1fe582e270a3ca5cce6abdc1153288cfdc9e7c5bcc"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "3ae0c5be7fa58c73f303d1fc2e0afff66c6b3adecc6133f248ab54e12258317c"
+              },
+              {
+                "node_id": 1008,
+                "content_sha256": "9658bbbccba54da6f572e650ccd81ca44c788ea1c343298bb68187bdee56b574"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "3caafa4678afd1c513213e734b46bb6c61362e769b497c387b280b269367a1e9"
+              },
+              {
+                "node_id": 1001,
+                "content_sha256": "47ae26359344b935f761c4eeabec51bd45a989db819560ea2ea77d10aa4ea280"
+              }
+            ],
+            "parent_limit": 3,
+            "chunks_per_parent": null
+          },
+          {
+            "type": "retrieval",
+            "node_ids": [
+              1001,
+              1008,
+              1014
+            ],
+            "chunk_count": 6
+          },
+          {
+            "type": "model_call",
+            "count": 1
+          },
+          {
+            "type": "final_answer",
+            "content": "NOT_FOUND_IN_KB: 本次检索未找到支持该问题的证据。"
+          }
+        ],
+        "web_sources": [],
+        "usage": {
+          "status": "known",
+          "input_tokens": 2229,
+          "output_tokens": 15,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 2229
+        },
+        "generation_usage": {
+          "status": "known",
+          "input_tokens": 2229,
+          "output_tokens": 15,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "total_input_tokens": 2229
+        },
+        "rewrite_usage": {
+          "status": "unknown",
+          "input_tokens": null,
+          "output_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "total_input_tokens": null
+        },
+        "rewrite_input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": null,
+          "max_rewrite_chars": 1000
+        },
+        "model_calls": 1,
+        "generation_model_calls": 1,
+        "rewrite_model_calls": 0,
+        "rewrite_trace": [
+          {
+            "type": "rewrite_result",
+            "accepted": false,
+            "failure_reason": "disabled"
+          }
+        ],
+        "rewrite_queries": [
+          "Python 的 yield 如何保存局部变量并在 next() 时恢复，这批笔记里有实现说明吗？"
+        ],
+        "rewrite_accepted": false,
+        "input_budget": {
+          "max_input_chars": 16000,
+          "input_chars": 7778,
+          "max_input_tokens": null,
+          "input_tokens": null
+        }
+      },
+      "latency_ms": 1062.0,
+      "human_fact_review": "pending"
+    }
+  ],
+  "model_fixture_outputs_excluded": false,
+  "new_request_budget": 5,
+  "harness_sha256": "93ece4868ee4ae318533df251c6422d5739735f7f7dca65b852aa5e3581a40f3",
+  "model_snapshot_revision": "79e7739b6ab944e86d6171e44d24c997fc1e0116",
+  "indexed_documents": 16,
+  "indexed_chunks": 229,
+  "indexing_seconds": 285.063,
+  "requests": [
+    {
+      "physical_request": 1,
+      "case_id": "CR02",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 6055,
+      "max_output_tokens": 600,
+      "payload_sha256": "308b9422a415358f09ee05e9f5a1c03a3f2bcfaac78c95353652bff2b53fdbba",
+      "prompt_sha256": "4386da9b212e1b0649b09b4ff00571a3231bbd8b6bd9e8e658b1a3a6d3a73526",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 2428,
+        "output_tokens": 129,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1187.21
+    },
+    {
+      "physical_request": 2,
+      "case_id": "CR07",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 5007,
+      "max_output_tokens": 600,
+      "payload_sha256": "826032166f7b6fda5b76fb5c3eeab8b860b3a4cbdd4e6e1b8748f701b43cb756",
+      "prompt_sha256": "4a2525d61aa8cfbc15ae8494c6868776ef283d2f319ae3e888af103f2900be27",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 1784,
+        "output_tokens": 132,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1400.647
+    },
+    {
+      "physical_request": 3,
+      "case_id": "CR13",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 5324,
+      "max_output_tokens": 600,
+      "payload_sha256": "371d5013191b0bebef77d1bb42e192ab374c25ffdee2df1853bdb10029e1cc58",
+      "prompt_sha256": "d40d9af1ae592fa65a9d0599c380edda1f9bb841557a5c35d991c5dbe0bf9041",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 2138,
+        "output_tokens": 121,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1164.352
+    },
+    {
+      "physical_request": 4,
+      "case_id": "CR19",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 3988,
+      "max_output_tokens": 600,
+      "payload_sha256": "b184c7211e2d5bf2a7ee127ad9da51dd7d4494216b9b4f22b3d21c018fadb33b",
+      "prompt_sha256": "30ab439aee1dfd082e8c7ba50868279464addf2cfeee17015abc83366add5011",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 1444,
+        "output_tokens": 59,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 1072.607
+    },
+    {
+      "physical_request": 5,
+      "case_id": "CR26",
+      "backend": "langchain",
+      "model": "deepseek-flash",
+      "input_chars": 7851,
+      "max_output_tokens": 600,
+      "payload_sha256": "691841be9d3a1354a677062709e2b8c335c02bbed97d50c5adcc7a2210186b3b",
+      "prompt_sha256": "824f2b1d03385f7e3e5b2b2ac3b5b881f8001ee1986fbbf9702e315eb587532b",
+      "status": "returned",
+      "usage": {
+        "input_tokens": 2229,
+        "output_tokens": 15,
+        "cache_read_input_tokens": 0,
+        "cache_creation_input_tokens": 0
+      },
+      "http_status": 200,
+      "latency_ms": 726.487
+    }
+  ],
+  "usage_totals": {
+    "input_tokens": 10023,
+    "output_tokens": 456
+  },
+  "requests_prepared": 0,
+  "prepared_payloads": [],
+  "not_run": 0,
+  "publication_projection": {
+    "raw_report_sha256": "9c9a030a4f66dd560558b352eb94f0058074075ddea14d7be64dc124abdb9731",
+    "omitted_fields": [
+      "retained_local_state"
+    ],
+    "reason": "local temporary directory excluded; actual results, evidence and request logs unchanged"
+  },
+  "portable_entry": {
+    "path": "backend/eval/run_native_rag_validation.py",
+    "sha256": "4797ab08a3e419e9d8b3f1acfc8d42840dbee32d4c288288fb8ce2d7c26de5ba",
+    "measured_harness_sha256": "93ece4868ee4ae318533df251c6422d5739735f7f7dca65b852aa5e3581a40f3",
+    "differences": [
+      "repository-relative BACKEND resolution",
+      "import sorting only",
+      "refuse existing report before loading model or credentials",
+      "exclusive creation when saving report; measurement run had an external pre-launch non-overwrite check"
+    ],
+    "real_model_requests_repeated_with_portable_entry": false
+  }
+}

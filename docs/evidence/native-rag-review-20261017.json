@@ -1,0 +1,184 @@
+{
+  "review_date": "2026-10-17 Asia/Shanghai",
+  "reviewer": "primary agent; source-aware manual review; not independent human grading",
+  "rubric_sha256": "8cab440eeecb90e772ea43d5d476a1f62b988d1488a7473f0f1bca024ec23291",
+  "raw_report_sha256": "9c9a030a4f66dd560558b352eb94f0058074075ddea14d7be64dc124abdb9731",
+  "extra_model_requests": 0,
+  "blind_test": false,
+  "semantic_accuracy": null,
+  "summary": {
+    "reviewed_cases": 5,
+    "supported_core_answers": 4,
+    "bounded_refusals": 1,
+    "identified_unsupported_claims": 0,
+    "explicitly_recorded_basic_model_compositions": 1
+  },
+  "limitations": [
+    "5 development cases authored after reading sources",
+    "manual source-aware primary review, not independent graders",
+    "not default Agent backend or all 36 queries",
+    "CR13 conclusion is a basic-model composition, not a distributed-lock safety proof",
+    "retrieved document dates are temporary SQL insertion dates, not source publication dates"
+  ],
+  "rubric_interpretation_notes": [
+    "CR02 uses visible-note False/True wording; preregistered 0/1 rubric is interpreted as failure/success, not a protocol-type requirement"
+  ],
+  "cases": [
+    {
+      "case_id": "CR02",
+      "answer_status": "supported",
+      "contract_valid": true,
+      "question_covered": true,
+      "claims_supported_by_visible_evidence": true,
+      "citation_supports_each_claim": true,
+      "unsupported_claims": [],
+      "incorrect_absence_claim": false,
+      "facts": [
+        {
+          "answer_claim": "Key 已经存在时返回 False；Key 不存在时插入成功并返回 True",
+          "support_node_id": 1013,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "如果 Key 已经存在，那么会返回 False，否则插入成功并返回 True",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "可以用一个 Key 的键值对是否存在来判断是否处于锁定状态",
+          "support_node_id": 1013,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "EXPIRE 指令可以为键值对设置过期时间",
+          "support_node_id": 1013,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "EXPIRE 指令可以为一个键值对设置一个过期时间",
+          "support_kind": "direct_or_faithful_paraphrase"
+        }
+      ],
+      "review_notes": "按问题中的“笔记”字面核对False/True；预先rubric写0/1，仅按失败/成功的逻辑对应解释，不据此惩罚忠实于可见笔记的回答。未验证不同Redis客户端或协议的返回类型，也不把此基础锁方案当作任意故障下的安全证明。"
+    },
+    {
+      "case_id": "CR07",
+      "answer_status": "supported",
+      "contract_valid": true,
+      "question_covered": true,
+      "claims_supported_by_visible_evidence": true,
+      "citation_supports_each_claim": true,
+      "unsupported_claims": [],
+      "incorrect_absence_claim": false,
+      "facts": [
+        {
+          "answer_claim": "线程是独立调度的基本单位",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "线程是独立调度的基本单位",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "在同一进程中线程的切换不会引起进程切换",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "在同一进程中，线程的切换不会引起进程切换",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "系统都要为之分配或回收资源",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "系统都要为之分配或回收资源",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "而线程切换时只需保存和设置少量寄存器内容",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "而线程切换时只需保存和设置少量寄存器内容",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "线程间可以通过直接读写同一进程中的数据进行通信",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "线程间可以通过直接读写同一进程中的数据进行通信",
+          "support_kind": "direct_or_faithful_paraphrase"
+        }
+      ],
+      "review_notes": "本轮实际可见的首块含创建/撤销、切换与通信开销段，回答中的解释都有支持；没有重复旧快照批次中“整库没记录”的越界描述。不同批次检索、上下文及日期均不同，不能将变化单独归因于BGE。"
+    },
+    {
+      "case_id": "CR13",
+      "answer_status": "supported",
+      "contract_valid": true,
+      "question_covered": true,
+      "claims_supported_by_visible_evidence": true,
+      "citation_supports_each_claim": true,
+      "unsupported_claims": [],
+      "incorrect_absence_claim": false,
+      "facts": [
+        {
+          "answer_claim": "如果锁没有失效时间，解锁失败的话其它进程就无法再获得该锁",
+          "support_node_id": 1013,
+          "visible_chunk_index": 2,
+          "visible_evidence_excerpt": "锁没有失效时间，解锁失败的话其它进程无法再获得该锁",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "当键过期时，Redis 会自动删除该键",
+          "support_node_id": 1008,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "当键过期时，会自动删除该键",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "因此锁会被自动释放，其它进程可以重新获得该锁",
+          "support_node_id": 1013,
+          "visible_chunk_index": 2,
+          "visible_evidence_excerpt": "那么可以用一个 Key 的键值对是否存在来判断是否存于锁定状态",
+          "support_kind": "composition_with_expiration_evidence_from_doc_1008"
+        }
+      ],
+      "review_notes": "最后一句以“因此”组合锁键存在性与过期删除两条可见事实，限于笔记中的基本锁模型；不是逐字原文，也不能扩大为到期精确时刻、fencing、原子SETNX+EXPIRE或任意故障下的互斥安全保证。两个事实来源各有引用。"
+    },
+    {
+      "case_id": "CR19",
+      "answer_status": "supported",
+      "contract_valid": true,
+      "question_covered": true,
+      "claims_supported_by_visible_evidence": true,
+      "citation_supports_each_claim": true,
+      "unsupported_claims": [],
+      "incorrect_absence_claim": false,
+      "facts": [
+        {
+          "answer_claim": "资源分配的基本单位是进程",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "进程是资源分配的基本单位",
+          "support_kind": "direct_or_faithful_paraphrase"
+        },
+        {
+          "answer_claim": "独立调度的基本单位是线程",
+          "support_node_id": 1001,
+          "visible_chunk_index": 0,
+          "visible_evidence_excerpt": "线程是独立调度的基本单位",
+          "support_kind": "direct_or_faithful_paraphrase"
+        }
+      ],
+      "review_notes": "两个定义均在当前可见首块，引用1001；未互换定义。"
+    },
+    {
+      "case_id": "CR26",
+      "answer_status": "not_found",
+      "contract_valid": true,
+      "question_covered": true,
+      "claims_supported_by_visible_evidence": true,
+      "citation_supports_each_claim": true,
+      "unsupported_claims": [],
+      "incorrect_absence_claim": false,
+      "facts": [],
+      "review_notes": "实际六个候选是Java LRU、Redis rehash/事件循环与OS同步代码，无yield保存/恢复实现证据；用户可见输出只说本次检索未找到证据，没有穷尽整库断言。审查的是服务端归一化后的拒答，不推断未保存的原始模型JSON字段。"
+    }
+  ],
+  "public_report_sha256": "ebd467f5aa3edfa0a46f03c1e13b8f99b00bc0048f7664e88794be161829bb75"
+}
