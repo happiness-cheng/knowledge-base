@@ -3,6 +3,7 @@ import os
 import socket
 import subprocess
 import sys
+import sysconfig
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -46,7 +47,8 @@ def chroma_server_port(tmp_path_factory):
     with socket.socket() as reserved:
         reserved.bind(("127.0.0.1", 0))
         port = reserved.getsockname()[1]
-    executable = Path(sys.executable).parent / ("chroma.exe" if sys.platform == "win32" else "chroma")
+    # 全局 Python 的脚本目录与解释器目录不同；不能只按 venv 的布局推导。
+    executable = Path(sysconfig.get_path("scripts")) / ("chroma.exe" if sys.platform == "win32" else "chroma")
     env = os.environ.copy()
     env.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", ANONYMIZED_TELEMETRY="False",
                NO_PROXY="*", PYTHONUTF8="1")

@@ -52,3 +52,5 @@ python -m ruff check tests/conftest.py tests/test_rag_index_updates.py tests/tes
 ```
 
 7 个既有工程模块的 mypy、改动文件编译和 artifact policy 均通过。没有修改前端，未重复前端构建；历史 440 项记录保留其原时间点，本次增加 1 个回归。没有执行原库迁移、线上部署、模型请求或原索引操作。
+
+首次推送的远端 CI 暴露启动路径兼容性问题：本地 venv 中 CLI 与 Python 同目录，Actions 全局 Python 中 CLI 位于 scripts 安装目录；导致 418 passed / 23 setup errors（不是向量断言失败）。后续改用 `sysconfig.get_path("scripts")` 定位当前解释器的 CLI，不依赖系统 PATH 或另一套环境。
