@@ -141,7 +141,7 @@ def test_strict_chat_api_passes_mode_and_returns_status(client, monkeypatch):
 
     monkeypatch.setattr("app.routers.chat.run_agent", fake_agent)
     response = client.post(f"/api/chat/conversations/{conv['id']}/messages",
-                           json={"content": "q", "kb_only": True})
+                           json={"content": "q", "kb_only": True, "backend": "custom"})
     assert response.status_code == 200
     assert captured["kb_only"] is True
     assert response.json()["answer_status"] == "not_found"

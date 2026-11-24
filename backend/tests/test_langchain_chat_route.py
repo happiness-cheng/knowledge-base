@@ -1,4 +1,4 @@
-"""严格 LangChain 候选必须经过真实鉴权路由，默认 Agent 行为保持兼容。"""
+"""严格 LangChain 候选必须经过真实鉴权路由；默认走 LC 严格 RAG。"""
 
 from unittest.mock import Mock, patch
 
@@ -34,13 +34,14 @@ def test_langchain_route_uses_authenticated_user_and_selected_client(client, db)
 
 
 @pytest.mark.parametrize('body', [
-    {'content': 'x', 'backend': 'langchain'},
-    {'content': 'x', 'backend': 'langchain', 'kb_only': True, 'ai_search': True},
-    {'content': 'x', 'backend': 'invalid', 'kb_only': True},
-    {'content': 'x', 'kb_only': True, 'retrieval_mode': 'hybrid'},
-    {'content': 'x', 'kb_only': True, 'backend': 'langchain', 'rerank': True},
-    {'content': 'x', 'kb_only': True, 'rewrite': True},
-    {'content': 'x', 'kb_only': True, 'backend': 'langchain', 'rewrite_bindings': {'它': 'HTTP2'}},
+    {'content': 'x', 'kb_only': True, 'ai_search': True},
+    {'content': 'x', 'backend': 'invalid'},
+    {'content': 'x', 'rerank': True},
+    {'content': 'x', 'rewrite_bindings': {'它': 'HTTP2'}},
+    {'content': 'x', 'backend': 'custom', 'retrieval_mode': 'hybrid'},
+    {'content': 'x', 'backend': 'custom', 'rerank': True},
+    {'content': 'x', 'backend': 'custom', 'rewrite': True},
+    {'content': 'x', 'backend': 'langchain', 'kb_only': False},
 ])
 def test_invalid_backend_combination_is_rejected_before_persistence(client, db, body):
     conversation = client.post('/api/chat/conversations', json={}).json()
@@ -74,18 +75,33 @@ def test_optional_candidates_are_scoped_by_server_and_forwarded_to_real_chain(cl
     assert run.call_args.kwargs['rewrite_enabled'] is True
 
 
-def test_default_backend_still_calls_custom_agent(client):
+def test_default_backend_calls_langchain_strict_chain_without_optional_models(client):
     conversation = client.post('/api/chat/conversations', json={}).json()
-    with patch('app.routers.chat.run_agent', return_value={
+    result = {
         'content': '默认回答', 'source_ids': [], 'answer_status': 'supported',
-    }) as agent, patch('app.routers.chat.run_langchain_candidate', create=True) as candidate:
+        'steps': [], 'web_sources': [],
+    }
+    selected_client = Mock()
+    with patch('app.routers.chat.get_client_for_user', return_value=selected_client), patch(
+        'app.routers.chat.run_agent', return_value=result,
+    ) as agent, patch(
+        'app.routers.chat.run_langchain_candidate', return_value=result,
+    ) as candidate, patch(
+        'app.routers.chat.make_retrieval_candidate',
+    ) as make:
         response = client.post(
             f"/api/chat/conversations/{conversation['id']}/messages",
-            json={'content': 'x', 'kb_only': True},
+            json={'content': 'x'},
         )
-    assert response.status_code == 200
-    agent.assert_called_once()
-    candidate.assert_not_called()
+
+    assert response.status_code == 200, response.text
+    candidate.assert_called_once()
+    agent.assert_not_called()
+    make.assert_not_called()
+    assert candidate.call_args.kwargs['ai_client'] is selected_client
+    assert candidate.call_args.kwargs['user_id'] > 0
+    assert 'retrieval' not in candidate.call_args.kwargs
+    assert 'rewrite_enabled' not in candidate.call_args.kwargs
 
 
 def test_authenticated_http_route_runs_real_chain_and_sdk_once(client, db):

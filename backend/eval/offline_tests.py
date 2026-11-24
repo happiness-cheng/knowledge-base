@@ -7,6 +7,7 @@ import json
 import os
 import socket
 import sys
+from contextlib import nullcontext
 from io import BytesIO, StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -25,8 +26,15 @@ def main(argv=None):
     original_expanduser = os.path.expanduser
     original_connect = socket.socket.connect
     import httpx
+    try:
+        import httpx2  # anthropic>=1.x 的 HTTP 客户端
+    except ImportError:  # 旧 SDK 环境没有 httpx2
+        httpx2 = None
     original_http = httpx.HTTPTransport.handle_request
     original_async_http = httpx.AsyncHTTPTransport.handle_async_request
+    if httpx2 is not None:
+        original_http2 = httpx2.HTTPTransport.handle_request
+        original_async_http2 = httpx2.AsyncHTTPTransport.handle_async_request
     protected_files = {
         (backend / '.env').resolve(),
         (Path.home() / '.claude' / 'settings.json').resolve(),
@@ -76,6 +84,23 @@ def main(argv=None):
         check_http_target(request)
         return await original_async_http(transport, request)
 
+    if httpx2 is not None:
+        def local_http2(transport, request):
+            check_http_target(request)
+            return original_http2(transport, request)
+
+        async def local_async_http2(transport, request):
+            check_http_target(request)
+            return await original_async_http2(transport, request)
+
+        httpx2_http_patch = patch.object(httpx2.HTTPTransport, 'handle_request', local_http2)
+        httpx2_async_patch = patch.object(
+            httpx2.AsyncHTTPTransport, 'handle_async_request', local_async_http2,
+        )
+    else:
+        httpx2_http_patch = nullcontext()
+        httpx2_async_patch = nullcontext()
+
     with TemporaryDirectory(prefix='knowledge-offline-tests-') as temporary_home:
         isolated_home = Path(temporary_home)
         overrides = {
@@ -113,6 +138,8 @@ def main(argv=None):
             patch.object(socket.socket, 'connect', local_connect),
             patch.object(httpx.HTTPTransport, 'handle_request', local_http),
             patch.object(httpx.AsyncHTTPTransport, 'handle_async_request', local_async_http),
+            httpx2_http_patch,
+            httpx2_async_patch,
         ):
             import chromadb
             import pytest

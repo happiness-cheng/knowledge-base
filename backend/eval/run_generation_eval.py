@@ -16,12 +16,11 @@ import argparse
 import importlib.util
 import json
 import os
-import statistics
 import sys
 import time
 from pathlib import Path
 
-BASE = Path(r'C:/Users/陈独秀/knowledge-base/backend')
+BASE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE))
 sys.stdout.reconfigure(encoding='utf-8')
 os.environ.setdefault('KB_CHROMA_SUFFIX', '_prod')
@@ -151,8 +150,9 @@ def main():
     print(f'{"ID":<5}{"gold":<6}{"gold在上下文中":<14}{"忠实性":<9}{"相关性":<9}'
           f'{"上下文召回":<10}{"延迟ms":<9}备注')
     print('-' * 96)
+    def fmt(value):
+        return '-' if value is None else f'{value:.2f}'
     for r in results:
-        fmt = lambda v: ('-' if v is None else f'{v:.2f}')
         print(f'{r.cid:<5}{r.ref_node:<6}{("是" if r.gold_in_context else "否 ←"):<14}'
               f'{fmt(r.faithfulness):<9}{fmt(r.answer_relevancy):<9}'
               f'{fmt(r.context_recall):<10}{r.latency_ms:<9.0f}{r.error[:40]}')

@@ -37,7 +37,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
-BASE = Path(r'C:/Users/陈独秀/knowledge-base/backend')
+BASE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE))
 
 # ---------------------------------------------------------------- 判定器接口

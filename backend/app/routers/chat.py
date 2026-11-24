@@ -17,10 +17,24 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 class MessageCreate(BaseModel):
+    """对话请求。
+
+    默认值 = 可复现的线上主链路：LangChain 严格证据回答 + 现有 dense 检索；
+    rerank / rewrite / 混合检索都是显式 opt-in，避免默认请求加载 568M 精排模型
+    或额外调用一次改写模型。
+
+    调用方仍可显式选择其他路径：
+      · {"kb_only": false}                      → 自定义 Agent（工具循环，dense）
+      · {"ai_search": true}                     → 通用知识问答，不查库
+      · {"retrieval_mode": "hybrid"} 等         → 显式开启混合/BM25 候选
+      · {"rerank": true} / {"rewrite": true}    → 显式开启精排/改写（需显式候选）
+    只有"显式传参"才改变默认；未传的字段按默认值走。
+    """
+
     content: str
     ai_search: bool = False
-    kb_only: bool = False
-    backend: Literal["custom", "langchain"] = "custom"
+    kb_only: bool = True
+    backend: Literal["custom", "langchain"] = "langchain"
     retrieval_mode: Literal["current", "dense", "bm25", "hybrid"] = "current"
     rerank: bool = False
     rewrite: bool = False
@@ -28,6 +42,22 @@ class MessageCreate(BaseModel):
 
     @model_validator(mode="after")
     def validate_answer_mode(self):
+        explicit = self.model_fields_set
+        # 通用问答与"显式关掉 kb_only"的请求都属于非严格路径：
+        # 默认值是严格链路，不能把它们顶成 422。
+        if self.ai_search and "kb_only" not in explicit:
+            self.kb_only = False
+        if not self.kb_only and "backend" not in explicit:
+            self.backend = "custom"
+        # Agent 路径不消费检索候选参数：未显式指定时恢复成 current/关闭。
+        if self.backend != "langchain":
+            if "retrieval_mode" not in explicit and self.retrieval_mode != "current":
+                self.retrieval_mode = "current"
+            if "rerank" not in explicit:
+                self.rerank = False
+            if "rewrite" not in explicit:
+                self.rewrite = False
+        # 以下校验语义保持不变，只对"显式组合"报错。
         if self.kb_only and self.ai_search:
             raise ValueError("kb_only and ai_search cannot both be enabled")
         if self.backend == "langchain" and not self.kb_only:

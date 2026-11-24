@@ -64,7 +64,9 @@
 
 2026-10-15的历史验证：Windows / CPython3.12.15，后端440项、7模块mypy、指定新增模块ruff与前端build。当轮命令输出与首次失败记录见[verification.json](evidence/verification.json)。安装与显式存储/worker步骤见[README_zh](../README_zh.md)。
 
-2026-10-17加入原生回答验收入口的9个离线检查后，当前完整回归450 passed、5条既有warnings、86.17s；[本轮审计](evidence/native-rag-audit-20261017.json)区分真实请求、离线检查与尚未覆盖项。存储边界修正时的441项记录保留其原时间点。
+2026-10-17加入原生回答验收入口的9个离线检查后，该轮完整回归450 passed、5条既有warnings、86.17s；[本轮审计](evidence/native-rag-audit-20261017.json)区分真实请求、离线检查与尚未覆盖项。存储边界修正时的441项记录保留其原时间点。
+
+2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

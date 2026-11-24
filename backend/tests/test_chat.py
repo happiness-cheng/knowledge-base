@@ -71,7 +71,7 @@ def test_send_message_passes_selected_user_client_to_agent(client):
     ), patch("app.routers.chat.run_agent", return_value=result) as run_agent:
         response = client.post(
             f"/api/chat/conversations/{conversation['id']}/messages",
-            json={"content": "hello"},
+            json={"content": "hello", "kb_only": False},
         )
 
     assert response.status_code == 200

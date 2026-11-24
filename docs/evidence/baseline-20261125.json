@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-25",
+  "phase": "P0 baseline",
+  "base_commit": "f4bc99a",
+  "working_tree": "dirty (P0 changes applied)",
+  "environment": {
+    "os": "Windows",
+    "python": "3.14.0",
+    "documented_verified_python": "3.12.15",
+    "venv": "backend/venv",
+    "anthropic": "1.13.0",
+    "langchain_core": "1.6.10",
+    "mypy": "2.4.1",
+    "ruff": "0.17.6",
+    "note": "本机 venv 为 CPython 3.14.0；仓库约束文件声明的已验证环境是 3.12.15。P0 回归在 3.14 上通过，但发布前仍需在 3.12 复跑。"
+  },
+  "commands": [
+    {
+      "command": "python -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short",
+      "exit_code": 0,
+      "result": "468 passed, 43 warnings in 132.01s"
+    },
+    {
+      "command": "python -X utf8 -m eval.offline_tests --verify-isolation",
+      "exit_code": 0,
+      "result": "isolation PASS: memory SQL, ephemeral Chroma, unconfigured model client, personal config blocked, external network blocked"
+    },
+    {
+      "command": "python -m eval.check_artifact_policy",
+      "exit_code": 0,
+      "result": "PASS: credentials/state/eval-data excluded; explicit frontend path; no automatic DDL"
+    },
+    {
+      "command": "python -m compileall -q app eval",
+      "exit_code": 0,
+      "result": "compileall_ok"
+    },
+    {
+      "command": "python -m mypy --follow-imports=silent --ignore-missing-imports app/models/index_job.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py",
+      "exit_code": 0,
+      "result": "Success: no issues found in 7 source files"
+    },
+    {
+      "command": "python -m ruff check --isolated --select E4,E7,E9,F,B <changed modules>",
+      "exit_code": 0,
+      "result": "All checks passed!"
+    }
+  ],
+  "default_chat_contract": {
+    "backend": "langchain",
+    "kb_only": true,
+    "retrieval_mode": "current",
+    "rerank": false,
+    "rewrite": false
+  },
+  "failures_found_before_p0": [
+    "7 failures in tests/test_langchain_chat_route.py: 5 stale invalid-combination expectations, 1 stale default-custom-agent assertion, 1 SDK/httpx2 mismatch caused by anthropic 0.100.0 in the local venv",
+    "README and README_zh described the old custom-Agent default; chat.py had been flipped to hybrid+rerank+rewrite without updating the contract tests or docs"
+  ],
+  "known_gaps": [
+    "Plain `pytest tests/` is not the verified runner: tests/test_offline_http_boundary.py expects the external-network patches installed by eval.offline_tests; run the offline entrypoint.",
+    "Local interpreter is 3.14.0, not the documented 3.12.15; reproduce on 3.12 before release.",
+    "Legacy one-off diagnostic scripts under backend/eval still contain personal absolute paths; they are excluded from test_repo_paths.py and are not shipped entrypoints.",
+    "docker-compose.yml still lacks Chroma HTTP, index worker, and migration; scheduled for P5."
+  ]
+}

@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from app.models.node import KnowledgeNode
 from app.services.evidence_freshness import current_evidence
-from eval.retrieval_candidates import (
+from app.services.retrieval_core import (
     BM25Retriever,
     CandidateChunk,
     dense_rank,
