@@ -4,7 +4,7 @@
 
 把 Markdown 笔记组织成知识图谱，通过带来源引用的问答检索知识。项目重点是两个实际问题：**检索命中了文档，答案证据为什么仍然缺失？笔记更新成功后，向量索引如何可靠地跟上？**
 
-**Python / FastAPI / SQLAlchemy / Alembic / BGE / Chroma / LangChain / React**
+**Python / FastAPI / SQLAlchemy / Alembic / BGE / Chroma / LangChain / RAGFlow (optional) / React**
 
 [快速复现](#快速复现) · [实验与故障案例](docs/project-evidence.md) · [完整使用说明](README_zh.md) · [Agent / Paper 配套项目](https://github.com/happiness-cheng/ai-trader)
 
@@ -17,7 +17,7 @@
 | SQL 已保存，后台任务退出或旧块仍残留 | 同事务登记索引任务；generation/CAS 租约、有限重试和幂等重放 | 缩短/删除、写成后响应丢失、旧任务完成等故障回归 |
 | 独立 worker 写入后，长驻读进程的 Chroma query 仍陈旧 | API / worker 共享 Chroma HTTP 服务；SQL 再核验 owner 与内容指纹 | 真 SQL + **6 个独立 worker 进程**验证更新/删除；停存储服务后 ready 503 |
 
-当前本地验证（2026-11-25）：**后端 468 项通过**、持久索引相关 **7 个模块 mypy 通过**、前端 Vite 构建通过。本机回归使用 CPython 3.14.0；发布前需在约束声明的 3.12.15 环境复跑。命令与范围见[验证记录](docs/project-evidence.md#验证与复现)。
+当前本地验证（2026-11-25）：**后端 496 项通过**、索引/RAGFlow 相关 **10 个模块 mypy 通过**、前端 Vite 构建通过。本机回归使用 CPython 3.14.0；发布前需在约束声明的 3.12.15 环境复跑。命令与范围见[验证记录](docs/project-evidence.md#验证与复现)。
 
 ## 系统如何工作
 
@@ -64,8 +64,11 @@ flowchart LR
 | 自定义 Agent | `kb_only=false`（或显式 `backend=custom`）时启用；不是默认路径 |
 | LangChain 严格 RAG | 聊天 API 默认：`backend=langchain, kb_only=true, retrieval_mode=current` |
 | dense / BM25 / hybrid、query rewrite、rerank | 显式 opt-in；默认 `retrieval_mode=current`，rewrite / rerank 关闭 |
+| RAGFlow 检索/存储（可选生产后端） | `KB_RETRIEVAL_BACKEND=ragflow`；每用户 dataset、异步解析、SQL 二次核验；真实冒烟 pending |
 | 邻居扩展、2048 证据预算 | 离线实验，不替换业务默认 |
-| API 与独立索引 worker | 共用显式 HTTP 存储；production 配置禁止回退本地库 |
+| API 与独立索引 worker | Chroma 后端共用显式 HTTP 存储；RAGFlow 后端由 worker `--ragflow` 同步 |
+
+默认仍是已验证的 Chroma；RAGFlow 是显式 opt-in，需要外部 RAGFlow v1.0，接入与限制见[说明](docs/2026-11-25-ragflow-backend.md)。
 
 ## 快速复现
 
@@ -84,7 +87,7 @@ cd backend
 
 `eval.offline_tests` 隔离个人配置、使用临时状态，并阻断进程内外网访问。测试中 loopback 服务仍可通信；它不是任意子进程的网络沙箱。
 
-真实索引测试会自动启动并关闭本机临时 Chroma HTTP 服务，与生产连接方式一致；无需预先部署。10/16—17 已复现内存客户端在缓存压力下的向量读取故障，并增加回归；加入原生回答验收入口检查后，2026-11-25 离线回归 **468 项通过**。[故障、取舍与验证范围](docs/2026-10-17-index-test-storage-boundary.md)。
+真实索引测试会自动启动并关闭本机临时 Chroma HTTP 服务，与生产连接方式一致；无需预先部署。10/16—17 已复现内存客户端在缓存压力下的向量读取故障，并增加回归；加入 RAGFlow 适配测试后，2026-11-25 离线回归 **496 项通过**。[故障、取舍与验证范围](docs/2026-10-17-index-test-storage-boundary.md)。
 
 启动笔记应用、配置索引 worker、运行真实缓存模型实验，见[使用与复现](README_zh.md)。安装依赖需要网络；离线回归本身无需在线模型。
 

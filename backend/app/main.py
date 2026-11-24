@@ -49,7 +49,7 @@ app.state.limiter = limiter
 
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
-    return JSONResponse(status_code=429, content={"detail": f"请求过于频繁，请稍后再试"})
+    return JSONResponse(status_code=429, content={"detail": "请求过于频繁，请稍后再试"})
 
 app.add_middleware(
     CORSMiddleware,
@@ -72,8 +72,7 @@ def health(request: Request):
 
 
 @app.get("/api/ready")
-def ready(db: Session = Depends(get_db)):
-    from app.services.rag_service import chroma_client
+def ready(db: Session = Depends(get_db)):  # noqa: B008 -- FastAPI dependency idiom
     checks = {"sql": "ok", "index": "ok"}
     try:
         db.execute(text("SELECT 1"))
@@ -84,7 +83,14 @@ def ready(db: Session = Depends(get_db)):
         db.rollback()
         checks["sql"] = "unavailable"
     try:
-        chroma_client.heartbeat()
+        if settings.kb_retrieval_backend == "ragflow":
+            from app.services.ragflow_client import get_ragflow_client
+            client = get_ragflow_client(settings)
+            if client is None or not client.health():
+                checks["index"] = "unavailable"
+        else:
+            from app.services.rag_service import chroma_client
+            chroma_client.heartbeat()
     except Exception:
         checks["index"] = "unavailable"
     available = all(value == "ok" for value in checks.values())

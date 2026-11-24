@@ -60,6 +60,27 @@
 
 实现：[index_jobs](../backend/app/services/index_jobs.py)、[worker](../backend/app/services/index_worker.py)、[连接工厂](../backend/app/services/index_store.py)、[故障测试](../backend/tests/test_index_worker_chroma.py)、[完整设计](2026-10-14-chroma-process-boundary.md)。原库migration和旧索引重建未替用户原实例执行。
 
+## 5. RAGFlow 生产后端：把解析/检索/存储委托出去
+
+用户明确最看重在线检索与离线存储，并允许重构。新增 `KB_RETRIEVAL_BACKEND=ragflow` 显式后端：RAGFlow 负责文档解析、切片、向量存储和 hybrid retrieval；SQL 仍是笔记真值，RAGFlow 是可重建派生索引。
+
+| 环节 | 实现 |
+|---|---|
+| 数据集 | 每用户 `kb_user_{id}`；服务端单 API Key |
+| 文档 | 一条笔记一个 `node-{id}.md`；内容变化 delete+re-upload |
+| 同步 | 复用 `index_jobs`；worker `--ragflow` 上传、PATCH metadata、触发解析 |
+| 解析状态 | `ragflow_documents.state`：parsing/ready/failed/missing；worker 轮询 |
+| 检索 | `/api/v1/retrieval` → `document_id` 映射 `node_id` → 当前 SQL fingerprint 复核 |
+| 引用 | 仍由 `finalize_kb_answer` 校验 `[doc:ID]`，不信任 RAGFlow 自带引用 |
+| 状态 | `/api/index-jobs/status` 返回 job、dataset、文档状态和失败列表 |
+| 回退 | `KB_RETRIEVAL_BACKEND=chroma`；RAGFlow 表保留，不删 SQL 笔记 |
+
+已验证（单元/契约，无真实 RAGFlow）：HTTP 信封与错误、上传/解析/检索请求形状、同步幂等、内容变化替换、失败状态、解析状态轮询、检索映射/fingerprint/跨用户隔离、配置校验、Alembic 迁移、状态 API。
+
+**未验证**：真实 RAGFlow 冒烟与 36 题检索对照。本机 Docker daemon 未运行，且磁盘余量有限；不能用 MockTransport 测试冒充在线验证。待 Docker 可用后运行 `python -m scripts.ragflow_smoke`，再用同一冻结题集比较 Chroma/RAGFlow 的 Hit@k 与证据覆盖。
+
+决策、限制和回退见 [ADR 0002](adr/0002-ragflow-backend.md) 与 [接入说明](2026-11-25-ragflow-backend.md)；原始记录见 [ragflow-integration-20261125.json](evidence/ragflow-integration-20261125.json)。
+
 ## 验证与复现
 
 2026-10-15的历史验证：Windows / CPython3.12.15，后端440项、7模块mypy、指定新增模块ruff与前端build。当轮命令输出与首次失败记录见[verification.json](evidence/verification.json)。安装与显式存储/worker步骤见[README_zh](../README_zh.md)。
@@ -67,6 +88,8 @@
 2026-10-17加入原生回答验收入口的9个离线检查后，该轮完整回归450 passed、5条既有warnings、86.17s；[本轮审计](evidence/native-rag-audit-20261017.json)区分真实请求、离线检查与尚未覆盖项。存储边界修正时的441项记录保留其原时间点。
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
+
+2026-11-25 RAGFlow 接入后完整离线回归：**496 passed, 43 warnings, 107.42s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

@@ -33,7 +33,7 @@
 
 | 组件 | 拒绝理由 |
 |---|---|
-| RAGFlow | 完整平台，与现有检索/切片/索引重复；Go + ES/Infinity + MySQL + MinIO 运维成本高 |
+| RAGFlow | 原判断为“完整平台，与现有检索/切片/索引重复”；2026-11-25 用户明确选择直接接入 RAGFlow，作为生产检索/存储后端，见 [ADR 0002](0002-ragflow-backend.md)。本行保留为历史决策，不再作为拒绝依据。 |
 | LlamaIndex | 与 LangChain 双抽象重复；没有当前缺口需要它 |
 | Qdrant | Chroma 已满足；迁移会推翻已有 HTTP 进程边界与索引一致性验证 |
 | DeepEval | 与 Ragas 重叠；仅作为 Ragas 适配失败时的备选 |

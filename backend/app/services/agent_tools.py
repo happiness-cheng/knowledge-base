@@ -5,17 +5,23 @@ import logging
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from app.database import nocase
-from app.services.rag_service import retrieve_relevant_nodes
 from app.models.node import KnowledgeNode
 from app.models.tag import Tag
 from app.models.relationship import Relationship
 from app.services.tool_executor import (
-    ToolCapacityUnavailable, ToolWaitTimeout, close_tool_executor, run_read_tool,
+    ToolCapacityUnavailable, ToolWaitTimeout, run_read_tool,
 )
 
 logger = logging.getLogger(__name__)
 
 TOOL_TIMEOUT_SECONDS = 30
+
+
+def retrieve_relevant_nodes(*args, **kwargs):
+    """懒加载 Chroma 检索；RAGFlow 后端不应在 import 时创建 Chroma 客户端。"""
+    from app.services.rag_service import retrieve_relevant_nodes as implementation
+
+    return implementation(*args, **kwargs)
 
 
 def _bounded_int(value, *, default: int, minimum: int, maximum: int) -> int:
@@ -131,7 +137,19 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
     # chunks_per_node 走 rag_service 的模块默认值（MAX_CHUNKS_PER_NODE=2）：
     # 每个 node 多返回一块，实测把"答案段进上下文"从 0.818 提到 0.977，延迟仅 +10ms。
     # 依据见 rag_service.retrieve_relevant_nodes 的注释与 exp_rerank_decision.py。
-    results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
+    from app.config import settings
+    if settings.kb_retrieval_backend == "ragflow":
+        from app.services.ragflow_client import get_ragflow_client
+        from app.services.ragflow_retrieval import retrieve_for_user
+
+        client = get_ragflow_client(settings)
+        if client is None:
+            return json.dumps({"error": "retrieval backend not configured"})
+        results = retrieve_for_user(
+            db, user_id=user_id, query=query, top_k=top_k, client=client,
+        )
+    else:
+        results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
     trimmed = []
     for r in results:
         content = r.get("content", "")

@@ -326,8 +326,23 @@ def run_langchain_rag(db, question, *, user_id, ai_client=None, model=None, retr
         timeout_seconds=min(10, timeout_seconds), max_output_tokens=min(300, max_output_tokens),
     )
     if retrieval is None:
-        from app.services.rag_service import retrieve_relevant_nodes
-        retrieval = retrieve_relevant_nodes
+        from app.config import settings
+        if settings.kb_retrieval_backend == "ragflow":
+            from app.services.ragflow_client import get_ragflow_client
+            from app.services.ragflow_retrieval import retrieve_for_user
+
+            client = get_ragflow_client(settings)
+            if client is None:
+                return finish(failure="retrieval_backend_not_configured")
+
+            def retrieval(query, *, user_id, top_k):
+                return retrieve_for_user(
+                    db, user_id=user_id, query=query, top_k=top_k, client=client,
+                )
+        else:
+            from app.services.rag_service import retrieve_relevant_nodes
+
+            retrieval = retrieve_relevant_nodes
     retriever = AuthenticatedKBRetriever(db=db, user_id=user_id, retrieval=retrieval,
                                        top_k=top_k, observe_tool_result=observe_tool_result,
                                        branch_queries=tuple(rewrite_result['queries']),

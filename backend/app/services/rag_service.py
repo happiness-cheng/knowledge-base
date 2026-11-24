@@ -12,6 +12,7 @@ from app.services.index_jobs import enqueue, fingerprint
 from app.services.evidence_freshness import current_evidence
 from app.services.embedding_input import count_tokens, prepare_chunks
 from app.services.index_store import create_index_client
+from app.services.index_metadata import collection_metadata
 from app.config import settings
 
 # Setup paths
@@ -66,12 +67,27 @@ def get_collection_name(user_id: int, suffix: str | None = None) -> str:
 
 
 def _get_user_collection(user_id: int, suffix: str | None = None):
-    """获取用户专属的向量集合
+    """获取用户专属的向量集合。
 
     suffix=None 时用模块级 _SUFFIX（生产默认行为，向后兼容旧调用）；
     显式传 "" 用于测试/影子脚本，指向旧集合且不受环境变量影响。
+
+    新集合写入模型/维度/切分策略/schema 元数据；旧集合只读取，不静默改写，
+    由对账入口报告 metadata missing/mismatch。
     """
-    return chroma_client.get_or_create_collection(name=get_collection_name(user_id, suffix))
+    name = get_collection_name(user_id, suffix)
+    try:
+        return chroma_client.get_collection(name=name)
+    except NotFoundError:
+        try:
+            return chroma_client.create_collection(
+                name=name, metadata=collection_metadata(),
+            )
+        except Exception as exc:  # noqa: BLE001 -- 并发创建时回读已存在集合。
+            try:
+                return chroma_client.get_collection(name=name)
+            except Exception:
+                raise exc
 
 
 def _get_existing_user_collection(user_id: int):

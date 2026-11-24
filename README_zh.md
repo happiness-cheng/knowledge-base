@@ -15,7 +15,7 @@ cd backend
 ../.venv/Scripts/python.exe -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short
 ```
 
-当前本地 468 项通过（CPython 3.14.0；发布前需在约束声明的 3.12.15 环境复跑）；无需个人配置、在线模型或原数据库。约束文件固定已验证的 Windows 环境版本，不是跨平台、带文件 hash 的依赖 lock。直接 `pytest` 不具有离线入口的配置隔离承诺。
+当前本地 496 项通过（CPython 3.14.0；发布前需在约束声明的 3.12.15 环境复跑）；无需个人配置、在线模型或原数据库。约束文件固定已验证的 Windows 环境版本，不是跨平台、带文件 hash 的依赖 lock。直接 `pytest` 不具有离线入口的配置隔离承诺。
 
 ## 2. 启动一个新的本机实例
 
@@ -94,4 +94,4 @@ npm run dev
 
 ## 4. 当前边界
 
-聊天 API 默认走 LangChain 严格 RAG（`kb_only=true`、`retrieval_mode=current`），rerank/rewrite 默认关闭；自定义 Agent 通过 `kb_only=false` 显式选择，混合/BM25/精排/改写均为显式 opt-in。SQL/Chroma最终一致性允许更新期间暂时缺证据；没有跨库原子切换、租约续租或跨主机writer锁。旧数据迁移、旧索引重建、公网鉴权部署、MySQL并发和长期负载需各自验收，不由本机回归推断。
+聊天 API 默认走 LangChain 严格 RAG（`kb_only=true`、`retrieval_mode=current`），rerank/rewrite 默认关闭；自定义 Agent 通过 `kb_only=false` 显式选择，混合/BM25/精排/改写均为显式 opt-in。检索/存储默认仍是 Chroma；设置 `KB_RETRIEVAL_BACKEND=ragflow` 可切换到外部 RAGFlow v1.0（每用户 dataset、异步解析、SQL 二次核验），接入步骤与限制见 [RAGFlow 后端](docs/2026-11-25-ragflow-backend.md)。SQL/Chroma 最终一致性允许更新期间暂时缺证据；没有跨库原子切换、租约续租或跨主机 writer 锁。旧数据迁移、旧索引重建、公网鉴权部署、MySQL 并发和长期负载需各自验收，不由本机回归推断。

@@ -48,6 +48,13 @@ class Settings(BaseSettings):
     ai_model_name: str = "deepseek-flash"
     ai_key_encryption_key: str = ""
     upload_dir: str = os.path.join(_data_dir, "uploads")
+    # 检索/索引后端：默认保留已验证的本地 Chroma；RAGFlow 为显式 opt-in。
+    kb_retrieval_backend: Literal["chroma", "ragflow"] = "chroma"
+    ragflow_base_url: str = ""
+    ragflow_api_key: str = ""
+    ragflow_dataset_prefix: str = "kb_user"
+    ragflow_timeout_seconds: float = 30.0
+    ragflow_embedding_model: str = ""
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: _parse_cors(None)
     )
@@ -61,6 +68,20 @@ class Settings(BaseSettings):
         return _parse_cors(value)
 
     def validate_runtime(self):
+        if self.kb_retrieval_backend == "ragflow":
+            from urllib.parse import urlparse
+
+            parsed = urlparse(self.ragflow_base_url)
+            if parsed.scheme not in ("http", "https") or not parsed.netloc:
+                raise RuntimeError(
+                    "RAGFLOW_BASE_URL must be an HTTP(S) origin when KB_RETRIEVAL_BACKEND=ragflow"
+                )
+            if not self.ragflow_api_key.strip():
+                raise RuntimeError(
+                    "RAGFLOW_API_KEY is required when KB_RETRIEVAL_BACKEND=ragflow"
+                )
+            if self.ragflow_timeout_seconds <= 0:
+                raise RuntimeError("RAGFLOW_TIMEOUT_SECONDS must be positive")
         if self.app_env != "production":
             return
         if self.secret_key == DEFAULT_DEVELOPMENT_SECRET_KEY or len(self.secret_key) < 32:
@@ -75,7 +96,8 @@ class Settings(BaseSettings):
             ) from exc
         from app.services.index_store import parse_server_url
         try:
-            parse_server_url(self.kb_chroma_url)
+            if self.kb_retrieval_backend == 'chroma':
+                parse_server_url(self.kb_chroma_url)
         except ValueError:
             raise RuntimeError('KB_CHROMA_URL must be a valid HTTP(S) origin in production') from None
 

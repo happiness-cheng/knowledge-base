@@ -1,4 +1,7 @@
-version: "3.8"
+# RAGFlow-first 部署：RAGFlow 本身按官方 docker compose 独立启动。
+# 本文件只负责本应用的 SQL、API、迁移与索引 worker。
+# 若 RAGFlow 跑在宿主机，默认用 host.docker.internal；跑在同一 Docker 网络时
+# 在 .env 里把 RAGFLOW_BASE_URL 改成对应服务名。
 
 services:
   mysql:
@@ -17,6 +20,18 @@ services:
       timeout: 5s
       retries: 5
 
+  migrate:
+    build: .
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+    command: ["python", "-m", "alembic", "upgrade", "head"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+
   backend:
     build: .
     ports:
@@ -25,15 +40,57 @@ services:
       - .env
     environment:
       APP_ENV: production
+      KB_RETRIEVAL_BACKEND: ragflow
+      RAGFLOW_BASE_URL: ${RAGFLOW_BASE_URL:-http://host.docker.internal:9380}
+      RAGFLOW_API_KEY: ${RAGFLOW_API_KEY:?Set RAGFLOW_API_KEY in .env}
+      KB_CHROMA_URL: ""
     volumes:
-      - chroma_data:/app/chroma_db
       - upload_data:/app/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       mysql:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8766/api/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  index-worker:
+    build: .
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      KB_RETRIEVAL_BACKEND: ragflow
+      RAGFLOW_BASE_URL: ${RAGFLOW_BASE_URL:-http://host.docker.internal:9380}
+      RAGFLOW_API_KEY: ${RAGFLOW_API_KEY:?Set RAGFLOW_API_KEY in .env}
+      KB_CHROMA_URL: ""
+    command:
+      - sh
+      - -c
+      - >-
+        python -m app.services.index_worker
+        --database-url "$$DATABASE_URL"
+        --ragflow
+        --lock-dir /state/index-lock
+    volumes:
+      - index_lock:/state
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     restart: unless-stopped
 
 volumes:
   mysql_data:
-  chroma_data:
   upload_data:
+  index_lock:

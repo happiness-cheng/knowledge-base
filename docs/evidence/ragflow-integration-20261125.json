@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-25",
+  "phase": "RAGFlow backend integration",
+  "backend": "ragflow v1.0.0 HTTP API",
+  "status": "unit/contract verified; real smoke pending",
+  "environment": {
+    "python": "3.14.0",
+    "docker_cli": "29.8.1",
+    "docker_daemon": "not running",
+    "documented_verified_python": "3.12.15",
+    "note": "Docker daemon 未运行，未启动 RAGFlow；未将 MockTransport 契约测试冒充在线验证。"
+  },
+  "verified": {
+    "offline_tests": {
+      "command": "python -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short",
+      "exit_code": 0,
+      "result": "496 passed, 43 warnings in 107.42s"
+    },
+    "isolation": "PASS",
+    "artifact_policy": "PASS",
+    "compileall": "PASS",
+    "mypy": "10 modules checked; no issues",
+    "ruff": "new RAGFlow modules checked; all checks passed",
+    "unit_contracts": [
+      "RAGFlow HTTP envelope/code/error handling without leaking API key",
+      "create_dataset/upload/update metadata/parse/list/delete/retrieve request shapes",
+      "sync idempotence and content-change delete+reupload",
+      "parse failure marks state failed and re-raises",
+      "refresh_states maps DONE/FAIL/missing",
+      "retrieval maps document_id to node_id, filters stale fingerprints and cross-user chunks",
+      "config requires base URL and API key for ragflow backend",
+      "Alembic migration 20261125_03 creates ragflow datasets/documents and keeps old baseline validation",
+      "GET /api/index-jobs/status reports job/document states without cross-user leakage"
+    ]
+  },
+  "not_verified": [
+    "Real RAGFlow health/upload/parse/retrieval smoke (Docker daemon unavailable)",
+    "36-case retrieval comparison Chroma vs RAGFlow (Hit@k, evidence coverage, latency)",
+    "RAGFlow tenant/permission model beyond server-side single API key and per-user dataset naming",
+    "Large dataset cleanup/snapshot/restore procedure",
+    "MySQL deployment of the new migration (SQLite migration test only)"
+  ],
+  "next_commands": [
+    "start RAGFlow v1.0.0 official docker compose",
+    "set KB_RETRIEVAL_BACKEND=ragflow, RAGFLOW_BASE_URL, RAGFLOW_API_KEY",
+    "python -m alembic upgrade head",
+    "python -m scripts.ragflow_smoke",
+    "run frozen 36-case retrieval comparison against RAGFlow"
+  ]
+}

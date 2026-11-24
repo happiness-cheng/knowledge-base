@@ -94,11 +94,24 @@ def main(argv=None):
     parser.add_argument("--database-url", required=True)
     parser.add_argument("--chroma-dir", type=Path)
     parser.add_argument("--chroma-url", default=os.environ.get('KB_CHROMA_URL', ''))
+    parser.add_argument("--ragflow", action='store_true',
+                        help='使用 RAGFlow 后端；不需要 Chroma URL/目录')
     parser.add_argument("--lock-dir", type=Path)
     parser.add_argument("--offline-local", action='store_true', help='本地索引仅在API停止后离线更新')
     parser.add_argument("--once", action="store_true")
+    parser.add_argument("--refresh-interval", type=int, default=15,
+                        help='RAGFlow 解析状态轮询间隔（秒）')
     args = parser.parse_args(argv)
-    if args.chroma_url:
+    if args.refresh_interval < 1:
+        parser.error('--refresh-interval must be positive')
+    if args.ragflow:
+        if args.chroma_url or args.chroma_dir is not None or args.offline_local:
+            parser.error('RAGFlow mode does not accept Chroma path/url/offline flags')
+        if args.lock_dir is None or not args.lock_dir.is_absolute():
+            parser.error('RAGFlow mode requires an absolute --lock-dir shared by writers on this host')
+        lock_directory = args.lock_dir
+        os.environ['KB_RETRIEVAL_BACKEND'] = 'ragflow'
+    elif args.chroma_url:
         from app.services.index_store import parse_server_url
         try:
             parse_server_url(args.chroma_url)
@@ -129,16 +142,62 @@ def main(argv=None):
         if settings.kb_chroma_url != args.chroma_url or settings.database_url != args.database_url:
             raise RuntimeError('worker configuration was already loaded; start a fresh process')
         from app.database import SessionLocal
-        from app.services import rag_service
+        if settings.kb_retrieval_backend == 'ragflow':
+            from app.models.node import KnowledgeNode
+            from app.models.ragflow import RagflowDataset
+            from app.services import ragflow_sync
+            from app.services.ragflow_client import get_ragflow_client
+
+            client = get_ragflow_client(settings)
+            if client is None:
+                raise RuntimeError('RAGFlow backend selected but RAGFLOW_BASE_URL/API_KEY missing')
+
+            def upsert(node_id, content, title, user_id):
+                with SessionLocal() as db:
+                    node = db.query(KnowledgeNode).filter_by(
+                        id=node_id, user_id=user_id,
+                    ).first()
+                    if node is not None:
+                        ragflow_sync.sync_node(
+                            db, node, client,
+                            prefix=settings.ragflow_dataset_prefix,
+                            embedding_model=settings.ragflow_embedding_model,
+                        )
+                    db.commit()
+
+            def remove(node_id, user_id):
+                with SessionLocal() as db:
+                    ragflow_sync.delete_node(db, user_id, node_id, client)
+                    db.commit()
+
+            refresh_backend = True
+        else:
+            from app.services import rag_service
+
+            upsert = rag_service.add_node_to_index
+            remove = rag_service.remove_node_from_index
+            refresh_backend = False
         try:
+            last_refresh = 0.0
             while True:
-                result = run_once(SessionLocal, rag_service.add_node_to_index, rag_service.remove_node_from_index)
+                result = run_once(SessionLocal, upsert, remove)
+                if refresh_backend and (
+                    args.once or time.monotonic() - last_refresh >= args.refresh_interval
+                ):
+                    with SessionLocal() as db:
+                        for (user_id,) in db.query(RagflowDataset.user_id).all():
+                            ragflow_sync.refresh_states(db, user_id, client)
+                        db.commit()
+                    last_refresh = time.monotonic()
                 if args.once:
                     return
                 if result == "idle":
                     time.sleep(1)
         finally:
-            rag_service.chroma_client.close()
+            if refresh_backend:
+                client.close()
+            else:
+                rag_service.chroma_client.close()
 
 
 if __name__ == "__main__":

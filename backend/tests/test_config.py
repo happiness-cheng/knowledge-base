@@ -37,3 +37,30 @@ def test_production_with_valid_explicit_index_origin_passes_without_connecting()
     config = Settings(_env_file=None, app_env='production', secret_key='a'*32,
                       ai_key_encryption_key=Fernet.generate_key().decode(), kb_chroma_url='http://127.0.0.1:8000')
     config.validate_runtime()
+
+
+def test_ragflow_backend_requires_base_url_and_api_key():
+    config = Settings(_env_file=None, kb_retrieval_backend='ragflow')
+    with pytest.raises(RuntimeError, match='RAGFLOW_BASE_URL'):
+        config.validate_runtime()
+    config = Settings(_env_file=None, kb_retrieval_backend='ragflow',
+                      ragflow_base_url='http://ragflow:9380')
+    with pytest.raises(RuntimeError, match='RAGFLOW_API_KEY'):
+        config.validate_runtime()
+
+
+def test_ragflow_backend_rejects_non_http_base_url():
+    config = Settings(_env_file=None, kb_retrieval_backend='ragflow',
+                      ragflow_base_url='ragflow:9380', ragflow_api_key='k')
+    with pytest.raises(RuntimeError, match='RAGFLOW_BASE_URL'):
+        config.validate_runtime()
+
+
+def test_ragflow_production_does_not_require_chroma_url():
+    config = Settings(
+        _env_file=None, app_env='production', secret_key='a'*32,
+        ai_key_encryption_key=Fernet.generate_key().decode(),
+        kb_retrieval_backend='ragflow', ragflow_base_url='http://ragflow:9380',
+        ragflow_api_key='k', kb_chroma_url='',
+    )
+    config.validate_runtime()

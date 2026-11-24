@@ -13,6 +13,7 @@ from app.config import settings
 # 导入所有模型以注册到 Base.metadata
 from app.models import user  # noqa: F401
 from app.models import node, tag, relationship, source, chat  # noqa: F401
+from app.models import index_job, ragflow  # noqa: F401
 
 config = context.config
 

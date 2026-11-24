@@ -54,11 +54,13 @@ def test_upgrade_creates_schema_and_records_head(tmp_path):
         "node_tags",
         "message_sources",
         "index_jobs",
+        "ragflow_datasets",
+        "ragflow_documents",
     } <= tables
     with engine.connect() as connection:
         assert (
             connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
-            == "20261014_02"
+            == "20261125_03"
         )
 
 

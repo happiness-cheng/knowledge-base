@@ -22,7 +22,9 @@ def schema_differences(database_engine, *, baseline_only=False) -> list[str]:
         differences.append("index_jobs already exists; validate current schema instead")
 
     for table in Base.metadata.sorted_tables:
-        if baseline_only and table.name == "index_jobs":
+        if baseline_only and table.name in {
+            "index_jobs", "ragflow_datasets", "ragflow_documents",
+        }:
             continue
         if table.name not in existing_tables:
             differences.append(f"missing table: {table.name}")
@@ -55,7 +57,7 @@ def main() -> int:
         print(f"Schema is incompatible: {exc}", file=sys.stderr)
         return 1
 
-    revision = "20260712_01" if args.baseline_only else "20261014_02"
+    revision = "20260712_01" if args.baseline_only else "20261125_03"
     print(f"Schema shape matches {revision}; confirm migration history before stamping. No DDL performed.")
     return 0
 

@@ -1,5 +1,10 @@
 # 在线检索与离线存储加固计划
 
+> **2026-11-25 更新**：用户选择直接接入 **RAGFlow v1.0**，主线改为
+> [ADR 0002](../../adr/0002-ragflow-backend.md) 与
+> [RAGFlow 接入说明](../../2026-11-25-ragflow-backend.md)。本文件中 Chroma HTTP
+> 对账/状态 API 的部分保留为 fallback；RAGFlow 负责解析、切片、向量存储和混合检索。
+
 - 日期：2026-11-25
 - 状态：已根据用户优先级调整；Ragas / Langfuse / LangGraph / Docling 暂停
 - 目标：把“能搜得准”建立在两个可验证的前提上：
