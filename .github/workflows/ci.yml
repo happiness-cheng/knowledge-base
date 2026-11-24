@@ -35,7 +35,7 @@ jobs:
 
       - name: Lint production additions
         working-directory: backend
-        run: python -m ruff check --isolated --select E4,E7,E9,F,B app/models/index_job.py app/routers/index_jobs.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/kb_answer_contract.py app/services/langchain_rag.py app/services/query_rewrite.py app/services/retrieval_pipeline.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py app/services/ragflow_client.py app/services/ragflow_sync.py app/services/ragflow_retrieval.py app/services/ragflow_reconcile.py app/services/index_metadata.py eval/retrieval_regression.py eval/run_retrieval_regression.py
+        run: python -m ruff check --isolated --select E4,E7,E9,F,B app/models/index_job.py app/routers/index_jobs.py app/services/index_jobs.py app/services/index_worker.py app/services/evidence_freshness.py app/services/kb_answer_contract.py app/services/langchain_rag.py app/services/query_rewrite.py app/services/retrieval_pipeline.py app/services/embedding_input.py app/services/tool_executor.py app/services/index_store.py app/services/ragflow_client.py app/services/ragflow_sync.py app/services/ragflow_retrieval.py app/services/ragflow_reconcile.py app/services/index_metadata.py eval/retrieval_regression.py eval/run_retrieval_regression.py scripts/ragflow_corpus_benchmark.py scripts/bge_server.py scripts/tei_stub.py
 
       - name: Artifact inputs
         working-directory: backend

@@ -109,6 +109,35 @@ fixture 的数字只说明确定性管线稳定、指标能区分失败类型，
 BGE/Chroma 或 RAGFlow 的检索质量。frozen-dense 是历史真实向量基线，但仍不是
 当前在线索引；真实基线必须在 `--backend chroma` 与 `--backend ragflow` 上分别生成。
 
+## 真实 RAGFlow 基线（2026-11-25）
+
+在 WSL Docker 的 RAGFlow v1.0.0（Go API + Infinity，512 token 切片）上，用真实
+`BAAI/bge-large-zh-v1.5`（本地 TEI 兼容服务，1024 维）上传 16 篇冻结语料，
+同一 36 题、top_k=3、similarity_threshold=0.2：
+
+| 配置 | Hit@1 | Hit@3 | MRR | evidence_coverage | all_evidence | nDCG@10 |
+|---|---:|---:|---:|---:|---:|---:|
+| RAGFlow，keywords=0.7 | 0.8519 | 0.8519 | 1.0000 | 0.6481 | 0.5185 | 0.8489 |
+| RAGFlow，keywords=0.3 | 0.8889 | 1.0000 | 0.9383 | 0.8148 | 0.7407 | 0.9541 |
+| frozen-dense（Chroma 参考） | 0.8889 | 1.0000 | 0.9444 | 0.7778 | 0.7407 | 0.9447 |
+
+原始报告：[0.7](evidence/retrieval-regression-ragflow-20261125.json)、
+[0.3](evidence/retrieval-regression-ragflow-kw03-20261125.json)。
+
+同一 RAGFlow 切片、同一 36 题只改 `keywords_similarity_weight`：0.7→0.3 后
+Hit@3 0.8519→1.0、evidence_coverage 0.6481→0.8148、all_evidence 0.5185→0.7407、
+nDCG 0.8489→0.9541；MRR 0.9383 略低于 0.7 的 1.0（首个 gold 排名变差一例）。
+这是受控参数实验，不是切片/候选/打包完全相同的跨系统对照。
+
+失败桶（RAGFlow 0.3）：`all_evidence=20`、`partial_evidence=4`、
+`node_hit_no_evidence=3`、`negative=9`；已经没有 `not_retrieved`。0.3 在
+heldout 上 coverage=0.667、development=0.933，均高于 0.7 的 0.583/0.700。
+
+基于这次 36 题实验，RAGFlow 生产默认改为 `RAGFLOW_KEYWORDS_SIMILARITY_WEIGHT=0.3`
+（`RAGFLOW_SIMILARITY_THRESHOLD=0.2` 不变），仍可通过环境变量回到 0.7。
+小样本、非盲测；若后续 heldout/真实查询回退，应回退该默认值，不能把这次结果
+当成普遍最优。
+
 ## 门禁
 
 CI 只跑 fixture gate：确定性、无模型、无网络。真实 Chroma/RAGFlow 回归需要显式
@@ -121,5 +150,6 @@ CI 只跑 fixture gate：确定性、无模型、无网络。真实 Chroma/RAGFl
 - 检索层指标不等于回答正确率；引用合法/事实支持仍由生成层和人工复核负责。
 - fixture 的 hit@3 高不代表真实检索好；它只是让 CI 能在没有模型时发现报告/指标
   代码回归。
-- RAGFlow 真实报告尚未生成；Docker daemon/API Key 就绪后先用同一题集跑
-  `--backend ragflow`，再与 Chroma 对比。
+- RAGFlow 真实报告已经生成，但只有一个 36 题语料、一种 512-token 切片；它与
+  frozen-dense 的切片/候选/打包不同，不能当成完全同条件对照。扩到独立盲测前，
+  0.3 只是当前语料上的可回退默认值。

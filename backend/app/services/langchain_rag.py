@@ -342,6 +342,8 @@ def run_langchain_rag(db, question, *, user_id, ai_client=None, model=None, retr
             def retrieval(query, *, user_id, top_k):
                 return retrieve_for_user(
                     db, user_id=user_id, query=query, top_k=top_k, client=client,
+                    keywords_similarity_weight=settings.ragflow_keywords_similarity_weight,
+                    similarity_threshold=settings.ragflow_similarity_threshold,
                 )
         else:
             from app.services.rag_service import retrieve_relevant_nodes

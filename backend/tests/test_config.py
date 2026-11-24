@@ -64,3 +64,13 @@ def test_ragflow_production_does_not_require_chroma_url():
         ragflow_api_key='k', kb_chroma_url='',
     )
     config.validate_runtime()
+
+
+def test_ragflow_retrieval_tuning_defaults_and_bounds():
+    config = Settings(_env_file=None)
+    assert config.ragflow_keywords_similarity_weight == 0.3
+    assert config.ragflow_similarity_threshold == 0.2
+    with pytest.raises(ValueError):
+        Settings(_env_file=None, ragflow_keywords_similarity_weight=1.1)
+    with pytest.raises(ValueError):
+        Settings(_env_file=None, ragflow_similarity_threshold=-0.1)

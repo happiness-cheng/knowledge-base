@@ -96,12 +96,20 @@ Hit@1/3、MRR、gold evidence coverage、all-evidence rate、nDCG@10 与 p50/p95
 | `fixture` | 确定性词项检索，CI 门禁/报告 schema | 已跑 36 题；Hit@3=1.0，coverage=0.4074，仅 plumbing |
 | `frozen-dense` | 读取已提交的 `k3-dense.json`（真实 BGE、精确内积、20 候选） | 已跑 36 题；Hit@3=1.0，coverage=0.7778，all-evidence=0.7407 |
 | `chroma` | 真实 BGE/Chroma 当前索引 | 入口已实现；需要已建索引，未在本轮复跑 |
-| `ragflow` | 真实 RAGFlow 检索 | 入口已实现；HTTP 冒烟用确定性测试向量桩跑通，36 题真实对照未跑 |
+| `ragflow` | 真实 RAGFlow 检索（RAGFlow 512-token 切片，真实 BGE） | 36 题已跑：keywords=0.7 coverage=0.6481；0.3 coverage=0.8148、Hit@3=1.0；生产默认 0.3 |
 
 fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 用
 `--backend fixture --gate`，不加载模型、不联网。真实 Chroma/RAGFlow 必须各自
 生成 before/after，不能拿 fixture 的 Hit@3 冒充真实质量。方法与限制见
 [检索质量回归](2026-11-25-retrieval-regression.md)。
+
+真实 RAGFlow 对照（同一 16 篇语料、同一 36 题、同一 512-token 切片，只改
+`keywords_similarity_weight`）显示 0.7→0.3 后 Hit@3 0.8519→1.0、
+evidence_coverage 0.6481→0.8148、all_evidence 0.5185→0.7407、nDCG 0.8489→0.9541；
+MRR 0.9383 略低于 0.7 的 1.0。0.3 已设为 RAGFlow 生产默认，仍可回退；它是
+单语料受控实验，不是普遍最优结论。原始报告：
+[0.7](evidence/retrieval-regression-ragflow-20261125.json)、
+[0.3](evidence/retrieval-regression-ragflow-kw03-20261125.json)。
 
 ## 验证与复现
 
@@ -111,7 +119,7 @@ fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
-2026-11-25 RAGFlow 接入后完整离线回归：**513 passed, 43 warnings, 198.17s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟已跑通（确定性测试向量桩；真实模型/质量未验证）。
+2026-11-25 RAGFlow 接入后完整离线回归：**514 passed, 43 warnings, 118.70s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟与 36 题已用 BGE 跑通；0.3 参数实验已写回，回答生成质量仍未验证。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

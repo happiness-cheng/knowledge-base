@@ -65,8 +65,10 @@ React 保存笔记
 
 - 需要 Docker 多容器（RAGFlow 1.0 官方 compose：RAGFlow、文档引擎、MySQL、
   MinIO、Redis 等）；本机 Windows daemon 未运行，已在 WSL Docker 上冒烟。
-- 2026-11-25 的冒烟只验证 HTTP/队列/状态链路，使用确定性测试向量桩，不是真实
-  embedding；真实模型和检索质量仍待验证。
+- 2026-11-25 的冒烟和 36 题对照已使用真实 `BAAI/bge-large-zh-v1.5`；在同一
+  512-token 切片上，把 `keywords_similarity_weight` 从 0.7 降到 0.3 后，
+  Hit@3 0.8519→1.0、coverage 0.6481→0.8148、all-evidence 0.5185→0.7407。
+  这是单语料、非盲测结果，默认改为 0.3 但保留环境变量回退。
 - 解析是异步的；`index_jobs` 成功只代表 RAGFlow 接受上传/解析，不代表 chunk 已可用；
   `ragflow_documents.state` 才是可检索状态。
 - 内容更新是 delete+re-upload，document_id 会变化；旧 chunk 的清理依赖 RAGFlow
@@ -77,6 +79,8 @@ React 保存笔记
   Chroma（避免混用两个索引）。
 - RAGFlow 默认 embedding/parser 由服务端配置决定；`RAGFLOW_EMBEDDING_MODEL` 留空
   表示使用服务端默认，不能把“维度相同”当成模型一致。
+- `RAGFLOW_KEYWORDS_SIMILARITY_WEIGHT` 默认 0.3 来自 36 题单语料实验；换语料或
+  换 embedding 后必须重新对照，不能把 0.3 当普适最优。
 
 ## 回退
 
@@ -88,6 +92,7 @@ React 保存笔记
 - 单元测试：客户端信封/错误、同步幂等/内容变更/失败状态、检索映射/指纹/跨用户、
   配置校验、状态 API。
 - 集成冒烟：`python -m scripts.ragflow_smoke`；2026-11-25 已在 WSL Docker 的
-  RAGFlow v1.0.0 上跑通，但使用确定性测试向量桩，真实 TEI/BGE 模型未验证。
-- 真实 36 题检索对照：待真实 embedding 就绪后，用同一题集比较 Hit@k/证据覆盖；
-  未完成前不宣称 RAGFlow 检索质量优于 Chroma。
+  RAGFlow v1.0.0 + 真实 BGE 上跑通。
+- 真实 36 题检索对照：已生成 0.7 与 0.3 两份报告；0.3 在本语料上优于 0.7，且
+  evidence_coverage 略高于 frozen-dense 参考。切片/候选不同，不能外推为
+  “RAGFlow 全面优于 Chroma”。

@@ -12,7 +12,7 @@ def test_ragflow_search_tool_preserves_verified_fingerprint(db, monkeypatch):
         "app.services.ragflow_client.get_ragflow_client", lambda *a, **kw: object(),
     )
 
-    def fake_retrieve(db_, *, user_id, query, top_k, client):
+    def fake_retrieve(db_, *, user_id, query, top_k, client, **kwargs):
         return [{
             "node_id": 1, "title": "t", "content": "# t\n\nbody",
             "source_fingerprint": "fp", "evidence_verified": True,

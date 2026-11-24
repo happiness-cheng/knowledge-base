@@ -27,7 +27,7 @@ def test_ragflow_backend_uses_ragflow_retrieval_and_sql_evidence(db, monkeypatch
     marker = object()
     calls = {}
 
-    def fake_retrieve(db_, *, user_id, query, top_k, client):
+    def fake_retrieve(db_, *, user_id, query, top_k, client, **kwargs):
         calls.update(user_id=user_id, query=query, top_k=top_k, client=client)
         return [{"node_id": 7, "content": "支持多路复用"}]
 
@@ -55,7 +55,7 @@ def test_ragflow_chunk_with_uploaded_title_prefix_is_not_rejected_as_stale(db, m
     db.add(node)
     db.commit()
 
-    def fake_retrieve(db_, *, user_id, query, top_k, client):
+    def fake_retrieve(db_, *, user_id, query, top_k, client, **kwargs):
         return [{
             "node_id": 7,
             "content": "# HTTP2\n\n支持多路复用",
@@ -83,7 +83,7 @@ def test_ragflow_chunk_with_wrong_fingerprint_is_rejected(db, monkeypatch):
     db.add(node)
     db.commit()
 
-    def fake_retrieve(db_, *, user_id, query, top_k, client):
+    def fake_retrieve(db_, *, user_id, query, top_k, client, **kwargs):
         return [{
             "node_id": 7,
             "content": "# HTTP2\n\n旧内容",

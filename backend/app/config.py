@@ -55,6 +55,10 @@ class Settings(BaseSettings):
     ragflow_dataset_prefix: str = "kb_user"
     ragflow_timeout_seconds: float = 30.0
     ragflow_embedding_model: str = ""
+    # 36 题受控实验：同一 RAGFlow 切片下 0.3 的 Hit@3/覆盖优于 0.7；
+    # 仍是小样本，不作为跨语料普适结论。
+    ragflow_keywords_similarity_weight: float = Field(default=0.3, ge=0.0, le=1.0)
+    ragflow_similarity_threshold: float = Field(default=0.2, ge=0.0, le=1.0)
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: _parse_cors(None)
     )

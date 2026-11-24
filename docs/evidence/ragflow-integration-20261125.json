@@ -2,7 +2,7 @@
   "date": "2026-11-25",
   "phase": "RAGFlow backend integration",
   "backend": "ragflow v1.0.0 HTTP API",
-  "status": "unit/contract and real HTTP smoke verified; real embedding model and retrieval quality pending",
+  "status": "real BGE smoke and 36-case retrieval measured; answer generation and broad corpus quality not measured",
   "environment": {
     "python": "3.14.0",
     "docker_cli": "29.8.1",
@@ -10,7 +10,7 @@
     "ragflow": "v1.0.0 (Go API), infinity doc engine, mysql, minio, nats, kvrocks",
     "wsl_memory": "6.7 GiB",
     "documented_verified_python": "3.12.15",
-    "note": "RAGFlow stack was started in WSL with DOC_ENGINE=infinity. A deterministic TEI-compatible embedding stub (tei-stub@OpenAI) was used only to exercise upload/parse/retrieval; this is not a semantic model and not a quality result."
+    "note": "RAGFlow stack was started in WSL with DOC_ENGINE=infinity. Final smoke/benchmark used the real cached BAAI/bge-large-zh-v1.5 through a local TEI-compatible server; an earlier deterministic stub was only a plumbing check."
   },
   "verified": {
     "real_smoke": {
@@ -20,7 +20,7 @@
         "status": "ok",
         "chunks": 1,
         "top_chunk_prefix": "# Smoke ... RAGFlow integration smoke token: ...",
-        "embedding": "tei-stub@OpenAI (deterministic test stub)",
+        "embedding": "BAAI/bge-large-zh-v1.5 (1024 dims, local TEI-compatible server)",
         "steps": [
           "GET /api/v1/system/healthz returned 200",
           "created a temporary dataset with explicit embedding_model",
@@ -30,10 +30,32 @@
         ]
       }
     },
+    "real_retrieval": {
+      "corpus": "16 frozen documents / 36 cases",
+      "chunking": "RAGFlow GeneralChunker, 512 tokens",
+      "top_k": 3,
+      "similarity_threshold": 0.2,
+      "keywords_similarity_weight": {
+        "0.7": {
+          "hit@1": 0.851852, "hit@3": 0.851852, "mrr": 1.0,
+          "evidence_coverage": 0.648148, "all_evidence_rate": 0.518519,
+          "ndcg@10": 0.848879,
+          "report": "docs/evidence/retrieval-regression-ragflow-20261125.json"
+        },
+        "0.3": {
+          "hit@1": 0.888889, "hit@3": 1.0, "mrr": 0.938272,
+          "evidence_coverage": 0.814815, "all_evidence_rate": 0.740741,
+          "ndcg@10": 0.954143,
+          "report": "docs/evidence/retrieval-regression-ragflow-kw03-20261125.json"
+        }
+      },
+      "decision": "RAGFLOW_KEYWORDS_SIMILARITY_WEIGHT default changed 0.7 -> 0.3 for this corpus; reversible via env. Small non-blind corpus, not a universal optimum.",
+      "comparison": "frozen-dense reference: hit@3=1.0, coverage=0.7778, all_evidence=0.7407, ndcg=0.9447; chunking/candidates differ."
+    },
     "offline_tests": {
       "command": "python -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short",
       "exit_code": 0,
-      "result": "513 passed, 43 warnings in 198.17s"
+      "result": "514 passed, 43 warnings in 118.70s"
     },
     "isolation": "PASS",
     "artifact_policy": "PASS",
@@ -55,8 +77,8 @@
     ]
   },
   "not_verified": [
-    "Real semantic embedding model (TEI was unavailable; only a deterministic stub was exercised)",
-    "Real RAGFlow retrieval quality and 36-case Chroma vs RAGFlow comparison (Hit@k, evidence coverage, latency)",
+    "Answer generation quality after RAGFlow retrieval (retrieval-only metrics measured)",
+    "RAGFlow on a larger/independent/blind corpus; current 36 cases are authored after seeing sources",
     "RAGFlow tenant/permission model beyond server-side single access token and per-user dataset naming",
     "Large dataset cleanup/snapshot/restore procedure",
     "MySQL deployment of the new migration (SQLite migration test only)"
@@ -64,8 +86,9 @@
   "next_commands": [
     "start RAGFlow v1.0.0 official docker compose with a real TEI embedding model or another registered embedding provider",
     "set KB_RETRIEVAL_BACKEND=ragflow, RAGFLOW_BASE_URL, RAGFLOW_API_KEY, RAGFLOW_EMBEDDING_MODEL",
+    "set RAGFLOW_KEYWORDS_SIMILARITY_WEIGHT=0.3 (default) and RAGFLOW_SIMILARITY_THRESHOLD=0.2",
     "python -m alembic upgrade head",
     "python -m scripts.ragflow_smoke",
-    "run frozen 36-case retrieval comparison against RAGFlow"
+    "python -m scripts.ragflow_corpus_benchmark --keywords-weight 0.3"
   ]
 }

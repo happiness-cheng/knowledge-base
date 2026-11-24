@@ -86,12 +86,22 @@ python -m scripts.ragflow_smoke
 
 成功输出包含 `status=ok`、dataset/document id、chunk 数量和 top chunk。
 
-2026-11-25 在 WSL Docker 的 RAGFlow v1.0.0（Go API + Infinity）上已跑通一次
-`status=ok, chunks=1`。这次用的是 TEI 兼容的**确定性测试向量桩**
-（`scripts/tei_stub.py`，`RAGFLOW_EMBEDDING_MODEL=tei-stub@OpenAI`），只验证
+2026-11-25 在 WSL Docker 的 RAGFlow v1.0.0（Go API + Infinity）上已跑通
+`status=ok, chunks=1`。最终一次用的是真实缓存模型
+`BAAI/bge-large-zh-v1.5`（1024 维，本地 TEI 兼容服务），不是测试桩；链路为
 health → 建 dataset → 上传 → metadata → parse → `ingestion_status` 轮询 →
-retrieval → cleanup 的链路；**不是语义 embedding，不能当作检索质量证据**。
-真实 TEI/BGE 模型和 36 题对照仍未跑。
+retrieval → cleanup。
+
+同一天用 16 篇冻结语料、36 题做了真实检索对照：
+
+| RAGFlow keywords | Hit@3 | evidence_coverage | all_evidence | nDCG@10 |
+|---|---:|---:|---:|---:|
+| 0.7 | 0.8519 | 0.6481 | 0.5185 | 0.8489 |
+| 0.3 | 1.0000 | 0.8148 | 0.7407 | 0.9541 |
+
+因此 `RAGFLOW_KEYWORDS_SIMILARITY_WEIGHT` 生产默认设为 **0.3**（可回退到 0.7）。
+这是单语料、非盲测的受控参数实验，不是普遍最优；详见
+[检索质量回归](2026-11-25-retrieval-regression.md)。
 
 这次冒烟同时修了两个真实兼容性问题：
 
@@ -100,7 +110,17 @@ retrieval → cleanup 的链路；**不是语义 embedding，不能当作检索�
 - RAGFlow v1.0 Go 文档状态字段是 `ingestion_status`（`COMPLETED/FAILED/RUNNING`），
   不是 Python 版的 `run`（`DONE/FAIL`）；`document_state()` 同时兼容两者。
 
-没有真实 TEI 时，可用仓库内的确定性测试向量桩完成链路冒烟：
+没有真实 TEI 时，也可用仓库内的本地 BGE 服务（需 `sentence-transformers`/CPU torch）：
+
+```bash
+python -m scripts.bge_server --port 8099
+```
+
+它是开发用最小服务，无鉴权/队列，不适合生产并发；RAGFlow 侧注册
+OpenAI-compatible provider 指向该端口，并设
+`RAGFLOW_EMBEDDING_MODEL=bge-large-zh-v1.5@OpenAI`。
+
+再用确定性测试向量桩做纯链路检查：
 
 ```bash
 python3 backend/scripts/tei_stub.py --port 8099

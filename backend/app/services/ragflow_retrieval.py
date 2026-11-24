@@ -20,6 +20,8 @@ def retrieve_for_user(
     top_k: int = 3,
     client: RagflowClient,
     trace: Callable[[dict], None] | None = None,
+    keywords_similarity_weight: float = 0.7,
+    similarity_threshold: float = 0.2,
 ) -> list[dict]:
     if type(user_id) is not int or user_id <= 0:
         raise ValueError("user_id must be a positive integer")
@@ -27,6 +29,10 @@ def retrieve_for_user(
         raise ValueError("query must be nonempty")
     if type(top_k) is not int or top_k <= 0:
         raise ValueError("top_k must be a positive integer")
+    if not 0.0 <= keywords_similarity_weight <= 1.0:
+        raise ValueError("keywords_similarity_weight must be in [0, 1]")
+    if not 0.0 <= similarity_threshold <= 1.0:
+        raise ValueError("similarity_threshold must be in [0, 1]")
 
     dataset = db.get(RagflowDataset, user_id)
     if dataset is None:
@@ -36,7 +42,11 @@ def retrieve_for_user(
         return []
 
     page_size = min(max(top_k * 4, 10), 100)
-    chunks = client.retrieve(query, [dataset.dataset_id], page_size=page_size)
+    chunks = client.retrieve(
+        query, [dataset.dataset_id], page_size=page_size,
+        similarity_threshold=similarity_threshold,
+        keywords_similarity_weight=keywords_similarity_weight,
+    )
     document_ids = {
         str(chunk.get("document_id")) for chunk in chunks
         if isinstance(chunk.get("document_id"), str) and chunk.get("document_id")

@@ -147,6 +147,8 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
             return json.dumps({"error": "retrieval backend not configured"})
         results = retrieve_for_user(
             db, user_id=user_id, query=query, top_k=top_k, client=client,
+            keywords_similarity_weight=settings.ragflow_keywords_similarity_weight,
+            similarity_threshold=settings.ragflow_similarity_threshold,
         )
     else:
         results = retrieve_relevant_nodes(query, top_k=top_k, user_id=user_id)
