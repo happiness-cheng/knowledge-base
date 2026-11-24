@@ -163,6 +163,7 @@ def _handle_search(input_dict: dict, db: Session, **kwargs) -> str:
             "content": content,
             "distance": r.get("distance"),
             "source_fingerprint": r.get("source_fingerprint"),
+            "evidence_verified": r.get("evidence_verified", False),
             # ↓ 数据新鲜度（M5-35）：没有这两个字段，模型无法判断"用户问的时间段库里覆盖没覆盖"，
             #   只能按语义相似度硬答 —— 实测负例「今天上证指数收盘多少」被答成"今天收盘 4166.29"，
             #   而那个数字来自 2026-05-20 的交易日志（时效性幻觉，且 faithfulness 满分）。

@@ -8,7 +8,7 @@ from app.services.claude_client import claude_client
 from app.services.agent_tools import TOOL_DEFINITIONS, execute_tool
 from app.models.node import KnowledgeNode
 from app.services.kb_answer_contract import KB_SYSTEM_PROMPT, finalize_kb_answer
-from app.services.evidence_freshness import current_evidence
+from app.services.evidence_freshness import row_is_current
 
 logger = logging.getLogger(__name__)
 
@@ -334,7 +334,7 @@ def run_agent(
                         KnowledgeNode.id.in_(ids), KnowledgeNode.user_id == user_id
                     ).all()} if ids else set()
                     rows = [row for row in rows if row[id_key] in owned
-                            and current_evidence(row, owned[row[id_key]])]
+                            and row_is_current(row, owned[row[id_key]])]
                     if any(len(row["content"]) > 6000 for row in rows):
                         return finish("", failure="evidence_budget_exceeded")
                     for row in rows:

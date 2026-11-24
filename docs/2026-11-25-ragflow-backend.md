@@ -110,6 +110,9 @@ GET /api/index-jobs/status
    - 调 `/api/v1/retrieval`；
    - 用 `document_id` 映射回 `ragflow_documents.node_id`；
    - 用当前 SQL 正文重新算 fingerprint，拒绝旧文档；
+   - RAGFlow chunk 可能带上传时加的标题前缀，不保证是 `node.content` 的字面子串；
+     适配器返回 `source_fingerprint` + `evidence_verified`，共享 `row_is_current`
+     只在该凭据与当前 SQL 正文一致时放行；
    - 再交给现有 `AuthenticatedKBRetriever`/`finalize_kb_answer` 做 owner、版本、引用校验。
 
 ## 7. 失败与回退

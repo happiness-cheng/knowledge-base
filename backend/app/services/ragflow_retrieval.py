@@ -95,6 +95,7 @@ def retrieve_for_user(
             "distance": distance,
             "score": score,
             "source_fingerprint": mapping.source_fingerprint,
+            "evidence_verified": True,
         })
         counts[node.id] = counts.get(node.id, 0) + 1
         if len(selected) >= top_k * 2:

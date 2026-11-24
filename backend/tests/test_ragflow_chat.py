@@ -2,6 +2,7 @@
 
 from app.config import settings
 from app.models.node import KnowledgeNode
+from app.services.index_jobs import fingerprint
 from app.services.langchain_rag import run_langchain_rag
 from tests.test_langchain_rag import RecordingChatModel
 
@@ -47,3 +48,59 @@ def test_ragflow_backend_uses_ragflow_retrieval_and_sql_evidence(db, monkeypatch
     assert calls["user_id"] == 3
     assert calls["client"] is marker
     assert calls["top_k"] == 3
+
+
+def test_ragflow_chunk_with_uploaded_title_prefix_is_not_rejected_as_stale(db, monkeypatch):
+    node = KnowledgeNode(id=7, user_id=3, title="HTTP2", content="支持多路复用")
+    db.add(node)
+    db.commit()
+
+    def fake_retrieve(db_, *, user_id, query, top_k, client):
+        return [{
+            "node_id": 7,
+            "content": "# HTTP2\n\n支持多路复用",
+            "source_fingerprint": fingerprint(node.title, node.content),
+            "evidence_verified": True,
+        }]
+
+    monkeypatch.setattr(settings, "kb_retrieval_backend", "ragflow")
+    monkeypatch.setattr(
+        "app.services.ragflow_client.get_ragflow_client", lambda *a, **kw: object(),
+    )
+    monkeypatch.setattr(
+        "app.services.ragflow_retrieval.retrieve_for_user", fake_retrieve,
+    )
+    model = RecordingChatModel()
+
+    result = run_langchain_rag(db, "HTTP2有什么特性？", user_id=3, model=model)
+
+    assert result["answer_status"] == "supported"
+    assert result["source_ids"] == [7]
+
+
+def test_ragflow_chunk_with_wrong_fingerprint_is_rejected(db, monkeypatch):
+    node = KnowledgeNode(id=7, user_id=3, title="HTTP2", content="支持多路复用")
+    db.add(node)
+    db.commit()
+
+    def fake_retrieve(db_, *, user_id, query, top_k, client):
+        return [{
+            "node_id": 7,
+            "content": "# HTTP2\n\n旧内容",
+            "source_fingerprint": "wrong-fingerprint",
+            "evidence_verified": True,
+        }]
+
+    monkeypatch.setattr(settings, "kb_retrieval_backend", "ragflow")
+    monkeypatch.setattr(
+        "app.services.ragflow_client.get_ragflow_client", lambda *a, **kw: object(),
+    )
+    monkeypatch.setattr(
+        "app.services.ragflow_retrieval.retrieve_for_user", fake_retrieve,
+    )
+    model = RecordingChatModel()
+
+    result = run_langchain_rag(db, "HTTP2有什么特性？", user_id=3, model=model)
+
+    assert result["answer_status"] == "not_found"
+    assert model.calls == 0

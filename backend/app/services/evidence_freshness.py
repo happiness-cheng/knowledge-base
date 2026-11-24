@@ -19,3 +19,14 @@ def current_evidence(row, node) -> bool:
     # 老索引没有版本指纹，正文仍须逐片核验。标题由 SQL 提供，不信任索引展示值。
     current = re.sub(r"\s+", "", node.content)
     return all(re.sub(r"\s+", "", fragment) in current for fragment in fragments)
+
+
+def row_is_current(row, node) -> bool:
+    """RAGFlow 等适配器可用 fingerprint 预核验，避免标题前缀被字面检查误拒。
+
+    只有行显式带 `evidence_verified=True` 且 fingerprint 与当前 SQL 正文一致时
+    才走预核验；其他来源仍走 `current_evidence` 的逐片内容检查。
+    """
+    if row.get("evidence_verified") is True:
+        return row.get("source_fingerprint") == fingerprint(node.title, node.content)
+    return current_evidence(row, node)
