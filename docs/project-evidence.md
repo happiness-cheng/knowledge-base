@@ -89,7 +89,7 @@
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
-2026-11-25 RAGFlow 接入后完整离线回归：**499 passed, 43 warnings, 112.43s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
+2026-11-25 RAGFlow 接入后完整离线回归：**500 passed, 43 warnings, 131.57s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

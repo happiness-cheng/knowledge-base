@@ -87,10 +87,11 @@ def sync_node(db: Session, node: KnowledgeNode, client: RagflowClient, *,
     if existing is not None and existing.document_id:
         try:
             client.delete_documents(dataset.dataset_id, [existing.document_id])
-        except RagflowAPIError:
-            # 旧文档可能已在 RAGFlow 侧被删除；继续上传新文档，不把 404/102
-            # 当成同步失败。
-            pass
+        except RagflowAPIError as exc:
+            # 旧文档可能已在 RAGFlow 侧被删除；404/102 可继续，权限/网络错误
+            # 必须上抛，不能静默当成“已删除”。
+            if exc.code not in (102, 404):
+                raise
 
     filename = f"node-{node.id}.md"
     body = f"# {node.title}\n\n{node.content}".encode("utf-8")
@@ -137,8 +138,9 @@ def delete_node(db: Session, user_id: int, node_id: int,
     if dataset is not None and row.document_id:
         try:
             client.delete_documents(dataset.dataset_id, [row.document_id])
-        except RagflowAPIError:
-            pass
+        except RagflowAPIError as exc:
+            if exc.code not in (102, 404):
+                raise
     db.delete(row)
     db.flush()
     return True

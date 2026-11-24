@@ -7,6 +7,7 @@ from app.models.ragflow import RagflowDataset, RagflowDocument
 from app.models.user import User
 from app.services.index_jobs import fingerprint
 from app.services.ragflow_retrieval import retrieve_for_user
+from app.services.ragflow_client import RagflowAPIError
 from app.services.ragflow_sync import (
     STATE_FAILED,
     STATE_MISSING,
@@ -28,6 +29,7 @@ class FakeClient:
         self.documents = {}
         self.chunks = []
         self.fail_update = False
+        self.delete_error = None
         self._next = 1
 
     def ensure_dataset(self, name, *, embedding_model=""):
@@ -58,6 +60,8 @@ class FakeClient:
         return [dict(doc) for doc in self.documents.values()]
 
     def delete_documents(self, dataset_id, document_ids):
+        if self.delete_error is not None:
+            raise self.delete_error
         for doc_id in document_ids:
             self.documents.pop(doc_id, None)
         self.deleted.append((dataset_id, list(document_ids)))
@@ -148,6 +152,20 @@ def test_delete_node_removes_mapping_and_remote_document(db):
     assert db.get(RagflowDocument, (user.id, node.id)) is None
     assert client.deleted[-1] == ("ds-1", [doc_id])
     assert delete_node(db, user.id, node.id, client) is False
+
+
+def test_delete_permission_error_is_not_swallowed(db):
+    user, node = make_user_and_node(db)
+    client = FakeClient()
+    sync_node(db, node, client)
+    db.commit()
+
+    client.delete_error = RagflowAPIError(108, "no permission")
+    node.content = "新正文"
+    db.commit()
+
+    with pytest.raises(RagflowAPIError, match="no permission"):
+        sync_node(db, node, client)
 
 
 def test_refresh_states_maps_done_failed_missing(db):
