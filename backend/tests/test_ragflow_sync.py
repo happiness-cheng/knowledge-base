@@ -14,6 +14,7 @@ from app.services.ragflow_sync import (
     STATE_PARSING,
     STATE_READY,
     delete_node,
+    document_state,
     refresh_states,
     sync_node,
 )
@@ -152,6 +153,18 @@ def test_delete_node_removes_mapping_and_remote_document(db):
     assert db.get(RagflowDocument, (user.id, node.id)) is None
     assert client.deleted[-1] == ("ds-1", [doc_id])
     assert delete_node(db, user.id, node.id, client) is False
+
+
+def test_document_state_supports_go_ingestion_status():
+    assert document_state({"ingestion_status": "DONE"}) == (STATE_READY, None)
+    assert document_state({"ingestion_status": "COMPLETED"}) == (STATE_READY, None)
+    state, error = document_state({
+        "ingestion_status": "FAILED",
+        "latest_ingestion_event": {"message": "embedding encoder missing"},
+    })
+    assert state == STATE_FAILED
+    assert "embedding encoder missing" in error
+    assert document_state({"ingestion_status": "RUNNING"}) == (STATE_PARSING, None)
 
 
 def test_delete_permission_error_is_not_swallowed(db):

@@ -64,7 +64,9 @@ React 保存笔记
 代价与限制：
 
 - 需要 Docker 多容器（RAGFlow 1.0 官方 compose：RAGFlow、文档引擎、MySQL、
-  MinIO、Redis 等）；本机 Docker daemon 当前未运行，真实冒烟尚未执行。
+  MinIO、Redis 等）；本机 Windows daemon 未运行，已在 WSL Docker 上冒烟。
+- 2026-11-25 的冒烟只验证 HTTP/队列/状态链路，使用确定性测试向量桩，不是真实
+  embedding；真实模型和检索质量仍待验证。
 - 解析是异步的；`index_jobs` 成功只代表 RAGFlow 接受上传/解析，不代表 chunk 已可用；
   `ragflow_documents.state` 才是可检索状态。
 - 内容更新是 delete+re-upload，document_id 会变化；旧 chunk 的清理依赖 RAGFlow
@@ -85,7 +87,7 @@ React 保存笔记
 
 - 单元测试：客户端信封/错误、同步幂等/内容变更/失败状态、检索映射/指纹/跨用户、
   配置校验、状态 API。
-- 集成冒烟：`python -m scripts.ragflow_smoke`，需要真实 RAGFlow；本环境 Docker
-  daemon 未启动，标为 pending。
-- 真实 36 题检索对照：待 RAGFlow 启动后，用同一题集比较 Hit@k/证据覆盖；未完成前
-  不宣称 RAGFlow 检索质量优于 Chroma。
+- 集成冒烟：`python -m scripts.ragflow_smoke`；2026-11-25 已在 WSL Docker 的
+  RAGFlow v1.0.0 上跑通，但使用确定性测试向量桩，真实 TEI/BGE 模型未验证。
+- 真实 36 题检索对照：待真实 embedding 就绪后，用同一题集比较 Hit@k/证据覆盖；
+  未完成前不宣称 RAGFlow 检索质量优于 Chroma。

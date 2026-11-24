@@ -86,6 +86,30 @@ python -m scripts.ragflow_smoke
 
 成功输出包含 `status=ok`、dataset/document id、chunk 数量和 top chunk。
 
+2026-11-25 在 WSL Docker 的 RAGFlow v1.0.0（Go API + Infinity）上已跑通一次
+`status=ok, chunks=1`。这次用的是 TEI 兼容的**确定性测试向量桩**
+（`scripts/tei_stub.py`，`RAGFLOW_EMBEDDING_MODEL=tei-stub@OpenAI`），只验证
+health → 建 dataset → 上传 → metadata → parse → `ingestion_status` 轮询 →
+retrieval → cleanup 的链路；**不是语义 embedding，不能当作检索质量证据**。
+真实 TEI/BGE 模型和 36 题对照仍未跑。
+
+这次冒烟同时修了两个真实兼容性问题：
+
+- RAGFlow health 响应是 `{"db":"ok",...}`，没有 `data` 信封，客户端不能按普通
+  API envelope 解析；
+- RAGFlow v1.0 Go 文档状态字段是 `ingestion_status`（`COMPLETED/FAILED/RUNNING`），
+  不是 Python 版的 `run`（`DONE/FAIL`）；`document_state()` 同时兼容两者。
+
+没有真实 TEI 时，可用仓库内的确定性测试向量桩完成链路冒烟：
+
+```bash
+python3 backend/scripts/tei_stub.py --port 8099
+```
+
+它是 bag-of-token 哈希，不是语义模型，**禁止用于生产或质量结论**；仅用于验证
+上传/解析/检索管道。RAGFlow 侧需注册一个 OpenAI-compatible embedding provider
+指向该端口，并把 `RAGFLOW_EMBEDDING_MODEL` 设为对应模型名。
+
 用户级状态：
 
 ```text

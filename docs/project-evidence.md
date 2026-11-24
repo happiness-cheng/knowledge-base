@@ -76,9 +76,11 @@
 | 对账 | `POST /api/index-jobs/reconcile` 对比 SQL 与 `ragflow_documents`，区分缺失/旧版本/孤儿/失败/手工项；`apply=true` 只登记 index_jobs |
 | 回退 | `KB_RETRIEVAL_BACKEND=chroma`；RAGFlow 表保留，不删 SQL 笔记 |
 
-已验证（单元/契约，无真实 RAGFlow）：HTTP 信封与错误、上传/解析/检索请求形状、同步幂等、内容变化替换、失败状态、解析状态轮询、检索映射/fingerprint/跨用户隔离、配置校验、Alembic 迁移、状态 API。
+已验证（离线契约 + 真实 HTTP 冒烟）：HTTP 信封与错误、上传/解析/检索请求形状、同步幂等、内容变化替换、失败状态、解析状态轮询、检索映射/fingerprint/跨用户隔离、配置校验、Alembic 迁移、状态/对账 API。
 
-**未验证**：真实 RAGFlow 冒烟与 36 题检索对照。本机 Docker daemon 未运行，且磁盘余量有限；不能用 MockTransport 测试冒充在线验证。待 Docker 可用后运行 `python -m scripts.ragflow_smoke`，再用同一冻结题集比较 Chroma/RAGFlow 的 Hit@k 与证据覆盖。
+真实冒烟在 WSL Docker 的 RAGFlow v1.0.0（Go API + Infinity）上跑通：health → 建 dataset → 上传 → PATCH metadata → 触发解析 → 轮询 Go `ingestion_status` → 检索 → 清理，`chunks=1`。这次冒烟发现并修复了两个真实兼容性问题：health 响应没有 `data` 信封时客户端误判 unhealthy；Go v1.0 使用 `ingestion_status` 而不是 Python 的 `run`。
+
+**未验证/不能外推**：真实冒烟使用确定性 TEI 兼容测试向量桩（`tei-stub@OpenAI`），不是语义 embedding；因此只证明 RAGFlow 的 I/O 与状态链路，不证明检索质量。真实 TEI/BGE 模型和 36 题 Chroma/RAGFlow 对照仍未跑。
 
 决策、限制和回退见 [ADR 0002](adr/0002-ragflow-backend.md) 与 [接入说明](2026-11-25-ragflow-backend.md)；原始记录见 [ragflow-integration-20261125.json](evidence/ragflow-integration-20261125.json)。
 
@@ -94,7 +96,7 @@ Hit@1/3、MRR、gold evidence coverage、all-evidence rate、nDCG@10 与 p50/p95
 | `fixture` | 确定性词项检索，CI 门禁/报告 schema | 已跑 36 题；Hit@3=1.0，coverage=0.4074，仅 plumbing |
 | `frozen-dense` | 读取已提交的 `k3-dense.json`（真实 BGE、精确内积、20 候选） | 已跑 36 题；Hit@3=1.0，coverage=0.7778，all-evidence=0.7407 |
 | `chroma` | 真实 BGE/Chroma 当前索引 | 入口已实现；需要已建索引，未在本轮复跑 |
-| `ragflow` | 真实 RAGFlow 检索 | 入口已实现；需要 RAGFlow 在线，未在本轮复跑 |
+| `ragflow` | 真实 RAGFlow 检索 | 入口已实现；HTTP 冒烟用确定性测试向量桩跑通，36 题真实对照未跑 |
 
 fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 用
 `--backend fixture --gate`，不加载模型、不联网。真实 Chroma/RAGFlow 必须各自
@@ -109,7 +111,7 @@ fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
-2026-11-25 RAGFlow 接入后完整离线回归：**511 passed, 43 warnings, 109.72s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
+2026-11-25 RAGFlow 接入后完整离线回归：**513 passed, 43 warnings, 198.17s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟已跑通（确定性测试向量桩；真实模型/质量未验证）。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

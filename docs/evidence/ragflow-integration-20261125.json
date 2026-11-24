@@ -2,19 +2,38 @@
   "date": "2026-11-25",
   "phase": "RAGFlow backend integration",
   "backend": "ragflow v1.0.0 HTTP API",
-  "status": "unit/contract verified; real smoke pending",
+  "status": "unit/contract and real HTTP smoke verified; real embedding model and retrieval quality pending",
   "environment": {
     "python": "3.14.0",
     "docker_cli": "29.8.1",
-    "docker_daemon": "not running",
+    "docker_daemon": "Windows daemon not running; WSL Docker engine 29.1.3 used",
+    "ragflow": "v1.0.0 (Go API), infinity doc engine, mysql, minio, nats, kvrocks",
+    "wsl_memory": "6.7 GiB",
     "documented_verified_python": "3.12.15",
-    "note": "Docker daemon 未运行，未启动 RAGFlow；未将 MockTransport 契约测试冒充在线验证。"
+    "note": "RAGFlow stack was started in WSL with DOC_ENGINE=infinity. A deterministic TEI-compatible embedding stub (tei-stub@OpenAI) was used only to exercise upload/parse/retrieval; this is not a semantic model and not a quality result."
   },
   "verified": {
+    "real_smoke": {
+      "command": "python -m scripts.ragflow_smoke --timeout 120",
+      "exit_code": 0,
+      "result": {
+        "status": "ok",
+        "chunks": 1,
+        "top_chunk_prefix": "# Smoke ... RAGFlow integration smoke token: ...",
+        "embedding": "tei-stub@OpenAI (deterministic test stub)",
+        "steps": [
+          "GET /api/v1/system/healthz returned 200",
+          "created a temporary dataset with explicit embedding_model",
+          "uploaded a markdown document and PATCHed meta_fields",
+          "triggered parse and polled Go v1.0 ingestion_status",
+          "retrieved the parsed chunk and deleted the dataset"
+        ]
+      }
+    },
     "offline_tests": {
       "command": "python -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short",
       "exit_code": 0,
-      "result": "511 passed, 43 warnings in 109.72s"
+      "result": "513 passed, 43 warnings in 198.17s"
     },
     "isolation": "PASS",
     "artifact_policy": "PASS",
@@ -24,25 +43,27 @@
     "unit_contracts": [
       "RAGFlow HTTP envelope/code/error handling without leaking API key",
       "create_dataset/upload/update metadata/parse/list/delete/retrieve request shapes",
+      "health accepts RAGFlow plain health payload without a data envelope",
       "sync idempotence and content-change delete+reupload",
       "parse failure marks state failed and re-raises",
-      "refresh_states maps DONE/FAIL/missing",
+      "refresh_states supports Python run and Go v1.0 ingestion_status",
       "retrieval maps document_id to node_id, filters stale fingerprints and cross-user chunks",
       "config requires base URL and API key for ragflow backend",
       "Alembic migration 20261125_03 creates ragflow datasets/documents and keeps old baseline validation",
-      "GET /api/index-jobs/status reports job/document states without cross-user leakage"
+      "GET /api/index-jobs/status reports job/document states without cross-user leakage",
+      "POST /api/index-jobs/reconcile classifies missing/stale/orphan/failed/manual and only enqueues jobs on apply"
     ]
   },
   "not_verified": [
-    "Real RAGFlow health/upload/parse/retrieval smoke (Docker daemon unavailable)",
-    "36-case retrieval comparison Chroma vs RAGFlow (Hit@k, evidence coverage, latency)",
-    "RAGFlow tenant/permission model beyond server-side single API key and per-user dataset naming",
+    "Real semantic embedding model (TEI was unavailable; only a deterministic stub was exercised)",
+    "Real RAGFlow retrieval quality and 36-case Chroma vs RAGFlow comparison (Hit@k, evidence coverage, latency)",
+    "RAGFlow tenant/permission model beyond server-side single access token and per-user dataset naming",
     "Large dataset cleanup/snapshot/restore procedure",
     "MySQL deployment of the new migration (SQLite migration test only)"
   ],
   "next_commands": [
-    "start RAGFlow v1.0.0 official docker compose",
-    "set KB_RETRIEVAL_BACKEND=ragflow, RAGFLOW_BASE_URL, RAGFLOW_API_KEY",
+    "start RAGFlow v1.0.0 official docker compose with a real TEI embedding model or another registered embedding provider",
+    "set KB_RETRIEVAL_BACKEND=ragflow, RAGFLOW_BASE_URL, RAGFLOW_API_KEY, RAGFLOW_EMBEDDING_MODEL",
     "python -m alembic upgrade head",
     "python -m scripts.ragflow_smoke",
     "run frozen 36-case retrieval comparison against RAGFlow"

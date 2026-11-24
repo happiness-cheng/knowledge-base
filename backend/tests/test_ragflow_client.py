@@ -170,6 +170,14 @@ def test_non_json_and_malformed_payload_are_rejected():
             client.create_dataset("kb_user_1")
 
 
+def test_health_accepts_plain_health_payload():
+    def handler(request):
+        return httpx.Response(200, json={"db": "ok", "status": "ok"})
+
+    with make_client(handler) as client:
+        assert client.health() is True
+
+
 def test_health_returns_false_on_transport_error():
     def handler(request):
         raise httpx.ConnectError("down")

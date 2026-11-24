@@ -94,9 +94,9 @@ class RagflowClient:
 
     def health(self) -> bool:
         try:
-            self._request("GET", "/api/v1/system/healthz")
-            return True
-        except RagflowError:
+            response = self._client.get("/api/v1/system/healthz")
+            return response.status_code == 200
+        except httpx.HTTPError:
             return False
 
     def create_dataset(self, name: str, *, language: str = "Chinese",

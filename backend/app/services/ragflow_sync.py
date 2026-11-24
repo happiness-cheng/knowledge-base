@@ -27,6 +27,42 @@ _READY_STATES = {STATE_PARSING, STATE_READY}
 _DONE_RUN = {"DONE"}
 _FAILED_RUN = {"FAIL"}
 _ACTIVE_RUN = {"UNSTART", "RUNNING", "SCHEDULE"}
+_DONE_INGESTION = {"DONE", "COMPLETED", "SUCCESS", "FINISHED"}
+_FAILED_INGESTION = {"FAILED", "FAIL", "ERROR"}
+_ACTIVE_INGESTION = {"UNSTART", "RUNNING", "SCHEDULE", "SCHEDULED", "PENDING"}
+
+
+def document_state(item: dict) -> tuple[str, str | None]:
+    """兼容 RAGFlow Python 的 `run` 与 Go v1.0 的 `ingestion_status`。"""
+    run = str(item.get("run") or "").upper()
+    if run in _DONE_RUN:
+        return STATE_READY, None
+    if run in _FAILED_RUN:
+        return STATE_FAILED, "parse_failed"
+    if run in _ACTIVE_RUN:
+        return STATE_PARSING, None
+
+    ingestion = str(
+        item.get("ingestion_status") or item.get("ingestionStatus") or "",
+    ).upper()
+    if ingestion in _DONE_INGESTION:
+        return STATE_READY, None
+    if ingestion in _FAILED_INGESTION:
+        event = item.get("latest_ingestion_event")
+        message = event.get("message") if isinstance(event, dict) else None
+        return STATE_FAILED, str(message or item.get("progress_msg") or "parse_failed")[:500]
+    if ingestion in _ACTIVE_INGESTION:
+        return STATE_PARSING, None
+
+    try:
+        chunk_count = int(item.get("chunk_count") or 0)
+        progress = float(item.get("progress") or 0)
+    except (TypeError, ValueError):
+        chunk_count = 0
+        progress = 0.0
+    if chunk_count > 0 and progress >= 1:
+        return STATE_READY, None
+    return STATE_PARSING, None
 
 
 @dataclass(frozen=True)
@@ -164,17 +200,10 @@ def refresh_states(db: Session, user_id: int, client: RagflowClient) -> dict[str
                 updated += 1
             missing += 1
             continue
-        run = str(item.get("run") or "").upper()
-        new_state = row.state
-        if run in _DONE_RUN:
-            new_state = STATE_READY
-        elif run in _FAILED_RUN:
-            new_state = STATE_FAILED
-        elif run in _ACTIVE_RUN:
-            new_state = STATE_PARSING
+        new_state, error = document_state(item)
         if new_state != row.state:
             row.state = new_state
-            row.last_error = None if new_state != STATE_FAILED else "parse_failed"
+            row.last_error = error if new_state == STATE_FAILED else None
             updated += 1
     db.flush()
     return {"updated": updated, "missing": missing}
