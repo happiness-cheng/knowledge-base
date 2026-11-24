@@ -1,0 +1,824 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-24T17:33:41.580557+00:00",
+  "backend": "fixture",
+  "top_k": 3,
+  "dataset_sha256": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+  "manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+  "retrieval_quality_measured": false,
+  "model_quality_measured": false,
+  "note": "fixture 是确定性词项检索，仅验证指标/report；不代表真实 embedding 质量",
+  "summary": {
+    "case_count": 36,
+    "positive_cases": 27,
+    "negative_cases": 9,
+    "metrics": {
+      "hit@1": 0.888889,
+      "hit@3": 1.0,
+      "mrr": 0.944444,
+      "evidence_coverage": 0.407407,
+      "all_evidence_rate": 0.296296,
+      "ndcg@10": 0.95536
+    },
+    "latency_ms": {
+      "p50": 13.381,
+      "p95": 14.912
+    },
+    "failure_buckets": {
+      "all_evidence": 8,
+      "negative": 9,
+      "node_hit_no_evidence": 13,
+      "partial_evidence": 6
+    },
+    "by_split": {
+      "heldout": {
+        "n": 12,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.333333
+      },
+      "development": {
+        "n": 15,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.466667
+      }
+    },
+    "by_category": {
+      "concrete_api_error": {
+        "n": 5,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.0
+      },
+      "semantic_rephrase": {
+        "n": 6,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.416667
+      },
+      "multi_document": {
+        "n": 6,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.416667
+      },
+      "confusable_concepts": {
+        "n": 6,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.416667
+      },
+      "missing_evidence": {
+        "n": 0,
+        "hit@3": null,
+        "evidence_coverage": null
+      },
+      "typo_pronoun": {
+        "n": 4,
+        "hit@3": 1.0,
+        "evidence_coverage": 0.875
+      }
+    }
+  },
+  "cases": [
+    {
+      "case_id": "CR01",
+      "gold_node_ids": [
+        1007
+      ],
+      "retrieved_node_ids": [
+        1007,
+        1005,
+        1006
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 14.734800002770498
+    },
+    {
+      "case_id": "CR02",
+      "gold_node_ids": [
+        1013
+      ],
+      "retrieved_node_ids": [
+        1008,
+        1013,
+        1014
+      ],
+      "hit@1": 0,
+      "hit@3": 1,
+      "mrr": 0.5,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 0.6309297535714575,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 14.359200002218131
+    },
+    {
+      "case_id": "CR03",
+      "gold_node_ids": [
+        1008
+      ],
+      "retrieved_node_ids": [
+        1008,
+        1013,
+        1001
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 2,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 13.253000004624482
+    },
+    {
+      "case_id": "CR04",
+      "gold_node_ids": [
+        1011
+      ],
+      "retrieved_node_ids": [
+        1011,
+        1001,
+        1004
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 13.772099999187049
+    },
+    {
+      "case_id": "CR05",
+      "gold_node_ids": [
+        1007
+      ],
+      "retrieved_node_ids": [
+        1007,
+        1012,
+        1001
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 15.08520000061253
+    },
+    {
+      "case_id": "CR06",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1004,
+        1005,
+        1006
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 12.505200000305194
+    },
+    {
+      "case_id": "CR07",
+      "gold_node_ids": [
+        1001
+      ],
+      "retrieved_node_ids": [
+        1003,
+        1001,
+        1011
+      ],
+      "hit@1": 0,
+      "hit@3": 1,
+      "mrr": 0.5,
+      "covered_targets": 1,
+      "target_count": 1,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 0.6309297535714575,
+      "bucket": "all_evidence",
+      "latency_ms": 12.573699998029042
+    },
+    {
+      "case_id": "CR08",
+      "gold_node_ids": [
+        1003
+      ],
+      "retrieved_node_ids": [
+        1003,
+        1001,
+        1006
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 1,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 1.0,
+      "bucket": "all_evidence",
+      "latency_ms": 12.222500001371372
+    },
+    {
+      "case_id": "CR09",
+      "gold_node_ids": [
+        1004
+      ],
+      "retrieved_node_ids": [
+        1004,
+        1005,
+        1008
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 12.185399995360058
+    },
+    {
+      "case_id": "CR10",
+      "gold_node_ids": [
+        1012
+      ],
+      "retrieved_node_ids": [
+        1012,
+        1008,
+        1004
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 11.681499992846511
+    },
+    {
+      "case_id": "CR11",
+      "gold_node_ids": [
+        1010
+      ],
+      "retrieved_node_ids": [
+        1010,
+        1013,
+        1009
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 1,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 12.339799999608658
+    },
+    {
+      "case_id": "CR12",
+      "gold_node_ids": [
+        1015
+      ],
+      "retrieved_node_ids": [
+        1015,
+        1013,
+        1016
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 2,
+      "evidence_coverage": 0.5,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "partial_evidence",
+      "latency_ms": 11.965699995926116
+    },
+    {
+      "case_id": "CR13",
+      "gold_node_ids": [
+        1008,
+        1013
+      ],
+      "retrieved_node_ids": [
+        1008,
+        1013,
+        1014
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 2,
+      "target_count": 2,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 1.0,
+      "bucket": "all_evidence",
+      "latency_ms": 11.953100001846906
+    },
+    {
+      "case_id": "CR14",
+      "gold_node_ids": [
+        1002,
+        1010
+      ],
+      "retrieved_node_ids": [
+        1002,
+        1009,
+        1010
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 2,
+      "evidence_coverage": 0.5,
+      "all_evidence": 0,
+      "ndcg@10": 0.9197207891481876,
+      "bucket": "partial_evidence",
+      "latency_ms": 12.199799995869398
+    },
+    {
+      "case_id": "CR15",
+      "gold_node_ids": [
+        1003,
+        1014
+      ],
+      "retrieved_node_ids": [
+        1008,
+        1014,
+        1003
+      ],
+      "hit@1": 0,
+      "hit@3": 1,
+      "mrr": 0.5,
+      "covered_targets": 0,
+      "target_count": 2,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 0.6934264036172708,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 12.388200004352257
+    },
+    {
+      "case_id": "CR16",
+      "gold_node_ids": [
+        1004,
+        1005
+      ],
+      "retrieved_node_ids": [
+        1004,
+        1005,
+        1012
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 2,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 13.102699995215517
+    },
+    {
+      "case_id": "CR17",
+      "gold_node_ids": [
+        1007,
+        1009
+      ],
+      "retrieved_node_ids": [
+        1009,
+        1007,
+        1014
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 2,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 14.178600002196617
+    },
+    {
+      "case_id": "CR18",
+      "gold_node_ids": [
+        1011,
+        1016
+      ],
+      "retrieved_node_ids": [
+        1011,
+        1001,
+        1016
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 2,
+      "target_count": 2,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 0.9197207891481876,
+      "bucket": "all_evidence",
+      "latency_ms": 15.02980000077514
+    },
+    {
+      "case_id": "CR19",
+      "gold_node_ids": [
+        1001
+      ],
+      "retrieved_node_ids": [
+        1001,
+        1002,
+        1003
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 2,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 14.603199997509364
+    },
+    {
+      "case_id": "CR20",
+      "gold_node_ids": [
+        1004
+      ],
+      "retrieved_node_ids": [
+        1004,
+        1013,
+        1005
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 2,
+      "target_count": 2,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 1.0,
+      "bucket": "all_evidence",
+      "latency_ms": 14.873200001602527
+    },
+    {
+      "case_id": "CR21",
+      "gold_node_ids": [
+        1010
+      ],
+      "retrieved_node_ids": [
+        1010,
+        1009,
+        1001
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 2,
+      "evidence_coverage": 0.5,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "partial_evidence",
+      "latency_ms": 14.392699995369185
+    },
+    {
+      "case_id": "CR22",
+      "gold_node_ids": [
+        1008
+      ],
+      "retrieved_node_ids": [
+        1008,
+        1010,
+        1006
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 0,
+      "target_count": 2,
+      "evidence_coverage": 0.0,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "node_hit_no_evidence",
+      "latency_ms": 13.511500001186505
+    },
+    {
+      "case_id": "CR23",
+      "gold_node_ids": [
+        1014
+      ],
+      "retrieved_node_ids": [
+        1014,
+        1001,
+        1003
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 2,
+      "evidence_coverage": 0.5,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "partial_evidence",
+      "latency_ms": 13.610900001367554
+    },
+    {
+      "case_id": "CR24",
+      "gold_node_ids": [
+        1012
+      ],
+      "retrieved_node_ids": [
+        1012,
+        1009,
+        1002
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 2,
+      "evidence_coverage": 0.5,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "partial_evidence",
+      "latency_ms": 13.029400004597846
+    },
+    {
+      "case_id": "CR25",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1012,
+        1001,
+        1008
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.399799994658679
+    },
+    {
+      "case_id": "CR26",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1001,
+        1009,
+        1010
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.36250000167638
+    },
+    {
+      "case_id": "CR27",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1001,
+        1003,
+        1004
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.255300000309944
+    },
+    {
+      "case_id": "CR28",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1003,
+        1013,
+        1001
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.315800002601463
+    },
+    {
+      "case_id": "CR29",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1004,
+        1008,
+        1009
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.176200001908
+    },
+    {
+      "case_id": "CR30",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1003,
+        1004,
+        1006
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.102199998684227
+    },
+    {
+      "case_id": "CR31",
+      "gold_node_ids": [
+        1008
+      ],
+      "retrieved_node_ids": [
+        1008,
+        1009,
+        1001
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 1,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 1.0,
+      "bucket": "all_evidence",
+      "latency_ms": 13.579599995864555
+    },
+    {
+      "case_id": "CR32",
+      "gold_node_ids": [
+        1004
+      ],
+      "retrieved_node_ids": [
+        1004,
+        1016,
+        1001
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 1,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 1.0,
+      "bucket": "all_evidence",
+      "latency_ms": 14.721399995323736
+    },
+    {
+      "case_id": "CR33",
+      "gold_node_ids": [
+        1014
+      ],
+      "retrieved_node_ids": [
+        1014,
+        1003,
+        1008
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 1,
+      "evidence_coverage": 1.0,
+      "all_evidence": 1,
+      "ndcg@10": 1.0,
+      "bucket": "all_evidence",
+      "latency_ms": 14.864400000078604
+    },
+    {
+      "case_id": "CR34",
+      "gold_node_ids": [
+        1012
+      ],
+      "retrieved_node_ids": [
+        1012,
+        1001,
+        1002
+      ],
+      "hit@1": 1,
+      "hit@3": 1,
+      "mrr": 1.0,
+      "covered_targets": 1,
+      "target_count": 2,
+      "evidence_coverage": 0.5,
+      "all_evidence": 0,
+      "ndcg@10": 1.0,
+      "bucket": "partial_evidence",
+      "latency_ms": 14.713000004121568
+    },
+    {
+      "case_id": "CR35",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1008,
+        1012,
+        1001
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.554800003475975
+    },
+    {
+      "case_id": "CR36",
+      "gold_node_ids": [],
+      "retrieved_node_ids": [
+        1001,
+        1003,
+        1004
+      ],
+      "hit@1": 0,
+      "hit@3": 0,
+      "mrr": null,
+      "covered_targets": 0,
+      "target_count": 0,
+      "evidence_coverage": null,
+      "all_evidence": null,
+      "ndcg@10": null,
+      "bucket": "negative",
+      "latency_ms": 13.601200000266545
+    }
+  ]
+}

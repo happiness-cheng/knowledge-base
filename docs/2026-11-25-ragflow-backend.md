@@ -95,6 +95,17 @@ GET /api/index-jobs/status
 返回 job 计数、失败 job、RAGFlow dataset、文档状态分布、失败文档。加
 `?probe_health=true` 才主动请求 RAGFlow 健康检查，避免状态页默认阻塞。
 
+对账（只读 SQL + `ragflow_documents`，不需要 RAGFlow 在线）：
+
+```text
+POST /api/index-jobs/reconcile            # dry-run
+POST /api/index-jobs/reconcile?apply=true # 通过 index_jobs 登记修复
+```
+
+报告区分 `missing_node_ids`、`orphan_node_ids`、`stale_node_ids`、
+`empty_content_node_ids`、`failed_node_ids`、`parsing_node_ids`；`apply=true` 只登记
+upsert/delete 任务，不直接写 RAGFlow。空正文节点标为 `manual`，不自动上传空文档。
+
 ## 6. 同步语义
 
 1. 保存/更新笔记时，现有路由在同一 SQL 事务登记 `index_jobs`。

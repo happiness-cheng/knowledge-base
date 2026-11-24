@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "backend": "fixture",
+  "top_k": 3,
+  "dataset_sha256": "c8535363fb25dca97ca79310024cabb4be6c03c14addc40bfc91621e7c9ebb6a",
+  "manifest_sha256": "8d406518016dc136f5f615ac3e3efde20fe14a6a2ee2078490339105ed5c2b7b",
+  "metrics": {
+    "hit@1": 0.888889,
+    "hit@3": 1.0,
+    "mrr": 0.944444,
+    "evidence_coverage": 0.407407,
+    "all_evidence_rate": 0.296296,
+    "ndcg@10": 0.95536
+  }
+}

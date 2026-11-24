@@ -73,6 +73,7 @@
 | 检索 | `/api/v1/retrieval` → `document_id` 映射 `node_id` → 当前 SQL fingerprint 复核；chunk 带标题前缀时用 `evidence_verified` 凭据，不靠字面子串 |
 | 引用 | 仍由 `finalize_kb_answer` 校验 `[doc:ID]`，不信任 RAGFlow 自带引用 |
 | 状态 | `/api/index-jobs/status` 返回 job、dataset、文档状态和失败列表 |
+| 对账 | `POST /api/index-jobs/reconcile` 对比 SQL 与 `ragflow_documents`，区分缺失/旧版本/孤儿/失败/手工项；`apply=true` 只登记 index_jobs |
 | 回退 | `KB_RETRIEVAL_BACKEND=chroma`；RAGFlow 表保留，不删 SQL 笔记 |
 
 已验证（单元/契约，无真实 RAGFlow）：HTTP 信封与错误、上传/解析/检索请求形状、同步幂等、内容变化替换、失败状态、解析状态轮询、检索映射/fingerprint/跨用户隔离、配置校验、Alembic 迁移、状态 API。
@@ -80,6 +81,24 @@
 **未验证**：真实 RAGFlow 冒烟与 36 题检索对照。本机 Docker daemon 未运行，且磁盘余量有限；不能用 MockTransport 测试冒充在线验证。待 Docker 可用后运行 `python -m scripts.ragflow_smoke`，再用同一冻结题集比较 Chroma/RAGFlow 的 Hit@k 与证据覆盖。
 
 决策、限制和回退见 [ADR 0002](adr/0002-ragflow-backend.md) 与 [接入说明](2026-11-25-ragflow-backend.md)；原始记录见 [ragflow-integration-20261125.json](evidence/ragflow-integration-20261125.json)。
+
+## 6. 检索质量回归：把“找到文档”和“证据进上下文”分开
+
+新增 `eval/run_retrieval_regression.py`，只评检索层，不调用生成模型。指标为
+Hit@1/3、MRR、gold evidence coverage、all-evidence rate、nDCG@10 与 p50/p95；
+失败桶区分 `not_retrieved`、`node_hit_no_evidence`、`partial_evidence` 和
+`all_evidence`。
+
+| 后端 | 用途 | 当前状态 |
+|---|---|---|
+| `fixture` | 确定性词项检索，CI 门禁/报告 schema | 已跑 36 题；Hit@3=1.0，coverage=0.4074，仅 plumbing |
+| `chroma` | 真实 BGE/Chroma 索引 | 入口已实现；需要已建索引，未在本轮复跑 |
+| `ragflow` | 真实 RAGFlow 检索 | 入口已实现；需要 RAGFlow 在线，未在本轮复跑 |
+
+fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 用
+`--backend fixture --gate`，不加载模型、不联网。真实 Chroma/RAGFlow 必须各自
+生成 before/after，不能拿 fixture 的 Hit@3 冒充真实质量。方法与限制见
+[检索质量回归](2026-11-25-retrieval-regression.md)。
 
 ## 验证与复现
 
@@ -89,7 +108,7 @@
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
-2026-11-25 RAGFlow 接入后完整离线回归：**500 passed, 43 warnings, 131.57s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
+2026-11-25 RAGFlow 接入后完整离线回归：**510 passed, 43 warnings, 124.57s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

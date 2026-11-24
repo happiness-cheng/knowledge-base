@@ -15,7 +15,7 @@ cd backend
 ../.venv/Scripts/python.exe -X utf8 -m eval.offline_tests --empty-model-cache tests -q --tb=short
 ```
 
-当前本地 500 项通过（CPython 3.14.0；发布前需在约束声明的 3.12.15 环境复跑）；无需个人配置、在线模型或原数据库。约束文件固定已验证的 Windows 环境版本，不是跨平台、带文件 hash 的依赖 lock。直接 `pytest` 不具有离线入口的配置隔离承诺。
+当前本地 510 项通过（CPython 3.14.0；发布前需在约束声明的 3.12.15 环境复跑）；无需个人配置、在线模型或原数据库。约束文件固定已验证的 Windows 环境版本，不是跨平台、带文件 hash 的依赖 lock。直接 `pytest` 不具有离线入口的配置隔离承诺。
 
 ## 2. 启动一个新的本机实例
 

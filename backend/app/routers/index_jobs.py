@@ -85,6 +85,25 @@ def index_status(
     return result
 
 
+@router.post("/reconcile")
+def reconcile(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[User, Depends(get_current_user)],
+    apply: bool = False,
+):
+    if settings.kb_retrieval_backend != "ragflow":
+        raise HTTPException(400, "reconcile is only available for the RAGFlow backend")
+    from app.services.ragflow_reconcile import (
+        apply_user_ragflow_repair, reconcile_user_ragflow,
+    )
+
+    report = reconcile_user_ragflow(db, user.id)
+    if apply:
+        report["enqueued"] = apply_user_ragflow_repair(db, report)
+        db.commit()
+    return report
+
+
 @router.get("/{node_id}")
 def job_status(node_id: int, db: Annotated[Session, Depends(get_db)], user: Annotated[User, Depends(get_current_user)]):
     job = db.get(IndexJob, (user.id, node_id))
