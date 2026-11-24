@@ -89,6 +89,19 @@ def test_compare_metrics_detects_regression():
     assert worse["regressions"]["evidence_coverage"]["delta"] == pytest.approx(-0.2)
 
 
+def test_cli_frozen_dense_reads_tracked_report(tmp_path):
+    from eval.run_retrieval_regression import DEFAULT_FROZEN, main
+
+    assert DEFAULT_FROZEN.is_file()
+    output = tmp_path / "frozen.json"
+    assert main(["--backend", "frozen-dense", "--limit", "2",
+                 "--output", str(output)]) == 0
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["backend"] == "frozen-dense"
+    assert report["retrieval_quality_measured"] is True
+    assert report["frozen_report_sha256"]
+
+
 def test_cli_writes_report_and_gate_passes(tmp_path):
     from eval.run_retrieval_regression import main
 

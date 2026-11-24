@@ -25,6 +25,8 @@ BACKEND = Path(__file__).resolve().parents[1]
 REPO_ROOT = BACKEND.parent
 DEFAULT_MANIFEST = BACKEND / 'eval/fixtures/core-rag-corpus-20261013.json'
 DEFAULT_DATASET = BACKEND / 'eval/fixtures/core-rag-20261013.json'
+DEFAULT_FROZEN = (BACKEND / 'eval/reports/retrieval-matrix/'
+                  '20261014T044942416805Z/k3-dense.json')
 
 
 def _load_inputs(manifest_path: Path, dataset_path: Path):
@@ -35,9 +37,14 @@ def _load_inputs(manifest_path: Path, dataset_path: Path):
     return corpus, cases, metadata
 
 
-def _retrieve(backend: str, *, corpus, query: str, top_k: int, user_id: int) -> list[dict]:
+def _retrieve(backend: str, *, corpus, query: str, top_k: int, user_id: int,
+              case_id: str = '', frozen: dict[str, list[dict]] | None = None) -> list[dict]:
     if backend == 'fixture':
         return fixture_retrieve(corpus, query, top_k=top_k)
+    if backend == 'frozen-dense':
+        if frozen is None or case_id not in frozen:
+            raise ValueError(f'frozen report has no case {case_id}')
+        return frozen[case_id]
     if backend == 'chroma':
         from app.services.rag_service import retrieve_relevant_nodes
 
@@ -102,7 +109,9 @@ def _new_output_dir() -> Path:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--backend', choices=('fixture', 'chroma', 'ragflow'), required=True)
+    parser.add_argument('--backend', choices=('fixture', 'frozen-dense', 'chroma', 'ragflow'), required=True)
+    parser.add_argument('--frozen-report', type=Path, default=DEFAULT_FROZEN,
+                        help='frozen-dense 读取的 k3-dense.json')
     parser.add_argument('--manifest', type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument('--dataset', type=Path, default=DEFAULT_DATASET)
     parser.add_argument('--top-k', type=int, default=3)
@@ -121,11 +130,19 @@ def main(argv=None) -> int:
     corpus, cases, metadata = _load_inputs(args.manifest, args.dataset)
     if args.limit:
         cases = cases[:args.limit]
+    frozen = None
+    if args.backend == 'frozen-dense':
+        raw = json.loads(args.frozen_report.read_text(encoding='utf-8'))
+        frozen = {
+            row['case_id']: row.get('retrieved', [])
+            for row in raw.get('cases', []) if isinstance(row, dict) and row.get('case_id')
+        }
     records = []
     for case in cases:
         started = time.perf_counter()
         rows = _retrieve(args.backend, corpus=corpus, query=case.question,
-                         top_k=args.top_k, user_id=args.user_id)
+                         top_k=args.top_k, user_id=args.user_id,
+                         case_id=case.case_id, frozen=frozen)
         latency = (time.perf_counter() - started) * 1000
         records.append(evaluate_case(case, rows, latency_ms=latency))
     summary = summarize(cases, records, case_metadata=metadata)
@@ -138,9 +155,15 @@ def main(argv=None) -> int:
         'manifest_sha256': file_hash(args.manifest),
         'retrieval_quality_measured': args.backend != 'fixture',
         'model_quality_measured': False,
+        'frozen_report': str(args.frozen_report) if args.backend == 'frozen-dense' else None,
+        'frozen_report_sha256': file_hash(args.frozen_report)
+        if args.backend == 'frozen-dense' else None,
         'note': (
             'fixture 是确定性词项检索，仅验证指标/report；不代表真实 embedding 质量'
             if args.backend == 'fixture' else
+            'frozen-dense 使用已冻结的 k3-dense 报告（真实 BGE 向量、精确内积、20 候选）；'
+            '不是当前在线索引'
+            if args.backend == 'frozen-dense' else
             '检索层指标；未评估生成答案质量'
         ),
         'summary': summary,

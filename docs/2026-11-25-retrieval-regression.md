@@ -36,11 +36,13 @@
 | `--backend` | 用途 | 是否代表真实质量 |
 |---|---|---|
 | `fixture` | 确定性词项检索，CI plumbing / 报告 schema | **否** |
-| `chroma` | 调 `rag_service.retrieve_relevant_nodes`，需要已建索引/模型 | 是（检索层） |
-| `ragflow` | 调 `ragflow_retrieval.retrieve_for_user`，需要 RAGFlow 配置 | 是（检索层） |
+| `frozen-dense` | 读取已冻结的 `k3-dense.json`（真实 BGE、精确内积、20 候选） | 是（历史冻结检索层） |
+| `chroma` | 调 `rag_service.retrieve_relevant_nodes`，需要已建索引/模型 | 是（当前检索层） |
+| `ragflow` | 调 `ragflow_retrieval.retrieve_for_user`，需要 RAGFlow 配置 | 是（当前检索层） |
 
 fixture 的 `retrieval_quality_measured=false`，报告里明确标注；不能拿它跟
-Chroma/RAGFlow 的真实分数混比。
+Chroma/RAGFlow 的真实分数混比。`frozen-dense` 是历史冻结报告，不是当前在线索引，
+但它提供了不依赖本机 DB/模型的可复现真实向量基线。
 
 ## 运行
 
@@ -50,6 +52,10 @@ cd backend
 # CI/本地快速检查：不加载模型、不联网
 python -m eval.run_retrieval_regression --backend fixture `
   --output ..\docs\evidence\retrieval-regression-fixture-20261125.json
+
+# 历史冻结 BGE dense：读取已提交的 k3-dense.json，不加载模型
+python -m eval.run_retrieval_regression --backend frozen-dense `
+  --output ..\docs\evidence\retrieval-regression-frozen-dense-20261125.json
 
 # 真实 Chroma：需要已建好 user 1 的索引
 python -m eval.run_retrieval_regression --backend chroma --user-id 1 `
@@ -81,9 +87,27 @@ python -m eval.run_retrieval_regression --backend fixture `
 失败桶：`all_evidence=8`、`partial_evidence=6`、`node_hit_no_evidence=13`、
 `negative=9`。
 
-这组数字只说明 fixture 的行为稳定、指标能区分失败类型；**不能**当成真实
-BGE/Chroma 或 RAGFlow 的检索质量。真实基线必须在 `--backend chroma` 与
-`--backend ragflow` 上分别生成。
+## 当前 frozen-dense 基线
+
+`eval/fixtures/retrieval-baseline-frozen-dense-20261125.json` 来自已提交的
+`k3-dense.json`（真实 BGE 向量、精确内积、20 候选、1536 证据预算）：
+
+| 指标 | 值 |
+|---|---:|
+| Hit@1 | 0.8889 |
+| Hit@3 | 1.0000 |
+| MRR | 0.9444 |
+| evidence_coverage | 0.7778 |
+| all_evidence_rate | 0.7407 |
+| nDCG@10 | 0.9447 |
+
+失败桶：`all_evidence=20`、`partial_evidence=2`、`node_hit_no_evidence=5`、
+`negative=9`。这是历史冻结检索的基线，不是当前在线索引；改动默认检索后必须重新
+跑 `--backend chroma` 或 `--backend ragflow`，不能拿它冒充当前结果。
+
+fixture 的数字只说明确定性管线稳定、指标能区分失败类型，**不能**当成真实
+BGE/Chroma 或 RAGFlow 的检索质量。frozen-dense 是历史真实向量基线，但仍不是
+当前在线索引；真实基线必须在 `--backend chroma` 与 `--backend ragflow` 上分别生成。
 
 ## 门禁
 

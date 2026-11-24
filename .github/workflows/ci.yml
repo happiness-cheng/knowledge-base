@@ -45,6 +45,10 @@ jobs:
         working-directory: backend
         run: python -m eval.run_retrieval_regression --backend fixture --output "$env:RUNNER_TEMP\retrieval-regression.json" --baseline eval/fixtures/retrieval-baseline-fixture-20261125.json --gate
 
+      - name: Retrieval regression frozen-dense gate
+        working-directory: backend
+        run: python -m eval.run_retrieval_regression --backend frozen-dense --output "$env:RUNNER_TEMP\retrieval-frozen.json" --baseline eval/fixtures/retrieval-baseline-frozen-dense-20261125.json --gate
+
       - name: Run tests
         working-directory: backend
         run: |

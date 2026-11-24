@@ -92,7 +92,8 @@ Hit@1/3、MRR、gold evidence coverage、all-evidence rate、nDCG@10 与 p50/p95
 | 后端 | 用途 | 当前状态 |
 |---|---|---|
 | `fixture` | 确定性词项检索，CI 门禁/报告 schema | 已跑 36 题；Hit@3=1.0，coverage=0.4074，仅 plumbing |
-| `chroma` | 真实 BGE/Chroma 索引 | 入口已实现；需要已建索引，未在本轮复跑 |
+| `frozen-dense` | 读取已提交的 `k3-dense.json`（真实 BGE、精确内积、20 候选） | 已跑 36 题；Hit@3=1.0，coverage=0.7778，all-evidence=0.7407 |
+| `chroma` | 真实 BGE/Chroma 当前索引 | 入口已实现；需要已建索引，未在本轮复跑 |
 | `ragflow` | 真实 RAGFlow 检索 | 入口已实现；需要 RAGFlow 在线，未在本轮复跑 |
 
 fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 用
@@ -108,7 +109,7 @@ fixture 基线在 `eval/fixtures/retrieval-baseline-fixture-20261125.json`；CI 
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
-2026-11-25 RAGFlow 接入后完整离线回归：**510 passed, 43 warnings, 124.57s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
+2026-11-25 RAGFlow 接入后完整离线回归：**511 passed, 43 warnings, 109.72s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟未执行。
 
 ```text
 # backend目录，已有依赖的Python3.12环境
