@@ -62,7 +62,7 @@
 
 ## 5. RAGFlow 生产后端：把解析/检索/存储委托出去
 
-用户明确最看重在线检索与离线存储，并允许重构。新增 `KB_RETRIEVAL_BACKEND=ragflow` 显式后端：RAGFlow 负责文档解析、切片、向量存储和 hybrid retrieval；SQL 仍是笔记真值，RAGFlow 是可重建派生索引。
+用户明确最看重在线检索与离线存储，并允许重构。生产入口固定 `KB_RETRIEVAL_BACKEND=ragflow`：RAGFlow 负责文档解析、切片、向量存储和 hybrid retrieval；SQL 仍是笔记真值，RAGFlow 是可重建派生索引。Chroma 只保留为开发/离线测试和显式回退；`app_env=production` 拒绝 Chroma 后端。
 
 | 环节 | 实现 |
 |---|---|
@@ -74,7 +74,7 @@
 | 引用 | 仍由 `finalize_kb_answer` 校验 `[doc:ID]`，不信任 RAGFlow 自带引用 |
 | 状态 | `/api/index-jobs/status` 返回 job、dataset、文档状态和失败列表 |
 | 对账 | `POST /api/index-jobs/reconcile` 对比 SQL 与 `ragflow_documents`，区分缺失/旧版本/孤儿/失败/手工项；`apply=true` 只登记 index_jobs |
-| 回退 | `KB_RETRIEVAL_BACKEND=chroma`；RAGFlow 表保留，不删 SQL 笔记 |
+| 回退 | `KB_RETRIEVAL_BACKEND=chroma` 仅开发/离线/显式回退；production 拒绝。RAGFlow 表保留，不删 SQL 笔记 |
 
 已验证（离线契约 + 真实 HTTP 冒烟）：HTTP 信封与错误、上传/解析/检索请求形状、同步幂等、内容变化替换、失败状态、解析状态轮询、检索映射/fingerprint/跨用户隔离、配置校验、Alembic 迁移、状态/对账 API。
 
@@ -119,7 +119,7 @@ MRR 0.9383 略低于 0.7 的 1.0。0.3 已设为 RAGFlow 生产默认，仍可�
 
 2026-11-25 P0 回归：默认对话契约改为 LangChain 严格 RAG + `retrieval_mode=current` + rerank/rewrite 关闭；新增默认契约、分层边界、路径卫生测试。`eval.offline_tests --empty-model-cache tests` 为 **468 passed, 43 warnings, 132.01s**；`--verify-isolation` 与 `check_artifact_policy` 均 PASS。本机为 CPython 3.14.0，发布前仍需在约束声明的 3.12.15 环境复跑；原始记录见[baseline-20261125.json](evidence/baseline-20261125.json)。
 
-2026-11-25 RAGFlow 接入后完整离线回归：**514 passed, 43 warnings, 118.70s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟与 36 题已用 BGE 跑通；0.3 参数实验已写回，回答生成质量仍未验证。
+2026-11-25 RAGFlow 接入后完整离线回归：**515 passed, 43 warnings, 116.15s**；isolation、artifact policy、compileall 均通过；10 个索引/ RAGFlow 模块 mypy 通过，新增模块 ruff 通过。真实 RAGFlow 冒烟与 36 题已用 BGE 跑通；0.3 参数实验已写回，回答生成质量仍未验证。
 
 ```text
 # backend目录，已有依赖的Python3.12环境

@@ -23,8 +23,9 @@
    `--ragflow` 模式调用上传/解析，解析状态由 `ragflow_documents.state` 跟踪。
 5. **检索适配器保留 SQL 复核**：RAGFlow chunk 的 `document_id` 映射回 `node_id`，
    再用当前 SQL 正文计算的 fingerprint 校验；不信任 document_id 代表新内容。
-6. **功能开关**：默认仍是已验证的 Chroma；`KB_RETRIEVAL_BACKEND=ragflow` 显式启用。
-   这样线上可以回退，测试不需要 RAGFlow。
+6. **生产后端固定 RAGFlow**：`app_env=production` 强制
+   `KB_RETRIEVAL_BACKEND=ragflow`；Chroma 只保留为开发/离线测试和显式回退。
+   代码默认 chroma 只是为了让测试不依赖外部服务，不再作为生产默认。
 7. **HTTP 直连，不用官方 Python SDK**：`ragflow-sdk==1.0.0` 要求 Python
    `>=3.13,<3.14`，与项目 3.12 验证环境不兼容；客户端只依赖 `httpx`，按 v1.0.0
    REST API 实现并用 MockTransport 测试。
@@ -84,7 +85,8 @@ React 保存笔记
 
 ## 回退
 
-- `KB_RETRIEVAL_BACKEND=chroma` 即回到已验证的 Chroma 路径；RAGFlow 表保留但不再写入。
+- `KB_RETRIEVAL_BACKEND=chroma` 只用于开发/离线测试/显式回退；`app_env=production`
+  会拒绝该组合。RAGFlow 表保留但不再写入。
 - 删除 RAGFlow 绑定不会删除 SQL 笔记；重建 RAGFlow 索引只需重新扫描 SQL 节点。
 
 ## 验收

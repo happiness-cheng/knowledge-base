@@ -26,16 +26,20 @@ def test_production_rejects_default_secret_and_invalid_fernet_key():
         invalid_key.validate_runtime()
 
 
-def test_production_requires_explicit_index_service():
+def test_production_requires_ragflow_backend():
     config = Settings(_env_file=None, app_env='production', secret_key='a'*32,
-                      ai_key_encryption_key=Fernet.generate_key().decode(), kb_chroma_url='')
-    with pytest.raises(RuntimeError, match='KB_CHROMA_URL'):
+                      ai_key_encryption_key=Fernet.generate_key().decode(),
+                      kb_retrieval_backend='chroma', kb_chroma_url='http://127.0.0.1:8000')
+    with pytest.raises(RuntimeError, match='KB_RETRIEVAL_BACKEND=ragflow'):
         config.validate_runtime()
 
 
-def test_production_with_valid_explicit_index_origin_passes_without_connecting():
+def test_production_with_ragflow_config_passes_without_connecting():
     config = Settings(_env_file=None, app_env='production', secret_key='a'*32,
-                      ai_key_encryption_key=Fernet.generate_key().decode(), kb_chroma_url='http://127.0.0.1:8000')
+                      ai_key_encryption_key=Fernet.generate_key().decode(),
+                      kb_retrieval_backend='ragflow',
+                      ragflow_base_url='http://127.0.0.1:9380',
+                      ragflow_api_key='k')
     config.validate_runtime()
 
 

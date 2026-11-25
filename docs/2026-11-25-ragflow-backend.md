@@ -3,7 +3,7 @@
 - 日期：2026-11-25
 - 目标版本：RAGFlow v1.0.0（HTTP API）
 - 决策记录：[ADR 0002](adr/0002-ragflow-backend.md)
-- 状态：代码/单元测试已接入；真实 RAGFlow 冒烟待 Docker daemon 可用后执行
+- 状态：生产主链路；真实 RAGFlow v1.0.0 + BGE 冒烟和 36 题已跑；Chroma 仅保留为离线测试/显式回退
 
 ## 1. 它替换了什么
 
@@ -179,7 +179,7 @@ upsert/delete 任务，不直接写 RAGFlow。空正文节点标为 `manual`，�
 | 解析失败 | `ragflow_documents.state=failed`，`/api/index-jobs/status` 可见；可重试 index job |
 | 文档缺失 | `state=missing`；重建索引修复 |
 | 内容已改但未同步 | 检索 fingerprint 不一致 → 跳过旧 chunk，不用旧证据回答 |
-| 需要回退 | `KB_RETRIEVAL_BACKEND=chroma`；RAGFlow 表保留，不删 SQL 笔记 |
+| 需要回退 | `KB_RETRIEVAL_BACKEND=chroma` 仅用于开发/离线/显式回退；`app_env=production` 会拒绝该组合。RAGFlow 表保留，不删 SQL 笔记 |
 
 ## 8. 尚未完成
 

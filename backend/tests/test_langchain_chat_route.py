@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from app.config import settings
 from app.models.chat import Message
 
 
@@ -31,6 +32,19 @@ def test_langchain_route_uses_authenticated_user_and_selected_client(client, db)
     assert candidate.call_args.kwargs['user_id'] > 0
     agent.assert_not_called()
     assert db.query(Message).count() == 2
+
+
+def test_production_rejects_experimental_retrieval(client, monkeypatch):
+    conversation = client.post('/api/chat/conversations', json={}).json()
+    monkeypatch.setattr(settings, 'app_env', 'production')
+
+    response = client.post(
+        f"/api/chat/conversations/{conversation['id']}/messages",
+        json={'content': 'x', 'retrieval_mode': 'hybrid', 'rerank': True},
+    )
+
+    assert response.status_code == 400
+    assert 'experimental retrieval options' in response.json()['detail']
 
 
 @pytest.mark.parametrize('body', [

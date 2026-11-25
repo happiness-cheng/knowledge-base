@@ -6,6 +6,7 @@ from app.models.chat import Conversation, Message
 from app.models.node import KnowledgeNode
 from app.models.user import User
 from app.auth import get_current_user
+from app.config import settings
 from app.services.agent_service import run_agent
 from app.services.claude_client import get_client_for_user
 from app.services.index_jobs import enqueue, fingerprint
@@ -170,6 +171,14 @@ def send_message(conversation_id: int, msg_in: MessageCreate, background: Backgr
         Conversation.id == conversation_id, Conversation.user_id == current_user.id).first()
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation not found")
+    if settings.app_env == "production" and (
+        msg_in.retrieval_mode != "current" or msg_in.rerank or msg_in.rewrite
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="experimental retrieval options are disabled in production; "
+                   "the production path is RAGFlow current retrieval",
+        )
 
     user_msg = Message(conversation_id=conversation_id, role="user", content=msg_in.content)
     db.add(user_msg)

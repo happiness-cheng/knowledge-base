@@ -48,7 +48,8 @@ class Settings(BaseSettings):
     ai_model_name: str = "deepseek-flash"
     ai_key_encryption_key: str = ""
     upload_dir: str = os.path.join(_data_dir, "uploads")
-    # 检索/索引后端：默认保留已验证的本地 Chroma；RAGFlow 为显式 opt-in。
+    # 生产主链路是 RAGFlow；chroma 仅保留为离线测试/显式回退。代码默认 chroma
+    # 是为了不依赖外部服务跑测试，生产 validate_runtime 会强制 ragflow。
     kb_retrieval_backend: Literal["chroma", "ragflow"] = "chroma"
     ragflow_base_url: str = ""
     ragflow_api_key: str = ""
@@ -98,12 +99,11 @@ class Settings(BaseSettings):
             raise RuntimeError(
                 "AI_KEY_ENCRYPTION_KEY must be a valid Fernet key in production"
             ) from exc
-        from app.services.index_store import parse_server_url
-        try:
-            if self.kb_retrieval_backend == 'chroma':
-                parse_server_url(self.kb_chroma_url)
-        except ValueError:
-            raise RuntimeError('KB_CHROMA_URL must be a valid HTTP(S) origin in production') from None
+        if self.kb_retrieval_backend != "ragflow":
+            raise RuntimeError(
+                "production requires KB_RETRIEVAL_BACKEND=ragflow; "
+                "chroma is only a development/offline fallback"
+            )
 
 
 settings = Settings()
